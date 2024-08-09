@@ -57,6 +57,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Admin::class);
     }
+    public function agency(): HasOne
+    {
+        return $this->hasOne(Agency::class);
+    }
+    public function agent(): HasOne
+    {
+        return $this->hasOne(Agent::class);
+    }
 
     public function sentNotifications()
     {

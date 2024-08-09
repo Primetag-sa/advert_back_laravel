@@ -32,6 +32,7 @@ Route::delete('notifications/{id}', [NotificationController::class, 'destroy']);
 // Authentication routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::get('/logout', [AuthController::class, 'logout']);
 
 // Routes that require authentication
 Route::middleware('auth:api')->group(function () {
@@ -39,3 +40,5 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 });
+
+

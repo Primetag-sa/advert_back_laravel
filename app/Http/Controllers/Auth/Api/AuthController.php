@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Agency;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -45,9 +46,32 @@ class AuthController extends Controller
             'role'=>'agency'
         ]);
 
+        $agency = Agency::create([
+            'name'=>$user->agencyName,
+            'user_id'=>$user->id,
+            'tiktok_url'=>'',
+            'facebook_url'=>'',
+            'instagram_url'=>'',
+            'snapchat_url'=>'',
+            'x_url'=>'',
+        ]);
+
 
         $token = $user->createToken('advert')->plainTextToken;
 
         return response()->json(['token' => $token, 'user' => $user], 201);
+    }
+
+    public function logout(Request $request)
+    {
+        // For token-based authentication (like Passport or Sanctum)
+        if (Auth::check()) {
+            $user = Auth::user();
+            $user->tokens()->delete(); // If using Laravel Passport or Sanctum
+            Auth::logout();
+        }
+
+        return response()->json(['message' => 'Successfully logged out',], 201);
+        // Return a response
     }
 }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Agency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -16,7 +18,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 10); // Default to 10 items per page if not specified
-        $users = User::paginate($perPage);
+        $users = User::orderBy('id','desc')->paginate($perPage);
 
         $users->getCollection()->transform(function ($user) {
             $user->image_url = asset($user->image); // Assuming you store image paths in 'image_path' field
@@ -31,28 +33,35 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            // 'password' => 'required|string|min:8|confirmed',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone,
-            'image' => $request->image,
-            'role' => $request->role,
-            'permissions' => $request->permissions,
-            'is_confirmed' => $request->is_confirmed,
-            'confirmed_at' => $request->confirmed_at,
-            'is_activated' => $request->is_activated,
-            'activated_at' => $request->activated_at,
-            'token' => $request->token,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->password??'password'),
+            'is_confirmed' => false,
+            'role'=>'agency'
         ]);
 
-        return response()->json($user, 201);
+        $agency = Agency::create([
+            'name'=>$user->agencyName,
+            'user_id'=>$user->id,
+            'tiktok_url'=>$request->tiktok_url,
+            'facebook_url'=>$request->facebook_url,
+            'instagram_url'=>$request->instagram_url,
+            'snapchat_url'=>$request->snapchat_url,
+            'x_url'=>$request->x_url,
+        ]);
+
+        return response()->json($agency, 201);
     }
 
     /**
@@ -106,8 +115,22 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // Delete related agents
+        $user->agent()->delete(); // Assuming you have a relationship defined in the User model
+
+        // Delete related agencies
+        $user->agency()->delete(); // Assuming you have a relationship defined in the User model
+
+        // Now delete the user
         $user->delete();
-        return response()->json(null, 204);
+
+        return response()->json(['message' => 'User deleted successfully']);
     }
+
 }

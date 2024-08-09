@@ -12,6 +12,15 @@ class Agent extends Model
 
     protected $fillable = [
         'name',
+        //new
+        'address',
+        'permissions',
+        'pack_id',
+        'facebook_url',
+        'tiktok_url',
+        'snapchat_url',
+        'instagram_url',
+
     ];
 
     public function user(): BelongsTo

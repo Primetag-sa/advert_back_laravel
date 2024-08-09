@@ -12,6 +12,12 @@ class Agency extends Model
 
     protected $fillable = [
         'company_name',
+        'snapchat_url',
+        'instagram_url',
+        'tiktok_url',
+        'facebook_url',
+        'x_url',
+        'user_id',
     ];
 
     public function user(): BelongsTo

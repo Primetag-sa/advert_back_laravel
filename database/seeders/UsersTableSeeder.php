@@ -15,8 +15,8 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'name' => 'admin',
-                'email' => 'john@example.com',
-                'phone' => '1234567890',
+                'email' => 'john2@example.com',
+                'phone' => '123',
                 'image' => 'profile1.jpg',
                 'role' => 'admin',
                 'permissions' => 'all',
@@ -31,7 +31,7 @@ class UsersTableSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            [
+            /* [
                 'name' => 'admin2',
                 'email' => 'admin2@example.com',
                 'phone' => '1234567890',
@@ -120,7 +120,7 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ],
+            ], */
 
             // Add more user data as needed
         ]);

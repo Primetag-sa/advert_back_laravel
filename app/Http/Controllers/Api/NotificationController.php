@@ -9,10 +9,25 @@ use Illuminate\Http\Request;
 class NotificationController extends Controller
 {
     // Fetch all notifications
-    public function index()
+    public function index(Request $request)
     {
-        $notifications = Notification::all();
+        $status = $request->status;
+
+        $perPage = $request->input('per_page', 10);
+        $notifications = Notification::
+        /* when($status != 'all', function ($query) use ($status) {
+            return $query->where('read', $status);
+        })
+        -> */
+        with('sender','receiver')
+        ->orderBy('id', 'desc')
+
+        ->paginate($perPage);
+
         return response()->json($notifications);
+
+        $notifications = Notification::all();
+        return response()->json(['data'=>$notifications]);
     }
 
     // Fetch notifications for a specific user

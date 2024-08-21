@@ -20,11 +20,19 @@ class Agent extends Model
         'tiktok_url',
         'snapchat_url',
         'instagram_url',
+        'x_url',
+        'agency_id',
+        'user_id',
 
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function agent()
+    {
+        return $this->hasOne(Agent::class);
     }
 }

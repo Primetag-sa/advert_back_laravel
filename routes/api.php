@@ -21,17 +21,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('users', UserController::class);
+Route::get('agency/agents', [UserController::class, 'agencyAgents']);
+Route::patch('users/{id}/change/status', [UserController::class, 'changeStatus']);
 
-Route::get('notifications', [NotificationController::class, 'index']);
+Route::apiResource('notifications', NotificationController::class);
+
+/* Route::get('notifications', [NotificationController::class, 'index']);
 Route::get('notifications/user/{userId}', [NotificationController::class, 'userNotifications']);
 Route::post('notifications', [NotificationController::class, 'store']);
 Route::get('notifications/{id}', [NotificationController::class, 'show']);
 Route::put('notifications/{id}', [NotificationController::class, 'update']);
-Route::delete('notifications/{id}', [NotificationController::class, 'destroy']);
+Route::delete('notifications/{id}', [NotificationController::class, 'destroy']); */
 
 // Authentication routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/profile/edit', [AuthController::class, 'editProfile']);
 Route::get('/logout', [AuthController::class, 'logout']);
 
 // Routes that require authentication

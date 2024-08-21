@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -31,6 +33,7 @@ class User extends Authenticatable
         'active_at',
         'token',
         'username',
+
     ];
 
     /**
@@ -43,6 +46,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'avatar',
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -52,6 +59,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function getAvatarAttribute()
+    {
+        if ($this->image) {
+            // Generate the full URL using the 'public' disk
+            return Storage::disk('public')->url($this->image);
+        }
+
+        // Return the URL to a default avatar if no custom avatar exists
+        return asset('profile1.jpg');
+    }
 
     public function admin(): HasOne
     {

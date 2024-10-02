@@ -1,16 +1,17 @@
 <?php
 
 // database/seeders/UsersTableSeeder.php
+
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class UsersTableSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         DB::table('users')->insert([
             [
@@ -31,7 +32,7 @@ class UsersTableSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-            /* [
+            [
                 'name' => 'admin2',
                 'email' => 'admin2@example.com',
                 'phone' => '1234567890',
@@ -120,7 +121,7 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => Str::random(10),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-            ], */
+            ],
 
             // Add more user data as needed
         ]);

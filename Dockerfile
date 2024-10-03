@@ -10,11 +10,18 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Installer les dépendances pour GD et autres extensions PHP
+RUN apt-get update && apt-get install -y \
+    libfreetype6-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libonig-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# Nettoyage des fichiers inutiles pour réduire la taille de l'image
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

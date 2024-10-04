@@ -1,0 +1,104 @@
+snapchat
+
+خطوات جمع بيانات الإعلانات من Snapchat:
+تسجيل التطبيق:
+قم بتسجيل تطبيقك في Snapchat للحصول على معلومات الدخول مثل client_id وclient_secret.
+
+توجيه المستخدم لتسجيل الدخول:
+اجعل المستخدمين ينتقلون إلى صفحة تسجيل الدخول الخاصة بـ Snapchat لتفويض تطبيقك.
+
+public function redirectToSnapchat()
+{
+    $clientId = config('services.snapchat.client_id');
+    $redirectUri = config('services.snapchat.redirect');
+    $url = "https://accounts.snapchat.com/accounts/oauth2/auth?response_type=code&client_id={$clientId}&redirect_uri={$redirectUri}&scope=advertising";
+    return redirect($url);
+}
+
+التعامل مع رد النداء العكسي:
+بعد تسجيل الدخول، سيعيد Snapchat توجيه المستخدم إلى موقعك مع رمز تفويض. تحتاج إلى معالجة هذا الرمز للحصول على رمز وصول.
+
+public function handleSnapchatCallback(Request $request)
+{
+    $code = $request->input('code');
+    // الخطوة التالية هي تبادل الرمز للحصول على رمز الوصول
+    return $this->getAccessToken($code);
+}
+
+الحصول على رمز الوصول:
+استخدم رمز التفويض لاسترداد رمز الوصول الذي سيمكنك من إجراء استعلامات إلى واجهة برمجة التطبيقات.
+private function getAccessToken($code)
+{
+    $clientId = config('services.snapchat.client_id');
+    $clientSecret = config('services.snapchat.client_secret');
+    $redirectUri = config('services.snapchat.redirect');
+
+    $response = Http::asForm()->post('https://accounts.snapchat.com/accounts/oauth2/token', [
+        'grant_type' => 'authorization_code',
+        'code' => $code,
+        'client_id' => $clientId,
+        'client_secret' => $clientSecret,
+        'redirect_uri' => $redirectUri,
+    ]);
+
+    $data = $response->json();
+    return $data['access_token'];
+}
+
+
+
+استرداد بيانات الإعلانات:
+باستخدام رمز الوصول، قم بجمع بيانات الإعلانات مثل عدد المشاهدات، ومعدلات النقر، والعائدات، والتكاليف.
+public function fetchAdData($accessToken)
+{
+    $response = Http::withToken($accessToken)->get('https://adsapi.snapchat.com/v1/adaccounts/your_ad_account_id/stats');
+    
+    if ($response->successful()) {
+        return $response->json(); // بيانات الإعلانات
+    }
+
+    return null; // معالجة الخطأ
+}
+
+
+تخزين البيانات:
+خزّن البيانات المسترجعة في قاعدة البيانات الخاصة بك لتحليلها لاحقًا.
+
+public function storeAdData($adData)
+{
+    foreach ($adData['data'] as $data) {
+        Ad::create([
+            'ad_name' => $data['ad_name'],
+            'impressions' => $data['impressions'],
+            'click_through_rate' => $data['click_through_rate'],
+            'revenue' => $data['revenue'],
+            'cost' => $data['cost'],
+            // أضف المزيد من الحقول حسب الحاجة
+        ]);
+    }
+}
+
+
+توليد التقارير:
+يمكنك إعداد تقارير مجدولة تعتمد على البيانات المخزنة لتقديمها للمستخدمين.
+
+public function generateReport()
+{
+    $ads = Ad::all();
+    // استخدم البيانات لإنشاء تقرير
+    // يمكنك استخدام مكتبات مثل Laravel Excel أو DomPDF للتصدير
+}
+
+
+config/services.php
+
+'snapchat' => [
+    'client_id' => env('SNAPCHAT_CLIENT_ID'),
+    'client_secret' => env('SNAPCHAT_CLIENT_SECRET'),
+    'redirect' => env('SNAPCHAT_REDIRECT_URI'),
+],
+
+
+SNAPCHAT_CLIENT_ID=your_client_id
+SNAPCHAT_CLIENT_SECRET=your_client_secret
+SNAPCHAT_REDIRECT_URI=https://yourdomain.com/snapchat/callback

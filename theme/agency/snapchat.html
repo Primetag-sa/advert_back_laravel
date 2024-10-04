@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>snap Dashboard</title>
+    <link rel="icon" href="../pic/logotitle.png" type="image/jpg">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+      body{
+        background-image: url("../pic/image\ 4\ \(1\).png"); /* استبدل 'your-background-image-url.jpg' برابط صورتك */
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;      
+      }
+      .legend-container {
+          display: flex;
+          justify-content: flex-end;
+          margin-left: 79px;
+      }
+    </style>
+</head>
+<body >
+   
+
+
+    <nav class="sidebar ">
+   
+        <div class="menu-bar">
+            <div class="menu">
+                <ul class="menu-links">
+                    <div class="logoimg">
+                        <img class="logoimg" src="../pic/logo.png" alt="logo" />
+                    </div>
+                   
+                    <li class="nav-link mb-1 ">
+                        <a href="./controlpanel.html">
+                            <i class="bx bx-pie-chart-alt icons"></i>
+                            <span class="text nav-text fw-bold">لوحة التحكم</span>
+                        </a>
+                    </li>
+                    <li class="nav-link mb-1 ">
+                        <a href="./adminusermangment.html">
+                            <i class="fa-solid fa-user-gear  icons"></i>
+                            <span class="text nav-text fw-bold">إدارة العملاء</span>
+                        </a>
+                    </li>
+                 
+                    <li class="nav-link mb-1">
+                        <a href="./notifiction.html">
+                            <i class="bx bx-bell icons"></i>
+                            <span class="text nav-text fw-bold">الإشعارات</span>
+                        </a>
+                    </li>
+                    <li class="nav-link mb-1 ">
+                        <a href="./reports.html" >
+                            <i class="bx bx-bar-chart-alt-2 icons"></i>
+                            <span class="text nav-text fw-bold">التقارير</span>
+                        </a>
+                    </li>
+                    <hr class="my-2">
+      
+                       
+                        <i class="bx bxs-page icons"></i>
+                        <span class="text nav-text fw-bold text-muted m-5">صفحات</span>
+                 
+                    <li class="nav-link mb-1">
+                        <a href="./facebook.html">
+                            <i class="bx bxl-facebook icons"></i>
+                            <span class="text nav-text fs-6">فيس بوك</span>
+                        </a>
+                    </li>
+                    <li class="nav-link mb-1">
+                        <a href="./tiktok.html">
+                            <i class="bx bxl-tiktok icons"></i>
+                            <span class="text nav-text fs-6">تيك توك</span>
+                        </a>
+                    </li>
+                    <li class="nav-link mb-1 currentpage">
+                        <a href="./snapchat.html">
+                            <i class="bx bxl-snapchat icons"></i>
+                            <span class="text nav-text fs-6">سناب شات</span>
+                        </a>
+                    </li>
+                    <li class="nav-link mb-1">
+                        <a href="./instagram.html">
+                            <i class="bx bxl-instagram icons"></i>
+                            <span class="text nav-text fs-6">انستغرام</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        
+            <div class="bottom-content">
+                <li class="nav-link">
+                    <a href="./settings.html">
+                        <i class="bx bx-cog icons"></i>
+                        <span class="text nav-text fw-bold">الإعدادات</span>
+                    </a>
+                </li>
+                <li class="nav-link">
+                    <a href="./adminusermangment.html">
+                        <i class="bx bx-log-out icons"></i>
+                        <span class="text nav-text fw-bold">تسجيل الخروج</span>
+                    </a>
+                </li>
+            </div>
+        </div>
+    </nav>
+
+<div class="content-wrapper">
+    <nav class="navbar navbar-expand-lg navbar-light ">
+        <div class="container-fluid">
+            <form class="d-flex search-bar col-md-4">
+                <input class="form-control me-2 " type="search" placeholder="🔍ابحث عن ..." aria-label="Search">
+            </form>
+            <ul class="navbar-nav ms-auto d-flex w-100 justify-content-between align-items-center">
+                <li class="nav-item">
+                    <div class="notification-container me-5">
+                        <button class="notification-button">
+                            <svg width="25" height="26" viewBox="0 0 25 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0511 0.0881958C7.75816 0.0881958 5.83187 1.81231 5.57865 4.09126L4.52344 13.5882H1.52344C0.69501 13.5882 0.0234375 14.2598 0.0234375 15.0882V16.5882C0.0234375 17.4166 0.69501 18.0882 1.52344 18.0882H22.5234C23.3519 18.0882 24.0234 17.4166 24.0234 16.5882V15.0882C24.0234 14.2598 23.3519 13.5882 22.5234 13.5882H19.5234L18.4682 4.09125C18.215 1.81231 16.2887 0.0881958 13.9957 0.0881958H10.0511Z" fill="#1F1F51"/>
+                                <rect opacity="0.3" x="9.02344" y="19.5882" width="6" height="6" rx="2.25" fill="#FF0000"/>
+                                </svg>                            <span class="notification-count">5</span>
+                        </button>
+                    </div>
+                </li>
+                <li class="nav-item profile-dropdown">
+                    <a class="nav-link custom-dropdown-toggle dropdown-toggle d-flex align-items-end" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="../pic/profile.png" alt="Profile" class="rounded-circle" width="40" height="40">
+                        <span class="profile-name pe-1">
+                            <h5 class="mb-0 d-inline text-dark" style="font-size: 14px;">الاسم الكامل</h5>
+                            <i class="fas fa-chevron-down icon-circle p-1 text-dark"></i>
+                            <p class="mb-0 text-dark text-end" style="font-size: 12px;">ميسر</p>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" >
+                        <a class="dropdown-item" href="./profilepage.html">الملف الشخصي</a>
+                        <a class="dropdown-item" href="./settings.html">الإعدادات</a>
+                        <a class="dropdown-item" href="#">تسجيل الخروج</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav><div class="container-fluid mt-0 ">
+        <section class="control-panel p-3">
+            <div class="filters d-flex flex-column flex-md-row align-items-start align-items-md-center">
+                <div class="filtername mb-2"><i class="fas fa-bars"></i> التقارير</div>
+                <select class="form-select me-md-2 mb-2 mb-md-0">
+                    <option>التقارير</option>
+                </select>
+                <select class="form-select me-md-2 mb-2 mb-md-0">
+                    <option>تاريخ التقارير</option>
+                </select>
+                <select class="form-select me-md-2 mb-2 mb-md-0">
+                    <option>التقارير</option>
+                </select>
+                <button class="btn btn-primary apply-button me-md-2 mb-2 mb-md-0 text-dark">تطبيق</button>
+            </div>
+            <div class="d-flex justify-content-end flex-wrap align-items-start align-items-md-center mt-3 mt-md-0">
+                <button type="button" class="btn btn-dark me-md-2 mb-2 mb-md-0" style="background-color: rgb(17, 212, 189); border:none" data-bs-toggle="modal" data-bs-target="#customModal"><i class="fas fa-sliders-h"></i> تخصيص</button>
+            </div>
+        </section>
+        <div class="container-fluid mt-4">
+            <div class="row text-center d-flex align-items-stretch">
+                <div class="col-md-4 mb-4">
+                    <div class="card card-custom p-3">
+                        <div class="card-body d-flex align-items-center justify-content-center"  style="height:182px;">
+                            <img src="../pic/snap.png" alt="Instagram" style="max-width:80%;">
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="col-md-5 mb-4 mt-0">
+                    <div class="card card-custom">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">أفضل المنتجات مبيعاً</h5>
+                            <a href="#">رؤية الكل</a>
+                        </div>
+                        <div class="card-body">
+                            <table class="table text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">الإسم</th>
+                                        <th scope="col">عدد المبيعات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>01</td>
+                                        <td>الإسم</td>
+                                        <td>140</td>
+                                    </tr>
+                                    <tr>
+                                        <td>02</td>
+                                        <td>الإسم</td>
+                                        <td>111</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                        <div class="card card-custom p-3" >
+                            <div class="d-flex justify-content-between">
+                            <p class="mb-0 text-dark col-md-6 fw-9 stat-text" >نسبة المبيعات لكل 1000 زائر</p>
+                            <a href="#" class="report-link">رؤية التقرير</a>
+                             </div>
+                            <h2 class="percentage3" style="color:black">7%</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid3 p-3">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="card  card-margin">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">نسبة الزوار مقارنة بالمبيعات</h5>
+                            <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+                                <div class="chart-container" style="width: 100%; height: 100%;">
+                                    <canvas id="adCampaignChart" style="width: 100%; height: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card  card-margin">
+                        <div class="card-body">
+                            <h5 class="card-title">نسبة الزوار</h5>
+                            <div class="chart-container" style="height:300px;">
+                                <canvas id="visitorsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 p-3 revenu container-fluid3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-end">نسبة المبيعات و الأرباح</h5>
+                    <div class="d-flex justify-content-between align-items-center" style="height: 300px;">
+                        <a href="#" class="report-link text-dark">رؤية التقرير</a>
+                        <div class="chart-container" style="width: 90%; height: 100%;">
+                            <canvas id="salesProfitChart" style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                    </div>
+                    <div id="chart-legend" class="legend-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="customModal" tabindex="-1" aria-labelledby="customModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content1">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customModalLabel">تخصيص صفحة الحملات الإعلانية</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="settings">
+                    <label class="form-check-label" for="settings">
+                        اعدادات
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="details">
+                    <label class="form-check-label" for="details">
+                        التفاصيل
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="campaignDate" checked>
+                    <label class="form-check-label" for="campaignDate">
+                        تاريخ الحملة
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="profits" checked>
+                    <label class="form-check-label" for="profits">
+                        الأرباح
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="platform">
+                    <label class="form-check-label" for="platform">
+                        المنصة
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="operations" checked>
+                    <label class="form-check-label" for="operations">
+                        العمليات
+                    </label>
+                </div>
+                <!-- إضافة الأزرار الأخرى هنا كـ checkbox -->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cost">
+                    <label class="form-check-label" for="cost">
+                        Cost
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="revenue">
+                    <label class="form-check-label" for="revenue">
+                        Revenue
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="profit">
+                    <label class="form-check-label" for="profit">
+                        Profit
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cta">
+                    <label class="form-check-label" for="cta">
+                        CTA
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cpc">
+                    <label class="form-check-label" for="cpc">
+                        CPC
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cpl">
+                    <label class="form-check-label" for="cpl">
+                        CPL
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="purchase">
+                    <label class="form-check-label" for="purchase">
+                        Purchase
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="views">
+                    <label class="form-check-label" for="views">
+                        Views
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="logo">
+                    <label class="form-check-label" for="logo">
+                        Logo
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="orders">
+                    <label class="form-check-label" for="orders">
+                        Orders
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sexe">
+                    <label class="form-check-label" for="sexe">
+                        Sexe
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="adresse">
+                    <label class="form-check-label" for="adresse">
+                        Adresse
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="zone">
+                    <label class="form-check-label" for="zone">
+                        Zone
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="data1">
+                    <label class="form-check-label" for="data1">
+                        بيانات 1
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="data2">
+                    <label class="form-check-label" for="data2">
+                        بيانات 2
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="data3">
+                    <label class="form-check-label" for="data3">
+                        بيانات 3
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="data4">
+                    <label class="form-check-label" for="data4">
+                        بيانات 4
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-success">حفظ</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const body = document.querySelector("body"),
+        sidebar = document.querySelector(".sidebar"),
+        toggle = document.querySelector(".toggle"),
+        profileDropdown = document.querySelector(".profile-dropdown .dropdown-toggle"),
+        contentWrapper = document.querySelector(".content-wrapper");
+
+    // Toggle the sidebar open/close state
+    toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("close");
+        contentWrapper.classList.toggle("sidebar-closed");
+        if (sidebar.classList.contains("close")) {
+            document.querySelector(".navbar").style.marginRight = "78px";
+        } else {
+            document.querySelector(".navbar").style.marginRight = "250px";
+        }
+        document.querySelector(".navbar").style.width = `calc(100% - ${sidebar.classList.contains('close') ? 78 : 250}px)`;
+    });
+
+    // Show/hide the dropdown menu on profile click
+    profileDropdown.addEventListener("click", () => {
+        profileDropdown.parentElement.classList.toggle("show");
+    });
+
+    // Ensure the sidebar is closed on smaller screens
+    if (window.innerWidth <= 768) {
+        sidebar.classList.add("close");
+        contentWrapper.classList.add("sidebar-closed");
+        document.querySelector(".navbar").style.marginRight = "0";
+        document.querySelector(".navbar").style.width = `100%`;
+        sidebar.style.position = 'fixed';
+    } else {
+        sidebar.classList.remove("close");
+        contentWrapper.classList.remove("sidebar-closed");
+        document.querySelector(".navbar").style.marginRight = "250px";
+        document.querySelector(".navbar").style.width = `calc(100% - 250px)`;
+        sidebar.style.position = 'fixed';
+    }
+
+    // Adjust layout on window resize
+    window.addEventListener("resize", () => {
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add("close");
+            contentWrapper.classList.add("sidebar-closed");
+            document.querySelector(".navbar").style.marginRight = "0";
+            document.querySelector(".navbar").style.width = `100%`;
+            sidebar.style.position = 'fixed';
+        } else {
+            sidebar.classList.remove("close");
+            contentWrapper.classList.remove("sidebar-closed");
+            document.querySelector(".navbar").style.marginRight = "250px";
+            document.querySelector(".navbar").style.width = `calc(100% - 250px)`;
+            sidebar.style.position = 'fixed';
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ct = document.getElementById('adCampaignChart').getContext('2d');
+    const adCampaignChart = new Chart(ct, {
+        type: 'bar',
+        data: {
+            labels: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+            datasets: [
+                {
+                    label: 'الزوار',
+                    data: [200, 100, 300, 200, 100, 100, 250],
+                    backgroundColor: '#fefa66', // لون الوردي إنستغرام
+                    borderColor: '#fefa66',
+                    borderWidth: 1,
+                    borderRadius: 10,  
+                    barThickness: 20  
+                },
+                {
+                    label: 'المبيعات',
+                    data: [400, 300, 200, 500, 300, 400, 300],
+                    backgroundColor: 'black', // لون البرتقالي إنستغرام
+                    borderColor: 'black',
+                    borderWidth: 1,
+                    borderRadius: 10,  
+                    barThickness: 20  
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    grid: {
+                        display: false  // إخفاء الخطوط العمودية
+                    },
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        display: true  // إظهار الخطوط الأفقية
+                    },
+                    ticks: {
+                        stepSize: 100,
+                        callback: function(value) {
+                            if (value % 100 === 0 && value <= 500) {
+                                return value;
+                            }
+                            return '';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+
+    const ctv = document.getElementById('salesProfitChart').getContext('2d');
+    const salesProfitChart = new Chart(ctv, {
+        type: 'line',
+        data: {
+            labels: ['5k', '10k', '15k', '20k', '25k', '30k', '35k', '40k', '45k', '50k', '55k', '60k'],
+            datasets: [
+                {
+                    label: 'المبيعات',
+                    data: [40, 60, 80, 40, 70, 50, 100, 70, 50, 90, 80, 40],
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // لون الوردي إنستغرام
+                    borderColor: 'rgba(0, 0, 0, 0.7)',
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'الأرباح',
+                    data: [30, 50, 70, 50, 60, 90, 90, 60, 70, 80, 70, 90],
+                    backgroundColor: '#fefa66', // لون البرتقالي إنستغرام
+                    borderColor: '#fefa66',
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    align: 'end'
+                }
+            }
+        }
+    });
+
+    const ctx = document.getElementById('visitorsChart').getContext('2d');
+    const visitorsChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['20-23 سنة', '18-20 سنة', '35-60 سنة', '26-35 سنة'],
+            datasets: [{
+                data: [40, 30, 20, 10],
+                backgroundColor: ['#ec6b84', 'black', '#fefa66', '#6078d0'],
+                borderColor: ['rgba(225, 48, 108, 1)', 'black', 'rgba(255, 204, 0, 1)', 'rgba(88, 81, 219, 1)'],
+            }]
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

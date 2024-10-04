@@ -21,6 +21,7 @@ return [
                 localhost:3000,
                 localhost:8080,
                 localhost:4200,
+                advert.sa,
                 127.0.0.1,
                 127.0.0.1:4200,
                 127.0.0.1:8080,

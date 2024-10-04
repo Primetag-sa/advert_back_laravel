@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأحصائيات</title>
+    <link rel="icon" href="../pic/logotitle.png" type="image/jpg">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+      
+    </style>
+</head>
+<body class="mb-5">
+
+
+<nav class="sidebar ">
+ 
+    <div class="menu-bar">
+        <div class="menu">
+            <ul class="menu-links">
+                <div class="logoimg">
+                    <img class="logoimg" src="../pic/logo.png" alt="logo" />
+                </div>
+               
+                <li class="nav-link mb-1 ">
+                    <a href="./controlpanel.html">
+                        <i class="bx bx-pie-chart-alt icons"></i>
+                        <span class="text nav-text fw-bold">لوحة التحكم</span>
+                    </a>
+                </li>
+                <li class="nav-link mb-1 ">
+                    <a href="./adminusermangment.html">
+                        <i class="fa-solid fa-user-gear  icons"></i>
+                        <span class="text nav-text fw-bold">إدارة العملاء</span>
+                    </a>
+                </li>
+             
+                <li class="nav-link mb-1">
+                    <a href="./notifiction.html">
+                        <i class="bx bx-bell icons"></i>
+                        <span class="text nav-text fw-bold">الإشعارات</span>
+                    </a>
+                </li>
+                <li class="nav-link mb-1 currentpage">
+                    <a href="./reports.html" >
+                        <i class="bx bx-bar-chart-alt-2 icons"></i>
+                        <span class="text nav-text fw-bold">التقارير</span>
+                    </a>
+                </li>
+                <hr class="my-2">
+  
+                   
+                    <i class="bx bxs-page icons"></i>
+                    <span class="text nav-text fw-bold text-muted m-5">صفحات</span>
+             
+                <li class="nav-link mb-1">
+                    <a href="./facebook.html">
+                        <i class="bx bxl-facebook icons"></i>
+                        <span class="text nav-text fs-6">فيس بوك</span>
+                    </a>
+                </li>
+                <li class="nav-link mb-1">
+                    <a href="./tiktok.html">
+                        <i class="bx bxl-tiktok icons"></i>
+                        <span class="text nav-text fs-6">تيك توك</span>
+                    </a>
+                </li>
+                <li class="nav-link mb-1">
+                    <a href="./snapchat.html">
+                        <i class="bx bxl-snapchat icons"></i>
+                        <span class="text nav-text fs-6">سناب شات</span>
+                    </a>
+                </li>
+                <li class="nav-link mb-1">
+                    <a href="./instagram.html">
+                        <i class="bx bxl-instagram icons"></i>
+                        <span class="text nav-text fs-6">انستغرام</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    
+        <div class="bottom-content">
+            <li class="nav-link">
+                <a href="./settings.html">
+                    <i class="bx bx-cog icons"></i>
+                    <span class="text nav-text fw-bold">الإعدادات</span>
+                </a>
+            </li>
+            <li class="nav-link">
+                <a href="./adminusermangment.html">
+                    <i class="bx bx-log-out icons"></i>
+                    <span class="text nav-text fw-bold">تسجيل الخروج</span>
+                </a>
+            </li>
+        </div>
+    </div>
+</nav>
+
+<div class="content-wrapper">
+    <nav class="navbar navbar-expand-lg navbar-light ">
+        <div class="container-fluid">
+            <form class="d-flex search-bar col-md-4">
+                <input class="form-control me-2 " type="search" placeholder="🔍ابحث عن ..." aria-label="Search">
+            </form>
+            <ul class="navbar-nav ms-auto d-flex w-100 justify-content-between align-items-center">
+                <li class="nav-item">
+                    <div class="notification-container me-5">
+                        <button class="notification-button">
+                            <svg width="25" height="26" viewBox="0 0 25 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0511 0.0881958C7.75816 0.0881958 5.83187 1.81231 5.57865 4.09126L4.52344 13.5882H1.52344C0.69501 13.5882 0.0234375 14.2598 0.0234375 15.0882V16.5882C0.0234375 17.4166 0.69501 18.0882 1.52344 18.0882H22.5234C23.3519 18.0882 24.0234 17.4166 24.0234 16.5882V15.0882C24.0234 14.2598 23.3519 13.5882 22.5234 13.5882H19.5234L18.4682 4.09125C18.215 1.81231 16.2887 0.0881958 13.9957 0.0881958H10.0511Z" fill="#1F1F51"/>
+                                <rect opacity="0.3" x="9.02344" y="19.5882" width="6" height="6" rx="2.25" fill="#FF0000"/>
+                                </svg>                            <span class="notification-count">5</span>
+                        </button>
+                    </div>
+                </li>
+                <li class="nav-item profile-dropdown">
+                    <a class="nav-link custom-dropdown-toggle dropdown-toggle d-flex align-items-end" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="../pic/profile.png" alt="Profile" class="rounded-circle" width="40" height="40">
+                        <span class="profile-name pe-1">
+                            <h5 class="mb-0 d-inline text-dark" style="font-size: 14px;">الاسم الكامل</h5>
+                            <i class="fas fa-chevron-down icon-circle p-1 text-dark"></i>
+                            <p class="mb-0 text-dark text-end" style="font-size: 12px;">ميسر</p>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" >
+                        <a class="dropdown-item" href="./profilepage.html">الملف الشخصي</a>
+                        <a class="dropdown-item" href="./settings.html">الإعدادات</a>
+                        <a class="dropdown-item" href="#">تسجيل الخروج</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid mt-0 ">
+        <section class="control-panel p-3">
+            <div class="filters d-flex flex-column flex-md-row align-items-start align-items-md-center">
+                <div class="filtername mb-2"><i class="fas fa-bars"></i> التقارير</div>
+                <select class="form-select me-md-2 mb-2 mb-md-0">
+                    <option>التقارير</option>
+                </select>
+                <select class="form-select me-md-2 mb-2 mb-md-0">
+                    <option>تاريخ التقارير</option>
+                </select>
+                <select class="form-select me-md-2 mb-2 mb-md-0">
+                    <option>التقارير</option>
+                </select>
+                <button class="btn btn-primary apply-button me-md-2 mb-2 mb-md-0 text-dark">تطبيق</button>
+            </div>
+            <div class="d-flex justify-content-end flex-wrap align-items-start align-items-md-center mt-3 mt-md-0">
+                <button type="button" class="btn btn-dark me-md-2 mb-2 mb-md-0" style="background-color: rgb(17, 212, 189); border:none" data-bs-toggle="modal" data-bs-target="#customModal"><i class="fas fa-sliders-h"></i> تخصيص</button>
+                <button type="button" class="btn btn-danger me-md-2 mb-2 mb-md-0" style="background-color: #363861; border:none;"><i class="fas fa-upload fa-1x mb-2"></i> تصدير البيانات</button>
+            </div>
+        </section>
+        <div class="container-fluid">
+            <div class="row g-0">
+                <div class="col-md-3">
+                    <div class="card card-custom pe-1">
+                        <div class="card-body">
+                            <h5 class="card-title">الأرباح الإجمالية</h5>
+                            <p class="card-text1">134958 ر.س</p>
+                            <p class="text-dark" style="font-size:16px;"><i class="fa-solid fa-arrow-trend-up"></i>
+                                ارتفاع الأرباح بنسبة<span class="text-green">1.8%</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom pe-1">
+                        <div class="card-body">
+                            <h5 class="card-title">الطلبات</h5>
+                            <p class="card-text1">3343 طلبية</p>
+                            <p class="text-dark" style="font-size:16px;"><i class="fa-solid fa-arrow-trend-down"></i>
+                                انخفاض الطلبات بنسبة<span class="text-red">1.8%</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom pe-1">
+                        <div class="card-body">
+                            <h5 class="card-title">معدل تحويل المتجر</h5>
+                            <p class="card-text1">3.5% <span class="text-muted " style="font-size: 14px;">لكل 100 زائر</span></p>
+                            <p class="text-dark" style="font-size:16px;"><i class="fa-solid fa-arrow-trend-down"></i>
+                                انخفاض معدل التحويل بنسبة<span class="text-red">1.8%</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom pe-1">
+                        <div class="card-body">
+                            <h5 class="card-title">عدد الزوار الإجمالي</h5>
+                            <p class="card-text1">999999 زائر</p>
+                            <p class="text-dark" style="font-size:16px;"><i class="fa-solid fa-arrow-trend-down"></i>
+                                انخفاض عدد الزوار بنسبة<span class="text-red">1.8%</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <div class="container-fluid my-4">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">إحصائيات الحملات الإعلانية</h5>
+                            <div class="d-flex justify-content-center align-items-center" style="height: 300px;">
+                                <div class="chart-container" style="width: 100%; height: 100%;">
+                                    <canvas id="adCampaignChart" style="width: 100%; height: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">نسبة الزوار</h5>
+                            <div class="chart-container" style="height:300px;">
+                                <canvas id="visitorsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid mt-4">
+            <div class="row"> <div class="col-md-6">
+                <div class="card" style="height: 350px;">
+                    <div class="card-body">
+                        <h5 class="card-title">إحصائيات المنصات</h5>
+                        <div class="chart-container">
+                            <table class="table text-muted text-center">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">الإسم</th>
+                                        <th scope="col">المنصة</th>
+                                        <th scope="col">عدد المبيعات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>01</td>
+                                        <td>الإسم</td>
+                                        <td>فيس بوك</td>
+                                        <td>140</td>
+                                    </tr>
+                                    <tr>
+                                        <td>02</td>
+                                        <td>الإسم</td>
+                                        <td>تيك توك</td>
+                                        <td>124</td>
+                                    </tr>
+                                    <tr>
+                                        <td>03</td>
+                                        <td>الإسم</td>
+                                        <td>سناب شات</td>
+                                        <td>120</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="col-md-6">
+                    <div class="card" style="height: 350px;">
+                        <div class="card-body">
+                            <h5 class="card-title">إحصائيات العملاء</h5>
+                            <div class="chart-container">
+                                <canvas id="customerStatsChart" ></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div><div class="container-fluid pe-4 mt-5">
+        <h5 class="card-title text-end fw-bold">إحصائيات مواقع التواصل الإجتماعية</h5>
+
+        <div class="row g-0">
+            <div class="col-md-3">
+                <div class="card card-custom pe-1">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="mt-3">سناب شات</h6>
+                            <div class="stat">2000 زائر</div>
+                        </div>
+                        <div class="iconplatform">
+                            <i class="fab fa-snapchat align-items-end" style="color: #FFFC00; font-size:2em;"></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center percentage text-success mt-2">
+                        <p class="text-dark" style="font-size:16px;"><i class="fa-solid fa-arrow-trend-up"></i>
+                            ارتفاع الزوار بنسبة<span class="text-green">1.8%</span></p>                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-custom pe-1">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="mt-3">تيك توك</h6>
+                            <div class="stat">5200 زائر</div>
+                        </div>
+                        <div class="iconplatform">
+                            <i class="fab fa-tiktok icon" style="color: #000000; font-size:2em;"></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center percentage text-danger mt-2">
+                        <p class="text-dark" style="font-size:16px;"><i class="fa-solid fa-arrow-trend-down"></i>
+                            انخفاض عدد الزوار بنسبة<span class="text-red">1.8%</span></p>                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-custom pe-1">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="mt-3">إنستغرام</h6>
+                            <div class="stat">2700 زائر</div>
+                        </div>
+                        <div class="iconplatform">
+                            <i class="fab fa-instagram icon" style="color: #E1306C;"></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center percentage text-success mt-2">
+                        <p class="text-dark" style="font-size:16px;"><i class="fa-solid fa-arrow-trend-up"></i>
+                            ارتفاع الزوار بنسبة<span class="text-green">1.8%</span></p>                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-custom pe-1">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="mt-3">فيس بوك</h6>
+                            <div class="stat">1000 زائر</div>
+                        </div>
+                        <div class="iconplatform">
+                            <i class="fab fa-facebook icon" style="color: #1877F2;"></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center percentage text-success mt-2">
+                        <p class="text-dark" style="font-size:16px;"><i class="fa-solid fa-arrow-trend-up"></i>
+                            ارتفاع الزوار بنسبة<span class="text-green">1.8%</span></p>                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="customModal" tabindex="-1" aria-labelledby="customModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content1">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customModalLabel">تخصيص صفحة الحملات الإعلانية</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="settings">
+                    <label class="form-check-label" for="settings">
+                        اعدادات
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="details">
+                    <label class="form-check-label" for="details">
+                        التفاصيل
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="campaignDate" checked>
+                    <label class="form-check-label" for="campaignDate">
+                        تاريخ الحملة
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="profits" checked>
+                    <label class="form-check-label" for="profits">
+                        الأرباح
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="platform">
+                    <label class="form-check-label" for="platform">
+                        المنصة
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="operations" checked>
+                    <label class="form-check-label" for="operations">
+                        العمليات
+                    </label>
+                </div>
+                <!-- إضافة الأزرار الأخرى هنا كـ checkbox -->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cost">
+                    <label class="form-check-label" for="cost">
+                        Cost
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="revenue">
+                    <label class="form-check-label" for="revenue">
+                        Revenue
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="profit">
+                    <label class="form-check-label" for="profit">
+                        Profit
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cta">
+                    <label class="form-check-label" for="cta">
+                        CTA
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cpc">
+                    <label class="form-check-label" for="cpc">
+                        CPC
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cpl">
+                    <label class="form-check-label" for="cpl">
+                        CPL
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="purchase">
+                    <label class="form-check-label" for="purchase">
+                        Purchase
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="views">
+                    <label class="form-check-label" for="views">
+                        Views
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="logo">
+                    <label class="form-check-label" for="logo">
+                        Logo
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="orders">
+                    <label class="form-check-label" for="orders">
+                        Orders
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sexe">
+                    <label class="form-check-label" for="sexe">
+                        Sexe
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="adresse">
+                    <label class="form-check-label" for="adresse">
+                        Adresse
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="zone">
+                    <label class="form-check-label" for="zone">
+                        Zone
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="data1">
+                    <label class="form-check-label" for="data1">
+                        بيانات 1
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="data2">
+                    <label class="form-check-label" for="data2">
+                        بيانات 2
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="data3">
+                    <label class="form-check-label" for="data3">
+                        بيانات 3
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="data4">
+                    <label class="form-check-label" for="data4">
+                        بيانات 4
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-success">حفظ</button>
+                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../scripts.js"></script>
+<script>
+    const ct = document.getElementById('adCampaignChart').getContext('2d');
+    const adCampaignChart = new Chart(ct, {
+        type: 'bar',
+        data: {
+            labels: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+            datasets: [
+                {
+                    label: 'CPC',
+                    data: [200, 100, 300, 200, 100, 100, 250],
+                    backgroundColor: 'rgba(0, 255, 255, 0.6)',
+                    borderColor: 'rgba(0, 255, 255, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10,  
+                    barThickness: 20  
+                },
+                {
+                    label: 'CPL',
+                    data: [400, 300, 200, 500, 300, 400, 300],
+                    backgroundColor: 'rgba(0, 0, 255, 0.6)',
+                    borderColor: 'rgba(0, 0, 255, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10,  
+                    barThickness: 20  
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    grid: {
+                        display: false  // إخفاء الخطوط العمودية
+                    },
+                  
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        display: true  // إظهار الخطوط الأفقية
+                    },
+                    ticks: {
+                        stepSize: 100,
+                        callback: function(value) {
+                            if (value % 100 === 0 && value <= 500) {
+                                return value;
+                            }
+                            return '';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+
+    const ctxCustomerStats = document.getElementById('customerStatsChart').getContext('2d');
+        const customerStatsChart = new Chart(ctxCustomerStats, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'عميل مكرر',
+                        data: [200, 300, 250, 200, 150, 100, 150, 200, 250, 300],
+                        borderColor: 'red',
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'عميل جديد',
+                        data: [100, 200, 150, 200, 150, 100, 200, 250, 200, 250, 200, 150],
+                        borderColor: 'green',
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'عميل دائم',
+                        data: [300, 250, 200, 150, 100, 150, 200, 250, 300, 250, 200, 150],
+                        borderColor: 'purple',
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false  // إخفاء الخطوط العمودية
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: false  // إخفاء الخطوط الأفقية
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

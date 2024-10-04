@@ -19,4 +19,5 @@ Route::get('/snapchat/callback', [SnapchatController::class, 'handleCallback'])-
 Route::get('/snapchat/ad-data', [SnapchatController::class, 'showAdData'])->name('snapchat.adData');
 
 
+
 // Route::get('/', [HomeController::class, 'index'])->name('home');

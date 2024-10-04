@@ -1,329 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="icon" href="../pic/logotitle.png" type="image/jpg">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    <link rel="stylesheet" href="../style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-</head>
-<body>
-   
-
-    <nav class="sidebar ">
-    
-        <div class="menu-bar">
-            <div class="menu">
-                <ul class="menu-links">
-                    <div class="logoimg">
-                        <img class="logoimg" src="../pic/logo.png" alt="logo" />
-                    </div>
-                   
-                    <li class="nav-link mb-1 currentpage">
-                        <a href="./index.html">
-                            <i class="bx bx-pie-chart-alt icons"></i>
-                            <span class="text nav-text fw-bold">لوحة التحكم</span>
-                        </a>
-                    </li>
-                 
-                    <li class="nav-link mb-1">
-                        <a href="./notifictions.html">
-                            <i class="bx bx-bell icons"></i>
-                            <span class="text nav-text fw-bold">الإشعارات</span>
-                        </a>
-                    </li>
-                    <li class="nav-link mb-1 ">
-                        <a href="./reports.html" >
-                            <i class="bx bx-bar-chart-alt-2 icons"></i>
-                            <span class="text nav-text fw-bold">التقارير</span>
-                        </a>
-                    </li>
-                    <hr class="my-2">
-      
-                       
-                       
-        
-            <div class="bottom-content">
-                <li class="nav-link">
-                    <a href="./adminsittingpage.html">
-                        <i class="bx bx-cog icons"></i>
-                        <span class="text nav-text fw-bold">الإعدادات</span>
-                    </a>
-                </li>
-                <li class="nav-link">
-                    <a href="#">
-                        <i class="bx bx-log-out icons"></i>
-                        <span class="text nav-text fw-bold">تسجيل الخروج</span>
-                    </a>
-                </li>
-            </div>
-        </div>
-    </nav>
-
-<div class="content-wrapper">
-    <nav class="navbar navbar-expand-lg navbar-light ">
-        <div class="container-fluid">
-            <form class="d-flex search-bar col-md-4">
-                <input class="form-control me-2 " type="search" placeholder="🔍ابحث عن ..." aria-label="Search">
-            </form>
-            <ul class="navbar-nav ms-auto d-flex w-100 justify-content-between align-items-center">
-                <li class="nav-item">
-                    <div class="notification-container me-5">
-                        <button class="notification-button">
-                            <svg width="25" height="26" viewBox="0 0 25 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0511 0.0881958C7.75816 0.0881958 5.83187 1.81231 5.57865 4.09126L4.52344 13.5882H1.52344C0.69501 13.5882 0.0234375 14.2598 0.0234375 15.0882V16.5882C0.0234375 17.4166 0.69501 18.0882 1.52344 18.0882H22.5234C23.3519 18.0882 24.0234 17.4166 24.0234 16.5882V15.0882C24.0234 14.2598 23.3519 13.5882 22.5234 13.5882H19.5234L18.4682 4.09125C18.215 1.81231 16.2887 0.0881958 13.9957 0.0881958H10.0511Z" fill="#1F1F51"/>
-                                <rect opacity="0.3" x="9.02344" y="19.5882" width="6" height="6" rx="2.25" fill="#FF0000"/>
-                                </svg>
-                               <span class="notification-count">5</span>
-                        </button>
-                    </div>
-                </li>
-                <li class="nav-item profile-dropdown">
-                    <a class="nav-link custom-dropdown-toggle dropdown-toggle d-flex align-items-end" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="../pic/profile.png" alt="Profile" class="rounded-circle" width="40" height="40">
-                        <span class="profile-name pe-1">
-                            <h5 class="mb-0 d-inline text-dark" style="font-size: 14px;">الاسم الكامل</h5>
-                            <i class="fas fa-chevron-down icon-circle p-1 text-dark"style="font-size: 12px;"></i>
-                            <p class="mb-0 text-dark text-end" style="font-size: 12px;">ميسر</p>
-                        </span>
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown" >
-                        <a class="dropdown-item" href="./adminuserprofile.html">الملف الشخصي</a>
-                        <a class="dropdown-item" href="./adminsittingpage.html">الإعدادات</a>
-                        <a class="dropdown-item" href="#">تسجيل الخروج</a>
-                    </div>
-                </li>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <div class="container-fluid  p-4">
-        <section class="control-panel p-3">
-            <div class="filters d-flex flex-column flex-md-row align-items-start align-items-md-center col-md-8">
-                <div class="filtername mb-2"><i class="fa-solid fa-signal"></i>لوحة التحكم </div>
-                <select class="form-select me-md-2 mb-2 mb-md-0">
-                    <option>عدد الطلبات</option>
-                </select>
-                <select class="form-select me-md-2 mb-2 mb-md-0">
-                    <option>تاريخ الانضمام</option>
-                </select>
-                <select class="form-select me-md-2 mb-2 mb-md-0">
-                    <option>الفعالة</option>
-                </select>
-                <button class="btn btn-primary apply-button  text-dark align-items-md-end ms-md-auto">تطبيق</button>
-            </div>
-            
-            <div class="d-flex justify-content-end flex-wrap align-items-start align-items-md-center mt-3 mt-md-0">
-               <a href="./adduser.html"><button type="submit" class="btn btn-dark me-md-2 mb-2 mb-md-0" style="background-color:  #363861; border:none"><i class="fa-solid fa-user-plus"></i> إضافة عميل</button></a>
-                <button type="button" class="btn btn-danger me-md-2 mb-2 mb-md-0" style="background-color: #363861; border:none;"><i class="fas fa-chart-bar"></i> عرض التقارير</button>
-            </div>
-        </section>
-      
-        <section class="clients-list">
-            <table class="table clinte-mange">
-                <thead>
-                    <tr>
-                        <th>المعرف</th>
-                        <th>شعار العميل</th>
-                        <th>الاسم</th>
-                        <th>البريد الإلكتروني</th>
-                        <th>تاريخ الانضمام</th>
-                        <th>الحملات</th>
-                        <th>إعدادات</th>
-                    </tr>
-                </thead>
-                <tbody id="clients-table-body">
-                    <tr>
-                        <td>123</td>
-                        <td><img src="../pic/clintepic.png" alt="Logo" class="img-fluid rounded-circle" width="40" height="40"></td>
-                        <td>اسم العميل</td>
-                        <td>email@example.com</td>
-                        <td>01/01/2022</td>
-                        <td>5</td>
-                        <td data-label="إعدادات">
-                            <div class="dropdown">
-                                <button class="btn dropdown-toggle custom-dropdown-toggle" type="button" id="dropdownMenuButton${client.id}" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bx bx-chevron-down"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${client.id}">
-                                    <li><a class="dropdown-item" href="#" onclick="confirmDeleteClient('${client.id}')"><i class="fas fa-trash-alt me-2 text-danger"></i>حذف</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="cancelClient('${client.id}')"><i class="fas fa-ban me-2 text-warning"></i>إغلاق</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="editClient('${client.id}')"><i class="fas fa-edit me-2"></i>تعديل</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                        
-                        <!-- Modal Confirmation -->
-                        <div class="modal col-md-5 " id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content1">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteConfirmationModalLabel">تأكيد الحذف</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        هل أنت متأكد من أنك تريد حذف هذا العميل؟
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                        <button type="button" class="btn btn-danger" id="confirmDeleteButton">حذف</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-
-                    </tr>
-                    <!-- المزيد من الصفوف هنا -->
-                </tbody>
-            </table>
-            <div class="pagination">
-                <button onclick="prevPage()" id="prev-button" class="btn btn-primary">السابق</button>
-                <span id="page-info"></span>
-                <button onclick="nextPage()" id="next-button" class="btn btn-primary">التالي</button>
-            </div>
-        </section>
-    </div>
-
-   
-    <section class="statistics container-fluid8 my-4 pe-4 ps-4 pt-5">
-        <h2 class="mb-4 text-center">إحصائيات أفضل عملاء الوكالة</h2>
-        <div class="row">
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="card-title">اسم العميل</div>
-                        <img src="../pic/clintepic.png" alt="Logo" class="img-fluid rounded-circle" width="40" height="40">
-                    </div>
-                    <div class="card-body">
-                        1000 زائر
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <i class="fa-solid fa-arrow-trend-up" style="font-size:16px;"></i>
-                        <p class="mb-0">إرتفاع الزوار بنسبة</p>
-                        <span class="percentage">1.8%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="card-title">اسم العميل</div>
-                        <img src="../pic/clintepic.png" alt="Logo" class="img-fluid rounded-circle" width="40" height="40">
-                    </div>
-                    <div class="card-body">
-                        1000 زائر
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <i class="fa-solid fa-arrow-trend-up" style="font-size:16px;"></i>
-                        <p class="mb-0">إرتفاع الزوار بنسبة</p>
-                        <span class="percentage">1.8%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="card-title">اسم العميل</div>
-                        <img src="../pic/clintepic.png" alt="Logo" class="img-fluid rounded-circle" width="40" height="40">
-                    </div>
-                    <div class="card-body">
-                        1000 زائر
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <i class="fa-solid fa-arrow-trend-up" style="font-size:16px;"></i>
-                        <p class="mb-0">إرتفاع الزوار بنسبة</p>
-                        <span class="percentage">1.8%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="card-title">اسم العميل</div>
-                        <img src="../pic/clintepic.png" alt="Logo" class="img-fluid rounded-circle" width="40" height="40">
-                    </div>
-                    <div class="card-body">
-                        1000 زائر
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <i class="fa-solid fa-arrow-trend-up" style="font-size:16px;"></i>
-                        <p class="mb-0">إرتفاع الزوار بنسبة</p>
-                        <span class="percentage">1.8%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="card-title">اسم العميل</div>
-                        <img src="../pic/clintepic.png" alt="Logo" class="img-fluid rounded-circle" width="40" height="40">
-                    </div>
-                    <div class="card-body">
-                        1000 زائر
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <i class="fa-solid fa-arrow-trend-up" style="font-size:16px;"></i>
-                        <p class="mb-0">إرتفاع الزوار بنسبة</p>
-                        <span class="percentage">1.8%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="card-title">اسم العميل</div>
-                        <img src="../pic/clintepic.png" alt="Logo" class="img-fluid rounded-circle" width="40" height="40">
-                    </div>
-                    <div class="card-body">
-                        1000 زائر
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <i class="fa-solid fa-arrow-trend-up" style="font-size:16px;"></i>
-                        <p class="mb-0">إرتفاع الزوار بنسبة</p>
-                        <span class="percentage">1.8%</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="card-title">اسم العميل</div>
-                        <img src="../pic/clintepic.png" alt="Logo" class="img-fluid rounded-circle" width="40" height="40">
-                    </div>
-                    <div class="card-body">
-                        1000 زائر
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <i class="fa-solid fa-arrow-trend-up" style="font-size:16px;"></i>
-                        <p class="mb-0">إرتفاع الزوار بنسبة</p>
-                        <span class="percentage">1.8%</span>
-                    </div>
-                </div>
-              
-            </div>
-         
-            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-                <div class=" d-flex justify-content-between align-items-center">
-                  <a href="./adduser.html">  <button class="btn text-light mt-4" style="background-color: #363861; border:none;"><i class="fa-solid fa-user-plus"></i>&nbsp;&nbsp;إضافة عملاء</button>
-                </a></div>
-            </div>
-    </section>
-</div>
-
-<script src="../scripts.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
-</body>
-</html>

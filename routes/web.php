@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\SnapchatController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +17,6 @@ Route::get('/snapchat/callback', [SnapchatController::class, 'handleCallback'])-
 
 // Step 4: Show Advertisement Data
 Route::get('/snapchat/ad-data', [SnapchatController::class, 'showAdData'])->name('snapchat.adData');
+
+
+// Route::get('/', [HomeController::class, 'index'])->name('home');

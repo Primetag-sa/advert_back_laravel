@@ -120,11 +120,12 @@ class UserController extends Controller
         }
 
         if($role == 'agent') {
-            $agency_id = User::find($request->agencyId)->agency->id;
+            if($request->from =='agency')
+            // $agency_id = User::find($request->agencyId)?->agency?->id;
             $agency = Agent::create([
                 'name'=>$request->agencyName,
                 'user_id'=>$user->id,
-                'agency_id'=>$agency_id,
+                'agency_id'=>$request->from =='agency'? User::find($request->agencyId)?->agency?->id :$request->agencyId,
                 'tiktok_url'=>$request->tiktok_url,
                 'address'=>$request->address,
                 'facebook_url'=>$request->facebook_url,

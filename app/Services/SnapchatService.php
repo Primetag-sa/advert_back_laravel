@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\SnapchatAd;
 use Illuminate\Support\Facades\Http;
-use App\Models\SnapchatAd; // Assume you have an SnapchatAd model for saving data
+
+// Assume you have an SnapchatAd model for saving data
 
 class SnapchatService
 {

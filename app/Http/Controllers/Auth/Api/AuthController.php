@@ -123,6 +123,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+
         // For token-based authentication (like Passport or Sanctum)
         if (Auth::check()) {
             $user = Auth::user();

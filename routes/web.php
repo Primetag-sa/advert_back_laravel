@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Auth\Api\TwitterAuthController;
 use App\Http\Controllers\SnapchatController;
 use Illuminate\Support\Facades\Route;
 

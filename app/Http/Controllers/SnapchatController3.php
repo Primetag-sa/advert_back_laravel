@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\SnapchatService;
 use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
-// use Laravel\Socialite\Facades\Socialite;
 
 class SnapchatController extends Controller
 {
@@ -17,10 +15,9 @@ class SnapchatController extends Controller
     }
 
     // Step 1: Redirect to Snapchat for authorization
-    
     public function redirectToSnapchat()
     {
-        return \Laravel\Socialite\Facades\Socialite::driver('snapchat')->redirect();
+        return $this->snapchatService->redirectToSnapchat();
     }
 
     // Step 2: Handle the callback from Snapchat

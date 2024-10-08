@@ -35,10 +35,17 @@ return [
         'api_secret' => env('TWITTER_API_SECRET'),
     ],
 
+    // 'snapchat' => [
+    //     'client_id' => env('SNAPCHAT_CLIENT_ID'),
+    //     'client_secret' => env('SNAPCHAT_CLIENT_SECRET'),
+    //     'redirect_uri' => env('SNAPCHAT_REDIRECT_URI'),
+    // ],
+
     'snapchat' => [
         'client_id' => env('SNAPCHAT_CLIENT_ID'),
         'client_secret' => env('SNAPCHAT_CLIENT_SECRET'),
-        'redirect_uri' => env('SNAPCHAT_REDIRECT_URI'),
+        'redirect' => env('SNAPCHAT_REDIRECT_URI'),
     ],
+
 
 ];

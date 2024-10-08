@@ -11,7 +11,9 @@
         "laravel/framework": "^10.10",
         "laravel/passport": "^12.2",
         "laravel/sanctum": "^3.3",
-        "laravel/tinker": "^2.8"
+        "laravel/socialite": "^5.16",
+        "laravel/tinker": "^2.8",
+        "socialiteproviders/snapchat": "^4.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

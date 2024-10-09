@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Services\SnapchatService;
+use App\Services\TwitterService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 use Laravel\Socialite\Facades\Socialite;
-// use Laravel\Socialite\Facades\Socialite;
 
 class SnapchatController extends Controller
 {
@@ -20,14 +23,14 @@ class SnapchatController extends Controller
     
     public function redirectToSnapchat()
     {
-        return \Laravel\Socialite\Facades\Socialite::driver('snapchat')->redirect();
+        return Socialite::driver('snapchat')->stateless()->redirect(); // No need to manage state manually
     }
 
     // Step 2: Handle the callback from Snapchat
     public function handleCallback(Request $request)
     {
-        $adData = $this->snapchatService->handleCallback($request);
-        return redirect()->route('snapchat.adData')->with('success', 'Data retrieved and saved successfully!');
+        $user = Socialite::driver('snapchat')->stateless()->user();
+        return response()->json($user);
     }
 
     // Step 3: Show Advertisement Data

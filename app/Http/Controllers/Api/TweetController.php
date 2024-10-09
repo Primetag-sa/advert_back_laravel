@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\TwitterService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class TweetController extends Controller
 {
@@ -16,9 +17,14 @@ class TweetController extends Controller
         $this->twitterService = $twitterService;
     }
 
-    public function getUserTweets()
+    public function getUserTweets(Request $request)
     {
-        $user = Auth::user();
-        return response()->json($this->twitterService->getUserTweets($user->twitter_access_token, $user->twitter_account_id));
+
+        $user = null;
+        if ($request->query('token')) {
+            $user = PersonalAccessToken::findToken($request->query('token'))->tokenable;
+        }
+
+        return response()->json($this->twitterService->getUserTweets($user->twitter_access_token, $user->twitter_access_token_secret));
     }
 }

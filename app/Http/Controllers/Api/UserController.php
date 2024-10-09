@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Agency;
 use App\Models\Agent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -59,6 +60,8 @@ class UserController extends Controller
 
     public function agencyAgents(Request $request)
     {
+
+
         $role = $request->role;
         $status = $request->status;
 

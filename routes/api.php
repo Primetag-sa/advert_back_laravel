@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\TiktokController;
 use App\Http\Controllers\Api\TweetController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\Api\AuthController;
+use App\Http\Controllers\Auth\Api\TicktokAuthController;
+use App\Http\Controllers\Auth\Api\TwitterAdsAuthController;
 use App\Http\Controllers\Auth\Api\TwitterAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/twitter/tweets', [TweetController::class, 'getUserTweets']);
+Route::get('/tiktok/user', [TiktokController::class, 'getUserInfo']);
 
 Route::apiResource('users', UserController::class);
 Route::get('agency/agents', [UserController::class, 'agencyAgents']);
@@ -49,7 +53,10 @@ Route::post('/profile/edit', [AuthController::class, 'editProfile']);
 Route::get('/logout', [AuthController::class, 'logout']);
 Route::get('/auth/twitter', [TwitterAuthController::class, 'redirectToTwitter']);
 Route::get('/auth/twitter/callback', [TwitterAuthController::class, 'handleTwitterCallback'])->name('twitter.callback');
-
+Route::get('/auth/tiktok', [TicktokAuthController::class, 'redirectToTikTok']);
+Route::get('/auth/tiktok/callback', [TicktokAuthController::class, 'handleTikTokCallback']);
+Route::get('/auth/ads/twitter', [TwitterAdsAuthController::class, 'redirectToTwitter']);
+Route::get('/auth/ads/twitter/callback', [TwitterAdsAuthController::class, 'handleTwitterCallback'])->name('twitter.ads.callback');
 
 // Routes that require authentication
 Route::middleware('auth:api')->group(function () {

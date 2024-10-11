@@ -14,7 +14,8 @@
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.8",
-        "socialiteproviders/snapchat": "^4.1"
+        "socialiteproviders/snapchat": "^4.1",
+        "socialiteproviders/tiktok": "^5.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

@@ -23,8 +23,11 @@ use App\Http\Controllers\Api\SnapchatController;
 |
 */
 
-Route::get('auth/snapchat', [SnapchatController::class, 'redirectToSnapchat']);
-Route::get('auth/snapchat/callback', [SnapchatController::class, 'handleSnapchatCallback']);
+Route::get('/auth/snapchat', [SnapchatController::class, 'redirectToSnapchat'])->name('snapchat.redirect');
+Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.redirect');
+
+/* Route::get('auth/snapchat', [SnapchatController::class, 'redirectToSnapchat']);
+Route::get('auth/snapchat/callback', [SnapchatController::class, 'handleSnapchatCallback']); */
 Route::get('/snapchat/ad-data', [SnapchatController::class, 'getAdData']);
 Route::get('/snapchat/ads', [SnapchatController::class, 'retrieveAds']);
 Route::get('/save-data/{id}',[SnapchatController::class, 'saveData'])->name('saveData');

@@ -104,6 +104,7 @@ class TwitterAdsAuthController extends Controller
                 'headers' => [
                     'Authorization' => $oauthHeader,
                 ],
+                'timeout' => 60,
             ]);
 
             // Afficher la réponse

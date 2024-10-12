@@ -52,6 +52,14 @@ return [
         'client_secret' => env('SNAPCHAT_CLIENT_SECRET'),
         'redirect' => env('SNAPCHAT_REDIRECT_URI'),
     ],
+
+    'snapchat_marketing_api' => [
+    'client_id' => env('SNAPCHAT_CLIENT_ID'),
+    'client_secret' => env('SNAPCHAT_CLIENT_SECRET'),
+    'redirect' => env('SNAPCHAT_REDIRECT_URI'),
+],
+
+
     'tiktok' => [
         'client_id' => env('TIKTOK_CLIENT_KEY'),
         'client_secret' => env('TIKTOK_CLIENT_SECRET'),

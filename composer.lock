@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "766f7aebc919139a2cfbb006d36db22e",
+    "content-hash": "2c3a34ea155ce3e9271c8636c21bb013",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -7162,6 +7162,50 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "yz/laravel-socialite-snapchat-marketing-api",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yz-/laravel-socialite-snapchat-marketing-api.git",
+                "reference": "7d6b6ddca222539fbc97ce780db19e65b8f89c89"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yz-/laravel-socialite-snapchat-marketing-api/zipball/7d6b6ddca222539fbc97ce780db19e65b8f89c89",
+                "reference": "7d6b6ddca222539fbc97ce780db19e65b8f89c89",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.2 || ^8.0",
+                "socialiteproviders/manager": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\SnapchatMarketingApi\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "yz",
+                    "email": "yassine.zayane@tagcommander.com"
+                }
+            ],
+            "description": "Snapchat Marketing API OAuth2 Provider for Laravel Socialite",
+            "homepage": "https://github.com/yz-/laravel-socialite-snapchat-marketing-api",
+            "support": {
+                "docs": "",
+                "issues": "",
+                "source": ""
+            },
+            "time": "2022-03-28T08:40:09+00:00"
         }
     ],
     "packages-dev": [

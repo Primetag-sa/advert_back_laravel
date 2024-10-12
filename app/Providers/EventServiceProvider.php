@@ -20,8 +20,11 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
+
         SocialiteWasCalled::class => [
             // ... other providers
+            'SocialiteProviders\SnapchatMarketingApi\SnapchatMarketingApiExtendSocialite@handle',
             TikTokExtendSocialite::class.'@handle',
         ],
     ];

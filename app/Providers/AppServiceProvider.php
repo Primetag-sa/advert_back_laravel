@@ -27,6 +27,14 @@ class AppServiceProvider extends ServiceProvider
             $socialiteWasCalled->extendSocialite('snapchat', \SocialiteProviders\Snapchat\Provider::class);
         });
 
+        Event::listen(SocialiteWasCalled::class, function ($socialiteWasCalled) {
+            $socialiteWasCalled->extendSocialite('snapchat_marketing_api', \SocialiteProviders\SnapchatMarketingApi\SnapchatMarketingApiExtendSocialite::class);
+        });
+
+        // \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+        //     'SocialiteProviders\SnapchatMarketingApi\SnapchatMarketingApiExtendSocialite@handle',
+        // ],
+
         Socialite::extend('snapchat', function ($app) {
             $config = $app['config']['services.snapchat'];
     
@@ -37,5 +45,6 @@ class AppServiceProvider extends ServiceProvider
                 $config['redirect']
             );
         });
+        
     }
 }

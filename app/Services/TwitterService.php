@@ -28,7 +28,7 @@ class TwitterService
                 $accessToken,
                 $secretToken
             );
-            $twitterUser = $connection->get('users/by/username/yassineelmaarou');
+            $twitterUser = $connection->get('users/me');
 
             if (property_exists($twitterUser,'data')) {
                 return $twitterUser->data;

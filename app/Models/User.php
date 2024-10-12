@@ -33,9 +33,20 @@ class User extends Authenticatable
         'active_at',
         'token',
         'username',
+        'snapchat_id',
+        'snapchat_name',
+        'snapchat_email',
+        'snapchat_avatar',
+        'snapchat_display_name',
+        'snapchat_member_status',
+        'snapchat_username',
 
+        'snapchat_access_token',
+         'snapchat_refresh_token', 
+         'snapchat_organization_id', 
+          'snapchat_token_expires_at'
     ];
-
+    
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -87,6 +98,11 @@ class User extends Authenticatable
     public function sentNotifications()
     {
         return $this->hasMany(Notification::class, 'sender_id');
+    }
+
+    public function snapchatAccounts()
+    {
+        return $this->hasMany(SnapchatAccount::class,);
     }
 
     public function receivedNotifications()

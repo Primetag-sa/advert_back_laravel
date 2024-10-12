@@ -25,7 +25,16 @@ use App\Http\Controllers\Api\SnapchatController;
 
 Route::get('auth/snapchat', [SnapchatController::class, 'redirectToSnapchat']);
 Route::get('auth/snapchat/callback', [SnapchatController::class, 'handleSnapchatCallback']);
+Route::get('/snapchat/ad-data', [SnapchatController::class, 'getAdData']);
+Route::get('/snapchat/ads', [SnapchatController::class, 'retrieveAds']);
+Route::get('/save-data/{id}',[SnapchatController::class, 'saveData'])->name('saveData');
+Route::get('/get-data/{id}',[SnapchatController::class, 'getData'])->name('getData');
 
+// Route::get('/get-ads', function () {
+
+// })->name('get.snapchat.ads');
+
+// 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -55,8 +55,8 @@ Route::get('/auth/twitter', [TwitterAuthController::class, 'redirectToTwitter'])
 Route::get('/auth/twitter/callback', [TwitterAuthController::class, 'handleTwitterCallback'])->name('twitter.callback');
 Route::get('/auth/tiktok', [TicktokAuthController::class, 'redirectToTikTok']);
 Route::get('/auth/tiktok/callback', [TicktokAuthController::class, 'handleTikTokCallback']);
-Route::get('/auth/ads/twitter', [TwitterAdsAuthController::class, 'redirectToTwitter']);
-Route::get('/auth/ads/twitter/callback', [TwitterAdsAuthController::class, 'handleTwitterCallback'])->name('twitter.ads.callback');
+Route::get('/ads/accounts/twitter', [TwitterAdsAuthController::class, 'getAdsAccounts']);
+Route::get('/ads/account/twitter', [TwitterAdsAuthController::class, 'getOneAccount']);
 
 // Routes that require authentication
 Route::middleware('auth:api')->group(function () {

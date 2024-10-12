@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class TwitterAdsAuthController extends Controller
 {
@@ -50,45 +51,14 @@ class TwitterAdsAuthController extends Controller
         return $header;
     }
 
-    public function redirectToTwitter(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+    public function getAdsAccounts(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
 
-        $connection = new TwitterOAuth(
-            config('services.twitter.api_key'),
-            config('services.twitter.api_secret')
-        );
-
-        $state = Str::random(40);
-
-        $request_token = $connection->oauth('oauth/request_token', [
-            'oauth_callback' => route('twitter.ads.callback').'?state='.$state.'&token='.$request->query('token').'&url='.$request->query('url'),
-        ]);
-
-        if (! isset($request_token['oauth_token']) || ! isset($request_token['oauth_token_secret'])) {
-            $redirectUrl = config('app.url_frontend').$request->query('url').'?status=failure&step=auth';
-
-            return redirect($redirectUrl);
-        }
-
-        TwitterState::create([
-            'state' => $state,
-            'oauth_token' => $request_token['oauth_token'],
-            'oauth_token_secret' => $request_token['oauth_token_secret'],
-        ]);
-
-        $url = $connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]);
-
-        return redirect($url);
-    }
-
-    public function handleTwitterCallback(Request $request)
-    {
-        $state = $request->query('state');
         $token = $request->query('token');
         $url = $request->query('url');
 
         // Vérifier si un token utilisateur est présent
-        /*$user = null;
+        $user = null;
         if ($token) {
             $personalAccessToken = PersonalAccessToken::findToken($token);
             if ($personalAccessToken) {
@@ -99,28 +69,21 @@ class TwitterAdsAuthController extends Controller
 
                 return redirect($redirectUrl);
             }
-        }*/
-
-        // Vérifier l'état Twitter
-        $twitterState = TwitterState::where('state', $state)->first();
-
-        if (! $twitterState) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
-            return redirect($redirectUrl);
         }
 
-
+        // Vérifier si l'utilisateur a des tokens d'accès
+        if (!$user || !$user->twitter_access_token || !$user->twitter_access_token_secret) {
+            // Rediriger vers le processus d'autorisation si pas de tokens
+            return redirect()->route('twitter.ads.redirect'); // ou l'URL appropriée
+        }
 
         // URL de l'API Twitter Ads
         $url = 'https://ads-api-sandbox.twitter.com/12/accounts';
 
-
         // Paramètres OAuth de base
         $oauthParams = [
             'oauth_consumer_key' => config('services.twitter.api_key'),
-            'oauth_token' =>  config('services.twitter.token'),
+            'oauth_token' => $user->twitter_access_token, // Utiliser le token d'accès stocké
             'oauth_nonce' => $this->generateNonce(),
             'oauth_timestamp' => time(),
             'oauth_signature_method' => 'HMAC-SHA1',
@@ -128,11 +91,10 @@ class TwitterAdsAuthController extends Controller
         ];
 
         // Générer la signature OAuth
-        $oauthParams['oauth_signature'] = $this->buildOAuthSignature('GET', $url, $oauthParams, config('services.twitter.api_secret'),   config('services.twitter.token_secret'),);
+        $oauthParams['oauth_signature'] = $this->buildOAuthSignature('GET', $url, $oauthParams, config('services.twitter.api_secret'), $user->twitter_access_token_secret);
 
         // Créer les en-têtes OAuth
         $oauthHeader = $this->buildOAuthHeader($oauthParams);
-
 
         // Utiliser Guzzle pour envoyer la requête avec les en-têtes OAuth
         $client = new Client();
@@ -142,104 +104,81 @@ class TwitterAdsAuthController extends Controller
                 'headers' => [
                     'Authorization' => $oauthHeader,
                 ],
-
             ]);
 
             // Afficher la réponse
             $responseBody = $response->getBody()->getContents();
-            $data=json_decode($responseBody)->data;
-            dd($data);
+            $data = json_decode($responseBody)->data;
+            return response()->json($data, 200);
         } catch (RequestException $e) {
             // Gérer les erreurs de requête
-
-            dd($e);
-
+            return response()->json(['error' => 'حدث خطأ أثناء استخراج البيانات'], 402);
         }
+    }
 
+    public function getOneAccount(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+    {
 
-        // Connexion à Twitter avec les tokens
-        $connection = new TwitterOAuth(
-            config('services.twitter.api_key'),
-            config('services.twitter.api_secret'),
-            $twitterState->oauth_token,
-            $twitterState->oauth_token_secret
-        );
-
-
-        $connection->host = 'https://ads-api.twitter.com';
-        $response = $connection->get('11/accounts');
-
-        if ($connection->getLastHttpCode() == 200 && !empty($response->data)) {
-            // Comptes publicitaires récupérés avec succès
-            dd($response->data);
-        } elseif ($connection->getLastHttpCode() == 200 && empty($response->data)) {
-            // Pas de comptes publicitaires associés à cet utilisateur
-            dd('Aucun compte publicitaire trouvé.');
-        } else {
-            // Une erreur s'est produite
-            dd($connection->getLastHttpCode(), $response);
-        }
-
-
-
-
-
-
-        // Obtenir l'access token de Twitter
-        try {
-            $access_token = $connection->oauth('oauth/access_token', [
-                'oauth_verifier' => $request->query('oauth_verifier'),
-            ]);
-
-        } catch (\Exception $e) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
-            return redirect($redirectUrl);
-        }
-
-        // Vérifier si le token d'accès est bien récupéré
-        if (! isset($access_token['oauth_token'])) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
-            return redirect($redirectUrl);
-        }
-
-        // Mise à jour de la version de l'API pour utiliser la version 2
-        $connection->setApiVersion('2');
-
-        // Récupérer les informations utilisateur via l'API v2 de Twitter
-        try {
-            if ($connection->getLastHttpCode() == 200) {
-                // Stocker les informations utilisateur dans votre base de données Laravel si nécessaire
-                $user->twitter_account_id = $access_token['user_id'];
-                $user->twitter_access_token = $access_token['oauth_token'];
-                $user->twitter_access_token_secret = $access_token['oauth_token_secret'];
-                $user->save();
-
-                // Supprimer l'état temporaire Twitter
-                $twitterState->delete();
-
-                // Rediriger vers Angular avec un message de succès
-                $redirectUrl = config('app.url_frontend').$url.'?status=success';
-
-                return redirect($redirectUrl);
-
+        $token = $request->query('token');
+        $id_account = $request->query('id_account');
+        $url = $request->query('url');
+        // Vérifier si un token utilisateur est présent
+        $user = null;
+        if ($token) {
+            $personalAccessToken = PersonalAccessToken::findToken($token);
+            if ($personalAccessToken) {
+                $user = $personalAccessToken->tokenable;
             } else {
                 // Rediriger avec une erreur sur l'URL
                 $redirectUrl = config('app.url_frontend').$url.'?status=failure';
 
                 return redirect($redirectUrl);
             }
-
-        } catch (\Exception $e) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
-            return redirect($redirectUrl);
         }
 
-        return redirect($redirectUrl);
+        // Vérifier si l'utilisateur a des tokens d'accès
+        if (!$user || !$user->twitter_access_token || !$user->twitter_access_token_secret) {
+            // Rediriger vers le processus d'autorisation si pas de tokens
+            return redirect()->route('twitter.ads.redirect'); // ou l'URL appropriée
+        }
+
+        // URL de l'API Twitter Ads
+        $url = 'https://ads-api-sandbox.twitter.com/12/stats/jobs/accounts/'.$id_account;
+
+        // Paramètres OAuth de base
+        $oauthParams = [
+            'oauth_consumer_key' => config('services.twitter.api_key'),
+            'oauth_token' => $user->twitter_access_token, // Utiliser le token d'accès stocké
+            'oauth_nonce' => $this->generateNonce(),
+            'oauth_timestamp' => time(),
+            'oauth_signature_method' => 'HMAC-SHA1',
+            'oauth_version' => '1.0',
+        ];
+        // Générer la signature OAuth
+        $oauthParams['oauth_signature'] = $this->buildOAuthSignature('GET', $url, $oauthParams, config('services.twitter.api_secret'), $user->twitter_access_token_secret);
+
+        // Créer les en-têtes OAuth
+        $oauthHeader = $this->buildOAuthHeader($oauthParams);
+
+        // Utiliser Guzzle pour envoyer la requête avec les en-têtes OAuth
+        $client = new Client();
+
+        try {
+            $response = $client->request('GET', $url, [
+                'headers' => [
+                    'Authorization' => $oauthHeader,
+                ],
+                'timeout' => 60,
+            ]);
+
+            // Afficher la réponse
+            $responseBody = $response->getBody()->getContents();
+            $data = json_decode($responseBody)->data;
+            return response()->json($data, 200);
+        } catch (RequestException $e) {
+            // Gérer les erreurs de requête
+            return response()->json(['error' => 'حدث خطأ أثناء استخراج البيانات'], 402);
+        }
     }
+
 }

@@ -33,6 +33,12 @@ return [
     'twitter' => [
         'api_key' => env('TWITTER_API_KEY'),
         'api_secret' => env('TWITTER_API_SECRET'),
+        'token' => env('TWITTER_ACCESS_TOKEN'),
+        'token_secret' => env('TWITTER_ACCESS_TOKEN_SECRET'),
+        'client_id' => env('TWITTER_CLIENT_ID'),
+        'client_secret' => env('TWITTER_CLIENT_SECRET'),
+        'redirect' => env('TWITTER_CALLBACK_URL'),
+        'redirect_ads' => env('TWITTER_CALLBACK_ADS_URL'),
     ],
 
     // 'snapchat' => [
@@ -54,5 +60,10 @@ return [
 ],
 
 
+    'tiktok' => [
+        'client_id' => env('TIKTOK_CLIENT_KEY'),
+        'client_secret' => env('TIKTOK_CLIENT_SECRET'),
+        'redirect' => env('TIKTOK_REDIRECT_URI'),
+    ],
 
 ];

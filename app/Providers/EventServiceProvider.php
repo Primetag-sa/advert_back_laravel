@@ -6,6 +6,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use SocialiteProviders\Manager\SocialiteWasCalled;
+use SocialiteProviders\TikTok\TikTokExtendSocialite;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -19,8 +21,11 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
 
-        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+
+        SocialiteWasCalled::class => [
+            // ... other providers
             'SocialiteProviders\SnapchatMarketingApi\SnapchatMarketingApiExtendSocialite@handle',
+            TikTokExtendSocialite::class.'@handle',
         ],
     ];
 

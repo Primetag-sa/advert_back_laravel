@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\RoleAccessController;
-use App\Http\Controllers\Api\SnapchatController;
 use App\Http\Controllers\Api\TiktokController;
 use App\Http\Controllers\Api\TweetController;
 use App\Http\Controllers\Api\UserController;
@@ -12,6 +10,7 @@ use App\Http\Controllers\Auth\Api\TwitterAdsAuthController;
 use App\Http\Controllers\Auth\Api\TwitterAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\SnapchatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,14 +27,14 @@ Route::get('auth/snapchat', [SnapchatController::class, 'redirectToSnapchat']);
 Route::get('auth/snapchat/callback', [SnapchatController::class, 'handleSnapchatCallback']);
 Route::get('/snapchat/ad-data', [SnapchatController::class, 'getAdData']);
 Route::get('/snapchat/ads', [SnapchatController::class, 'retrieveAds']);
-Route::get('/save-data/{id}', [SnapchatController::class, 'saveData'])->name('saveData');
-Route::get('/get-data/{id}', [SnapchatController::class, 'getData'])->name('getData');
+Route::get('/save-data/{id}',[SnapchatController::class, 'saveData'])->name('saveData');
+Route::get('/get-data/{id}',[SnapchatController::class, 'getData'])->name('getData');
 
 // Route::get('/get-ads', function () {
 
 // })->name('get.snapchat.ads');
 
-//
+// 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -57,8 +56,10 @@ Route::put('notifications/{id}', [NotificationController::class, 'update']);
 Route::delete('notifications/{id}', [NotificationController::class, 'destroy']); */
 
 // Authentication routes
-
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/profile/edit', [AuthController::class, 'editProfile']);
+Route::get('/logout', [AuthController::class, 'logout']);
 Route::get('/auth/twitter', [TwitterAuthController::class, 'redirectToTwitter']);
 Route::get('/auth/twitter/callback', [TwitterAuthController::class, 'handleTwitterCallback'])->name('twitter.callback');
 Route::get('/auth/tiktok', [TicktokAuthController::class, 'redirectToTikTok']);
@@ -67,17 +68,11 @@ Route::get('/ads/accounts/twitter', [TwitterAdsAuthController::class, 'getAdsAcc
 Route::get('/ads/account/twitter', [TwitterAdsAuthController::class, 'getOneAccount']);
 
 // Routes that require authentication
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::get('/user_auth', [AuthController::class, 'userAuth'])->middleware('auth:sanctum');
-
-Route::apiResource('role_access', RoleAccessController::class)->middleware('auth:sanctum');
-
-// Routes that require authentication
 Route::middleware('auth:api')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
+
 });
+

@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Auth\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Agency;
-use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\Agency;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -19,16 +18,12 @@ class AuthController extends Controller
     {
 
         $credentials = $request->only('email', 'password');
+
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            if ($user->is_confirmed) {
-                $request->session()->regenerate();
+            $token = $user->createToken('advert')->plainTextToken;
 
-                return response()->json($user, 200);
-            } else {
-                return response()->json(['message' => 'الحساب غير مفعل', 'type' => 'not_confirmed'], 401);
-            }
-
+            return response()->json(['token' => $token,'user'=>$user]);
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
@@ -50,11 +45,11 @@ class AuthController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         if ($validator->fails()) {
-            return response()->json(['status' => 'error', 'message' => 'حدث خطا ما', 'errors' => $validator->errors()]);
+            return response()->json(['status'=> 'error','message'=> 'حدث خطا ما','errors'=> $validator->errors()]);
         }
         $user = User::find($request->user_id);
-        if (! $user) {
-            return response()->json(['status' => 'error', 'message' => 'حدث خطا ما']);
+        if (!$user) {
+            return response()->json(['status'=> 'error','message'=> 'حدث خطا ما']);
         }
 
         if ($request->hasFile('image')) {
@@ -69,14 +64,14 @@ class AuthController extends Controller
         }
 
         $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'=> $request->name,
+            'email'=> $request->email,
         ]);
         if ($request->filled('password')) {
             $user->password = bcrypt($request->password);
         }
 
-        return response()->json(['status' => 'success', 'data' => $user, 'message' => 'تم التحديث بنجاح']);
+        return response()->json(['status'=>'success','data'=>$user,'message'=>'تم التحديث بنجاح']);
 
         $credentials = $request->only('email', 'password');
 
@@ -84,7 +79,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $token = $user->createToken('advert')->plainTextToken;
 
-            return response()->json(['token' => $token, 'user' => $user]);
+            return response()->json(['token' => $token,'user'=>$user]);
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
@@ -107,18 +102,19 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'is_confirmed' => false,
-            'role' => 'agency',
+            'role'=>'agency'
         ]);
 
         $agency = Agency::create([
-            'name' => $user->agencyName,
-            'user_id' => $user->id,
-            'tiktok_url' => '',
-            'facebook_url' => '',
-            'instagram_url' => '',
-            'snapchat_url' => '',
-            'x_url' => '',
+            'name'=>$user->agencyName,
+            'user_id'=>$user->id,
+            'tiktok_url'=>'',
+            'facebook_url'=>'',
+            'instagram_url'=>'',
+            'snapchat_url'=>'',
+            'x_url'=>'',
         ]);
+
 
         $token = $user->createToken('advert')->plainTextToken;
 
@@ -130,23 +126,12 @@ class AuthController extends Controller
 
         // For token-based authentication (like Passport or Sanctum)
         if (Auth::check()) {
-
-            // Déconnecter l'utilisateur de la session (SPA)
-            Auth::guard('web')->logout();
-
-            // Invalider la session de l'utilisateur
-            $request->session()->invalidate();
-
-            // Regénérer le token CSRF pour éviter les attaques CSRF après déconnexion
-            $request->session()->regenerateToken();
+            $user = Auth::user();
+            $user->tokens()->delete(); // If using Laravel Passport or Sanctum
+            Auth::logout();
         }
 
-        return response()->json(['message' => 'Successfully logged out'], 201);
+        return response()->json(['message' => 'Successfully logged out',], 201);
         // Return a response
-    }
-
-    public function userAuth(Request $request): JsonResponse
-    {
-        return response()->json($request->user());
     }
 }

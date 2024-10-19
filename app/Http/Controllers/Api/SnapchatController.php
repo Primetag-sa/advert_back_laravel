@@ -29,6 +29,7 @@ class SnapchatController extends Controller
 
     // Step 1: Redirect to Snapchat for authorization
     
+    
     public function redirectToSnapchat(Request $request)
     {   
         session(['user_email' => $request->user_email]);
@@ -130,7 +131,6 @@ class SnapchatController extends Controller
                                 'snap_name'=>$item['campaign']['name'],
                                 'snap_daily_budget_micro'=>$item['campaign']['daily_budget_micro'],
                                 'snap_status'=>$item['campaign']['status'],
-                                'snap_'=>$item['campaign'][''],
                                 'snap_start_time'=>$item['campaign']['start_time'],
                                 'snap_end_time'=>$item['campaign']['end_time'],
                                 'snapchat_account_id' => $snapchatAccount->id,

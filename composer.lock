@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c3a34ea155ce3e9271c8636c21bb013",
+    "content-hash": "571deaffb6faae81b2be3de9cbbd89e7",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -716,6 +716,66 @@
             "time": "2023-10-06T06:47:41+00:00"
         },
         {
+            "name": "facebook/graph-sdk",
+            "version": "5.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/facebook/php-graph-sdk.git",
+                "reference": "38fd7187a6704d3ab14ded2f3a534ac4ee6f3481"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/facebook/php-graph-sdk/zipball/38fd7187a6704d3ab14ded2f3a534ac4ee6f3481",
+                "reference": "38fd7187a6704d3ab14ded2f3a534ac4ee6f3481",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "~5.0",
+                "mockery/mockery": "~0.8",
+                "phpunit/phpunit": "~4.0"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "Allows for implementation of the Guzzle HTTP client"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Facebook\\": "src/Facebook/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Facebook Platform"
+            ],
+            "authors": [
+                {
+                    "name": "Facebook",
+                    "homepage": "https://github.com/facebook/facebook-php-sdk-v4/contributors"
+                }
+            ],
+            "description": "Facebook SDK for PHP",
+            "homepage": "https://github.com/facebook/facebook-php-sdk-v4",
+            "keywords": [
+                "facebook",
+                "sdk"
+            ],
+            "support": {
+                "issues": "https://github.com/facebook/php-graph-sdk/issues",
+                "source": "https://github.com/facebook/php-graph-sdk/tree/5.1.4"
+            },
+            "abandoned": true,
+            "time": "2016-05-13T17:28:30+00:00"
+        },
+        {
             "name": "firebase/php-jwt",
             "version": "v6.10.1",
             "source": {
@@ -1380,6 +1440,57 @@
                 }
             ],
             "time": "2023-12-03T19:50:20+00:00"
+        },
+        {
+            "name": "janyksteenbeek/socialite-instagram-business",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/janyksteenbeek/socialite-instagram-business.git",
+                "reference": "e1d7aed1ed3b7fc21f81cc3033ac840f2a7311d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/janyksteenbeek/socialite-instagram-business/zipball/e1d7aed1ed3b7fc21f81cc3033ac840f2a7311d7",
+                "reference": "e1d7aed1ed3b7fc21f81cc3033ac840f2a7311d7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^8.0",
+                "socialiteproviders/manager": "^4.6"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.17"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JanykSteenbeek\\SocialiteInstagramBusiness\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Janyk Steenbeek",
+                    "email": "me@janyk.dev"
+                }
+            ],
+            "description": "Instagram Business Login OAuth2 Provider for Laravel Socialite",
+            "keywords": [
+                "instagram",
+                "laravel",
+                "oauth",
+                "provider",
+                "socialite"
+            ],
+            "support": {
+                "source": "https://github.com/janyksteenbeek/socialite-instagram-business/tree/v1.0"
+            },
+            "time": "2024-09-08T18:52:32+00:00"
         },
         {
             "name": "laravel/framework",

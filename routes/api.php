@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\FacebookController;
+use App\Http\Controllers\Api\InstagramController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\TiktokController;
 use App\Http\Controllers\Api\TweetController;
@@ -11,20 +13,25 @@ use App\Http\Controllers\Auth\Api\TwitterAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SnapchatController;
+use Laravel\Socialite\Facades\Socialite;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+/* Route::get('auth/facebook', function () {
+    return Socialite::driver('facebook')->scopes(['ads_read', 'ads_management'])->redirect();
+});
+
+Route::get('auth/facebook/callback', function () {
+    $user = Socialite::driver('facebook')->user();
+    // Store user tokens, such as $user->token, for later API requests.
+}); */
+
+Route::get('/auth/facebook', [FacebookController::class, 'redirectToSnapchat'])->name('facebook.redirect');
+Route::get('/auth/facebook/callback', [FacebookController::class, 'handleCallback'])->name('facebook.callback.redirect');
+
+Route::get('/auth/instagram', [InstagramController::class, 'redirectToInstagram'])->name('instagram.redirect');
+Route::get('/auth/instagram/callback', [InstagramController::class, 'handleCallback'])->name('instagram.callback.redirect');
 
 Route::get('/auth/snapchat', [SnapchatController::class, 'redirectToSnapchat'])->name('snapchat.redirect');
-Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.redirect');
+Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.callback.redirect');
 
 /* Route::get('auth/snapchat', [SnapchatController::class, 'redirectToSnapchat']);
 Route::get('auth/snapchat/callback', [SnapchatController::class, 'handleSnapchatCallback']); */

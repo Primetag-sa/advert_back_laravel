@@ -92,7 +92,6 @@ class SnapchatController extends Controller
         $results = $response->json();
         if (isset($results['adaccounts']) && is_array($results['adaccounts'])) {
             foreach($results['adaccounts'] as $item){
-                
                 if(in_array($item['sub_request_status'],haystack: ['success','SUCCESS'])){
                     $account = [
                         'snap_adaccount_id'=>$item['adaccount']['id'],
@@ -123,6 +122,7 @@ class SnapchatController extends Controller
 
                     $results = $response->json();
                     // dd($results);
+                    if (isset($results['campaigns']) && is_array($results['campaigns']))
                     foreach($results['campaigns'] as $item){
                         if(in_array($item['sub_request_status'],haystack: ['success','SUCCESS'])){
                             $campaign = [
@@ -147,6 +147,7 @@ class SnapchatController extends Controller
                                 'Content-Type' => 'application/json',
                             ])->get("https://adsapi.snapchat.com/v1/campaigns/{$campaign_id}/adsquads");
 
+                            if (isset($results['adsquads']) && is_array($results['adsquads']))
                             foreach($results['adsquads'] as $item){
                                 if(in_array($item['sub_request_status'],haystack: ['success','SUCCESS'])){
                                     $adsquad = [
@@ -175,6 +176,7 @@ class SnapchatController extends Controller
                                     ])->get("https://adsapi.snapchat.com/v1/adsquads/{$snapchatAdsquad->id}/ads");
 
 
+                                    if (isset($results['ads']) && is_array($results['ads']))
                                     foreach($results['ads'] as $item){
                                         if(in_array($item['sub_request_status'],haystack: ['success','SUCCESS'])){
                                             $ad = [
@@ -198,6 +200,7 @@ class SnapchatController extends Controller
                                             ])->get("https://adsapi.snapchat.com/v1/ads/{$snapAd->snap_id}/stats?granularity=HOUR&fields=impressions,swipes,conversion_purchases,conversion_save,conversion_start_checkout,conversion_add_cart,conversion_view_content,conversion_add_billing,conversion_sign_ups,conversion_searches,conversion_level_completes,conversion_app_opens,conversion_page_views&start_time=2017-04-30T07:00:00.000-00:00&end_time=2017-04-30T10:00:00.000-00:00");
 
                                             //normal website
+                                            if (isset($results['total_stats']) && is_array($results['total_stats']))
                                             foreach($results['total_stats'] as $item){
                                                 if(in_array($item['sub_request_status'],haystack: ['success','SUCCESS'])){
                                                     

@@ -33,6 +33,10 @@ class SnapchatController extends Controller
     public function redirectToSnapchat(Request $request)
     {   
         session(['user_email' => $request->user_email]);
+
+        $user = User::where('email',$request->user_email)->first();
+
+        $user->snapchatAccounts()->delete();
         
          // قم بتحديد الأذونات المطلوبة
          $scopes = ['snapchat-marketing-api'];
@@ -76,6 +80,158 @@ class SnapchatController extends Controller
     }
 
     public function saveData($id)
+{
+    $user = User::find($id);
+    $accessToken = $user->snapchat_access_token;
+    $organization_id = $user->snapchat_organization_id;
+
+    // save accounts
+    $response = Http::withHeaders([
+        'Authorization' => 'Bearer ' . $accessToken,
+        'Content-Type' => 'application/json',
+    ])->get("https://adsapi.snapchat.com/v1/organizations/$organization_id/adaccounts");
+
+    $results = $response->json();
+    if (isset($results['adaccounts']) && is_array($results['adaccounts'])) {
+        foreach ($results['adaccounts'] as $item) {
+            if (in_array($item['sub_request_status'] ?? '', ['success', 'SUCCESS'])) {
+                $account = [
+                    'snap_adaccount_id' => $item['adaccount']['id'] ?? '',
+                    'snap_adaccount_created_at' => $item['adaccount']['created_at'] ?? '',
+                    'snap_adaccount_name' => $item['adaccount']['name'] ?? '',
+                    'snap_adaccount_type' => $item['adaccount']['type'] ?? '',
+                    'snap_adaccount_status' => $item['adaccount']['status'] ?? '',
+                    'snap_adaccount_organization_id' => $item['adaccount']['organization_id'] ?? '',
+                    'snap_adaccount_currency' => $item['adaccount']['currency'] ?? '',
+                    'snap_adaccount_timezone' => $item['adaccount']['timezone'] ?? '',
+                    'snap_adaccount_advertiser_organization_id' => $item['adaccount']['advertiser_organization_id'] ?? '',
+                    'snap_adaccount_advertiser_billing_type' => $item['adaccount']['billing_type'] ?? '',
+                    'snap_adaccount_agency_representing_client' => $item['adaccount']['agency_representing_client'] ?? '',
+                    'snap_adaccount_client_paying_invoices' => $item['adaccount']['client_paying_invoices'] ?? '',
+                    'user_id' => $user->id
+                ];
+
+                $snapchatAccount = SnapchatAccount::updateOrCreate(['snap_adaccount_id' => $item['adaccount']['id'] ?? ''], $account);
+                $ad_account_id = $snapchatAccount->snap_adaccount_id;
+
+                // Get All Campaigns
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    'Content-Type' => 'application/json',
+                ])->get("https://adsapi.snapchat.com/v1/adaccounts/$ad_account_id/campaigns");
+
+                $results = $response->json();
+                if (isset($results['campaigns']) && is_array($results['campaigns'])) {
+                    foreach ($results['campaigns'] as $item) {
+                        if (in_array($item['sub_request_status'] ?? '', ['success', 'SUCCESS'])) {
+                            $campaign = [
+                                'snap_id' => $item['campaign']['id'] ?? '',
+                                'snap_created_at' => $item['campaign']['created_at'] ?? '',
+                                'snap_name' => $item['campaign']['name'] ?? '',
+                                'snap_daily_budget_micro' => $item['campaign']['daily_budget_micro'] ?? '',
+                                'snap_status' => $item['campaign']['status'] ?? '',
+                                'snap_start_time' => $item['campaign']['start_time'] ?? '',
+                                'snap_end_time' => $item['campaign']['end_time'] ?? '',
+                                'snapchat_account_id' => $snapchatAccount->id
+                            ];
+
+                            $snapchatCampaign = SnapchatCampaign::updateOrCreate(['snap_id' => $item['campaign']['id'] ?? ''], $campaign);
+                            $campaign_id = $snapchatCampaign->id;
+
+                            // Get All Ad Squads under a Campaign
+                            $response = Http::withHeaders([
+                                'Authorization' => 'Bearer ' . $accessToken,
+                                'Content-Type' => 'application/json',
+                            ])->get("https://adsapi.snapchat.com/v1/campaigns/{$campaign_id}/adsquads");
+
+                            $results = $response->json();
+                            if (isset($results['adsquads']) && is_array($results['adsquads'])) {
+                                foreach ($results['adsquads'] as $item) {
+                                    if (in_array($item['sub_request_status'] ?? '', ['success', 'SUCCESS'])) {
+                                        $adsquad = [
+                                            'snap_id' => $item['adsquad']['id'] ?? '',
+                                            'snap_created_at' => $item['adsquad']['created_at'] ?? '',
+                                            'snap_name' => $item['adsquad']['name'] ?? '',
+                                            'snap_status' => $item['adsquad']['status'] ?? '',
+                                            'snap_type' => $item['adsquad']['type'] ?? '',
+                                            'snap_billing_event' => $item['adsquad']['billing_event'] ?? '',
+                                            'snap_auto_bid' => $item['adsquad']['auto_bid'] ?? '',
+                                            'snap_target_bid' => $item['adsquad']['target_bid'] ?? '',
+                                            'snap_bid_strategy' => $item['adsquad']['bid_strategy'] ?? '',
+                                            'snap_daily_budget_micro' => $item['adsquad']['budget_micro'] ?? '',
+                                            'snap_start_time' => $item['adsquad']['start_time'] ?? '',
+                                            'snap_optimization_goal' => $item['adsquad']['optimization_goal'] ?? '',
+                                            'snapchat_campaign_id' => $snapchatCampaign->id
+                                        ];
+
+                                        $snapchatAdsquad = SnapchatAdsquad::updateOrCreate(['snap_id' => $item['adsquad']['id'] ?? ''], $adsquad);
+
+                                        // Get All Ads under an Ad Squad
+                                        $response = Http::withHeaders([
+                                            'Authorization' => 'Bearer ' . $accessToken,
+                                            'Content-Type' => 'application/json',
+                                        ])->get("https://adsapi.snapchat.com/v1/adsquads/{$snapchatAdsquad->id}/ads");
+
+                                        $results = $response->json();
+                                        if (isset($results['ads']) && is_array($results['ads'])) {
+                                            foreach ($results['ads'] as $item) {
+                                                if (in_array($item['sub_request_status'] ?? '', ['success', 'SUCCESS'])) {
+                                                    $ad = [
+                                                        'snap_id' => $item['ad']['id'] ?? '',
+                                                        'snap_created_at' => $item['ad']['created_at'] ?? '',
+                                                        'snap_name' => $item['ad']['name'] ?? '',
+                                                        'snap_creative_id' => $item['ad']['creative_id'] ?? '',
+                                                        'snap_status' => $item['ad']['status'] ?? '',
+                                                        'snap_type' => $item['ad']['type'] ?? '',
+                                                        'snapchat_adsquad_id' => $snapchatAdsquad->id
+                                                    ];
+
+                                                    $snapAd = SnapAd::updateOrCreate(['snap_id' => $item['ad']['id'] ?? ''], $ad);
+
+                                                    // Get Ad Stats
+                                                    /* $response = Http::withHeaders([
+                                                        'Authorization' => 'Bearer ' . $accessToken,
+                                                        'Content-Type' => 'application/json',
+                                                    ])->get("https://adsapi.snapchat.com/v1/ads/{$snapAd->snap_id}/stats?granularity=HOUR&fields=impressions,swipes,conversion_purchases,conversion_save,conversion_start_checkout,conversion_add_cart,conversion_view_content,conversion_add_billing,conversion_sign_ups,conversion_searches,conversion_level_completes,conversion_app_opens,conversion_page_views&start_time=2017-04-30T07:00:00.000-00:00&end_time=2017-04-30T10:00:00.000-00:00");
+
+                                                    $results = $response->json();
+                                                    if (isset($results['total_stats']) && is_array($results['total_stats'])) {
+                                                        foreach ($results['total_stats'] as $item) {
+                                                            if (in_array($item['sub_request_status'] ?? '', ['success', 'SUCCESS'])) {
+                                                                $data = [
+                                                                    'stats_id' => $item['total_stat']['id'] ?? '',
+                                                                    'stats_type' => $item['total_stat']['type'] ?? '',
+                                                                    'stats_granularity' => $item['total_stat']['granularity'] ?? '',
+                                                                    'stats_impressions' => $item['total_stat']['impressions'] ?? '',
+                                                                    'stats_swipes' => $item['total_stat']['swipes'] ?? '',
+                                                                    'stats_spend' => $item['total_stat']['spend'] ?? '',
+                                                                    'stats_quartile_1' => $item['total_stat']['quartile_1'] ?? '',
+                                                                    'stats_quartile_2' => $item['total_stat']['quartile_2'] ?? '',
+                                                                    'stats_quartile_3' => $item['total_stat']['quartile_3'] ?? '',
+                                                                    'stats_view_completion' => $item['total_stat']['view_completion'] ?? '',
+                                                                    'stats_screen_time_millis' => $item['total_stat']['screen_time_millis'] ?? '',
+                                                                ];
+
+                                                                $snapAd::update($data);
+                                                            }
+                                                        }
+                                                    } */
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+    public function saveData0($id)
     {
         $user = User::find($id);
 

@@ -31,6 +31,11 @@ class AppServiceProvider extends ServiceProvider
             $socialiteWasCalled->extendSocialite('snapchat_marketing_api', \SocialiteProviders\SnapchatMarketingApi\SnapchatMarketingApiExtendSocialite::class);
         });
 
+        Event::listen(SocialiteWasCalled::class, function ($socialiteWasCalled) {
+            $socialiteWasCalled->extendSocialite('instagram-business', \JanykSteenbeek\SocialiteInstagramBusiness\Two\InstagramBusinessProvider::class);
+        });
+
+
         // \SocialiteProviders\Manager\SocialiteWasCalled::class => [
         //     'SocialiteProviders\SnapchatMarketingApi\SnapchatMarketingApiExtendSocialite@handle',
         // ],

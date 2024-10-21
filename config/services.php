@@ -59,6 +59,21 @@ return [
         'redirect' => env('SNAPCHAT_REDIRECT_URI'),
     ],
 
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT_URL'),
+    ],
+
+    'instagram-business' => [
+        'client_id' => env('INSTAGRAM_BUSINESS_CLIENT_ID'),
+        'client_secret' => env('INSTAGRAM_BUSINESS_CLIENT_SECRET'),
+        'redirect' => env('INSTAGRAM_BUSINESS_REDIRECT_URI'),
+    ],
+
+
+
+
     'tiktok' => [
         'client_id' => env('TIKTOK_CLIENT_KEY'),
         'client_secret' => env('TIKTOK_CLIENT_SECRET'),

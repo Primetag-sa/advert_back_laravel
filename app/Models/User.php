@@ -40,13 +40,15 @@ class User extends Authenticatable
         'snapchat_display_name',
         'snapchat_member_status',
         'snapchat_username',
-
+        'twitter_access_token',
+        'twitter_access_token_secret',
+        'twitter_account_id',
         'snapchat_access_token',
-         'snapchat_refresh_token', 
-         'snapchat_organization_id', 
+         'snapchat_refresh_token',
+         'snapchat_organization_id',
           'snapchat_token_expires_at'
     ];
-    
+
     /**
      * The attributes that should be hidden for serialization.
      *

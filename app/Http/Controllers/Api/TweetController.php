@@ -20,11 +20,7 @@ class TweetController extends Controller
     public function getUserTweets(Request $request)
     {
 
-        $user = null;
-        if ($request->query('token')) {
-            $user = PersonalAccessToken::findToken($request->query('token'))->tokenable;
-        }
-
+        $user = Auth::user();
         return response()->json($this->twitterService->getUserTweets($user->twitter_access_token, $user->twitter_access_token_secret));
     }
 }

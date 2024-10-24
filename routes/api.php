@@ -50,7 +50,7 @@ Route::get('/get-data/{id}', [SnapchatController::class, 'getData'])->name('getD
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/twitter/tweets', [TweetController::class, 'getUserTweets']);
+
 Route::get('/tiktok/user', [TiktokController::class, 'getUserInfo']);
 
 Route::apiResource('users', UserController::class);
@@ -65,17 +65,21 @@ Route::post('notifications', [NotificationController::class, 'store']);
 Route::get('notifications/{id}', [NotificationController::class, 'show']);
 Route::put('notifications/{id}', [NotificationController::class, 'update']);
 Route::delete('notifications/{id}', [NotificationController::class, 'destroy']); */
+Route::get('/twitter/tweets', [TweetController::class, 'getUserTweets'])->middleware('auth:sanctum');
+Route::get('/ads/accounts/twitter', [TwitterAdsAuthController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
+Route::get('/ads/account/twitter', [TwitterAdsAuthController::class, 'getOneAccount'])->middleware('auth:sanctum');
+Route::get('/twitter/signOut', [TwitterAuthController::class, 'signOutTweeter'])->middleware('auth:sanctum');
 
 // Authentication routes
 
 Route::post('/profile/edit', [AuthController::class, 'editProfile']);
 Route::get('/auth/twitter', [TwitterAuthController::class, 'redirectToTwitter']);
-Route::get('/auth/twitter/callback', [TwitterAuthController::class, 'handleTwitterCallback'])->name('twitter.callback');
 Route::get('/auth/tiktok', [TicktokAuthController::class, 'redirectToTikTok']);
 Route::get('/auth/tiktok/callback', [TicktokAuthController::class, 'handleTikTokCallback']);
-Route::get('/ads/accounts/twitter', [TwitterAdsAuthController::class, 'getAdsAccounts']);
-Route::get('/ads/account/twitter', [TwitterAdsAuthController::class, 'getOneAccount']);
 
+Route::middleware(['web'])->group(function () {
+    Route::get('/auth/twitter/callback', [TwitterAuthController::class, 'handleTwitterCallback'])->name('twitter.callback');
+});
 // Routes that require authentication
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');

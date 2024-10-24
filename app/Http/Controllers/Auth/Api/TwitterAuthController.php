@@ -5,74 +5,83 @@ namespace App\Http\Controllers\Auth\Api;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Http\Controllers\Controller;
 use App\Models\TwitterState;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Laravel\Sanctum\PersonalAccessToken;
 
 class TwitterAuthController extends Controller
 {
-    public function redirectToTwitter(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
+    public function signOutTweeter()
     {
 
+        $user = Auth::user();
+
+        $user->update([
+            'twitter_account_id' => null,
+            'twitter_access_token' => null,
+            'twitter_access_token_secret' => null,
+        ]);
+
+        return response()->json($user, 200);
+    }
+
+    public function redirectToTwitter(Request $request)
+    {
+        if (! Auth::check()) {
+            return redirect($request->query('url').'?status=failure&error=not_authenticated');
+        }
+
+        $user = Auth::user();
         $connection = new TwitterOAuth(
             config('services.twitter.api_key'),
             config('services.twitter.api_secret')
         );
 
+        // Generate state token and store it securely
         $state = Str::random(40);
-
         $request_token = $connection->oauth('oauth/request_token', [
-            'oauth_callback' => route('twitter.callback').'?state='.$state.'&token='.$request->query('token').'&url='.$request->query('url'),
+            'oauth_callback' => route('twitter.callback').'?state='.$state.'&url='.$request->query('url'),
         ]);
 
+        // Check if the request token is successfully received
         if (! isset($request_token['oauth_token']) || ! isset($request_token['oauth_token_secret'])) {
-            $redirectUrl = config('app.url_frontend').$request->query('url').'?status=failure&step=auth';
-
-            return redirect($redirectUrl);
+            return redirect(config('app.url_frontend').$request->query('url').'?status=failure&step=auth');
         }
 
+        // Store state and tokens in the database
         TwitterState::create([
             'state' => $state,
             'oauth_token' => $request_token['oauth_token'],
             'oauth_token_secret' => $request_token['oauth_token_secret'],
+            'user_id' => $user->id,
         ]);
 
-        $url = $connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]);
-
-        return redirect($url);
+        // Redirect to Twitter authorization page
+        return redirect($connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]));
     }
 
     public function handleTwitterCallback(Request $request)
     {
+        // Validate state parameter to prevent CSRF attacks
         $state = $request->query('state');
-        $token = $request->query('token');
         $url = $request->query('url');
-
-        // Vérifier si un token utilisateur est présent
-        $user = null;
-        if ($token) {
-            $personalAccessToken = PersonalAccessToken::findToken($token);
-            if ($personalAccessToken) {
-                $user = $personalAccessToken->tokenable;
-            } else {
-                // Rediriger avec une erreur sur l'URL
-                $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
-                return redirect($redirectUrl);
-            }
-        }
-
-        // Vérifier l'état Twitter
         $twitterState = TwitterState::where('state', $state)->first();
 
         if (! $twitterState) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
-            return redirect($redirectUrl);
+            return redirect(config('app.url_frontend').$url.'?status=failure&error=invalid_state');
         }
 
-        // Connexion à Twitter avec les tokens
+        // Retrieve the user associated with the state
+        $user = User::find($twitterState->user_id);
+        if (! $user) {
+            return redirect(config('app.url_frontend').$url.'?status=failure&error=user_not_found');
+        }
+
+        // Authenticate and regenerate session
+
+        // Create a new TwitterOAuth instance with stored tokens
         $connection = new TwitterOAuth(
             config('services.twitter.api_key'),
             config('services.twitter.api_secret'),
@@ -80,59 +89,46 @@ class TwitterAuthController extends Controller
             $twitterState->oauth_token_secret
         );
 
-        // Obtenir l'access token de Twitter
         try {
+            // Request the access token using oauth_verifier
             $access_token = $connection->oauth('oauth/access_token', [
                 'oauth_verifier' => $request->query('oauth_verifier'),
             ]);
-
         } catch (\Exception $e) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
+            Log::error('Twitter OAuth error: '.$e->getMessage());
 
-            return redirect($redirectUrl);
+            return redirect(config('app.url_frontend').$url.'?status=failure&error=twitter_auth');
         }
 
-        // Vérifier si le token d'accès est bien récupéré
+        // Check if the access token is valid
         if (! isset($access_token['oauth_token'])) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
-            return redirect($redirectUrl);
+            return redirect(config('app.url_frontend').$url.'?status=failure&error=no_access_token');
         }
 
-        // Mise à jour de la version de l'API pour utiliser la version 2
+        // Set API version to 2 for further Twitter interactions
         $connection->setApiVersion('2');
 
-        // Récupérer les informations utilisateur via l'API v2 de Twitter
         try {
+            // Verify the connection status and update user information
             if ($connection->getLastHttpCode() == 200) {
-                // Stocker les informations utilisateur dans votre base de données Laravel si nécessaire
-                $user->twitter_account_id = $access_token['user_id'];
-                $user->twitter_access_token = $access_token['oauth_token'];
-                $user->twitter_access_token_secret = $access_token['oauth_token_secret'];
-                $user->save();
+                $user->update([
+                    'twitter_account_id' => $access_token['user_id'],
+                    'twitter_access_token' => $access_token['oauth_token'],
+                    'twitter_access_token_secret' => $access_token['oauth_token_secret'],
+                ]);
 
-                // Supprimer l'état temporaire Twitter
+                // Clean up TwitterState entry
                 $twitterState->delete();
 
-                // Rediriger vers Angular avec un message de succès
-                $redirectUrl = config('app.url_frontend').$url.'?status=success';
-
-                return redirect($redirectUrl);
-
+                // Redirect with success
+                return redirect()->away(config('app.url_frontend').$url.'?status=success');
             } else {
-                // Rediriger avec une erreur sur l'URL
-                $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
-                return redirect($redirectUrl);
+                return redirect(config('app.url_frontend').$url.'?status=failure&error=twitter_api');
             }
-
         } catch (\Exception $e) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
+            Log::error('Unexpected Twitter API error: '.$e->getMessage());
 
-            return redirect($redirectUrl);
+            return redirect(config('app.url_frontend').$url.'?status=failure&error=unexpected');
         }
     }
 }

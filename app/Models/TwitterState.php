@@ -12,5 +12,6 @@ class TwitterState extends Model
         'state',
         'oauth_token',
         'oauth_token_secret',
+        'user_id',
     ];
 }

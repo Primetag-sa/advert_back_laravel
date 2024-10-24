@@ -8,6 +8,7 @@ use App\Models\TwitterState;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -54,21 +55,14 @@ class TwitterAdsAuthController extends Controller
     public function getAdsAccounts(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
 
-        $token = $request->query('token');
         $url = $request->query('url');
 
         // Vérifier si un token utilisateur est présent
-        $user = null;
-        if ($token) {
-            $personalAccessToken = PersonalAccessToken::findToken($token);
-            if ($personalAccessToken) {
-                $user = $personalAccessToken->tokenable;
-            } else {
+        $user = Auth::user();
+        if (!$user) {
                 // Rediriger avec une erreur sur l'URL
                 $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
                 return redirect($redirectUrl);
-            }
         }
 
         // Vérifier si l'utilisateur a des tokens d'accès
@@ -120,21 +114,14 @@ class TwitterAdsAuthController extends Controller
     public function getOneAccount(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
 
-        $token = $request->query('token');
         $id_account = $request->query('id_account');
         $url = $request->query('url');
         // Vérifier si un token utilisateur est présent
-        $user = null;
-        if ($token) {
-            $personalAccessToken = PersonalAccessToken::findToken($token);
-            if ($personalAccessToken) {
-                $user = $personalAccessToken->tokenable;
-            } else {
-                // Rediriger avec une erreur sur l'URL
-                $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
-                return redirect($redirectUrl);
-            }
+        $user = Auth::user();
+        if (!$user) {
+            // Rediriger avec une erreur sur l'URL
+            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
+            return redirect($redirectUrl);
         }
 
         // Vérifier si l'utilisateur a des tokens d'accès

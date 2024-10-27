@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Agency;
 use App\Models\Agent;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,21 +14,24 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function changeStatus(Request $request,$id){
+    public function changeStatus(Request $request, $id)
+    {
         $user = User::find($id);
-        if($user){
+        if ($user) {
 
-            if ($request->status=='canceled') {
+            if ($request->status == 'canceled') {
                 $user->is_confirmed = 0;
             }
 
-            if ($request->status=='activated') {
+            if ($request->status == 'activated') {
                 $user->is_confirmed = 1;
             }
             $user->save();
-            return response()->json(['status'=> 'success','message'=> 'تم الحفظ']);
+
+            return response()->json(['status' => 'success', 'message' => 'تم الحفظ']);
         }
-        return response()->json(['status'=> 'error','message'=> 'حدث خطا ما']);
+
+        return response()->json(['status' => 'error', 'message' => 'حدث خطا ما']);
     }
 
     /**
@@ -43,17 +46,17 @@ class UserController extends Controller
         $perPage = $request->input('per_page', 10);
 
         $users = User::where('role', $role)
-        ->when($status != 'all', function ($query) use ($status) {
-            return $query->where('is_confirmed', $status);
-        })
-        ->when($role == 'agent', function ($query) use ($agencyId) {
-            return $query->whereHas('agent', function ($q) use ($agencyId) {
-                $q->where('agency_id', $agencyId);
-            });
-        })
-        ->with('agency','agent','admin')
-        ->orderBy('id', 'desc')
-        ->paginate($perPage);
+            ->when($status != 'all', function ($query) use ($status) {
+                return $query->where('is_confirmed', $status);
+            })
+            ->when($role == 'agent', function ($query) use ($agencyId) {
+                return $query->whereHas('agent', function ($q) use ($agencyId) {
+                    $q->where('agency_id', $agencyId);
+                });
+            })
+            ->with('agency', 'agent', 'admin')
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
 
         return response()->json($users);
     }
@@ -61,25 +64,22 @@ class UserController extends Controller
     public function agencyAgents(Request $request)
     {
 
+        $user = Auth::user();
 
-        $role = $request->role;
         $status = $request->status;
 
         $perPage = $request->input('per_page', 10);
 
-        $agency_id = User::find($request->agencyId)->agency->id;
-
         $users = User::where('role', 'agent')
-        ->when($status != 'all', function ($query) use ($status) {
-            return $query->where('is_confirmed', $status);
-        })
-        ->whereHas('agent', function ($query) use ($agency_id) {
-            $query->where('agency_id', $agency_id);
-        })
-        ->with('agency', 'agent', 'admin')
-        ->orderBy('id', 'desc')
-        ->paginate($perPage);
-
+            ->when($status != 'all', function ($query) use ($status) {
+                return $query->where('is_confirmed', $status);
+            })
+            ->whereHas('agent', function ($query) use ($user) {
+                $query->where('agency_id', $user->id);
+            })
+            ->with('agency', 'agent', 'admin')
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
 
         return response()->json($users);
     }
@@ -99,43 +99,44 @@ class UserController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $role =$request->role??'agency';
+        $role = $request->role ?? 'agency';
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => Hash::make($request->password??'password'),
+            'password' => Hash::make($request->password ?? 'password'),
             'is_confirmed' => false,
-            'role'=>$role
+            'role' => $role,
         ]);
-        if($role == 'agency') {
+        if ($role == 'agency') {
             $agency = Agency::create([
-                'name'=>$request->agencyName,
-                'user_id'=>$user->id,
-                'tiktok_url'=>$request->tiktok_url,
-                'address'=>$request->address,
-                'facebook_url'=>$request->facebook_url,
-                'instagram_url'=>$request->instagram_url,
-                'snapchat_url'=>$request->snapchat_url,
-                'x_url'=>$request->x_url,
+                'name' => $request->agencyName,
+                'user_id' => $user->id,
+                'tiktok_url' => $request->tiktok_url,
+                'address' => $request->address,
+                'facebook_url' => $request->facebook_url,
+                'instagram_url' => $request->instagram_url,
+                'snapchat_url' => $request->snapchat_url,
+                'x_url' => $request->x_url,
             ]);
         }
 
-        if($role == 'agent') {
-            if($request->from =='agency')
-            // $agency_id = User::find($request->agencyId)?->agency?->id;
-            $agency = Agent::create([
-                'name'=>$request->agencyName,
-                'user_id'=>$user->id,
-                'agency_id'=>$request->from =='agency'? User::find($request->agencyId)?->agency?->id :$request->agencyId,
-                'tiktok_url'=>$request->tiktok_url,
-                'address'=>$request->address,
-                'facebook_url'=>$request->facebook_url,
-                'instagram_url'=>$request->instagram_url,
-                'snapchat_url'=>$request->snapchat_url,
-                'x_url'=>$request->x_url,
-            ]);
+        if ($role == 'agent') {
+            if ($request->from == 'agency') {
+                // $agency_id = User::find($request->agencyId)?->agency?->id;
+                $agency = Agent::create([
+                    'name' => $request->agencyName,
+                    'user_id' => $user->id,
+                    'agency_id' => $request->from == 'agency' ? User::find($request->agencyId)?->agency?->id : $request->agencyId,
+                    'tiktok_url' => $request->tiktok_url,
+                    'address' => $request->address,
+                    'facebook_url' => $request->facebook_url,
+                    'instagram_url' => $request->instagram_url,
+                    'snapchat_url' => $request->snapchat_url,
+                    'x_url' => $request->x_url,
+                ]);
+            }
         }
 
         return response()->json($user, 201);
@@ -146,10 +147,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::where('id',$id)->with('agency','admin','agent')->first();
-        if (!$user) {
-            return response()->json(['status'=> 'error','message'=> 'حدث خطا ما']);
+        $user = User::where('id', $id)->with('agency', 'admin', 'agent')->first();
+        if (! $user) {
+            return response()->json(['status' => 'error', 'message' => 'حدث خطا ما']);
         }
+
         return response()->json($user);
     }
 
@@ -160,9 +162,8 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-
-        if (!$user) {
-            return response()->json(['status'=> 'error','message'=> 'حدث خطا ما']);
+        if (! $user) {
+            return response()->json(['status' => 'error', 'message' => 'حدث خطا ما']);
         }
 
         $request->validate([
@@ -192,28 +193,28 @@ class UserController extends Controller
             'password' => $request->password ? Hash::make($request->password) : $user->password,
         ]);
         $data = [
-            'name'=>$request->agencyName??' ',
-            'user_id'=>$id,
-            'address'=>$request->address??'-',
-            'tiktok_url'=>$request->tiktok_url ?? ' ',
-            'facebook_url'=>$request->facebook_url ?? ' ',
-            'instagram_url'=>$request->instagram_url ?? ' ',
-            'snapchat_url'=>$request->snapchat_url ?? ' ',
-            'x_url'=>$request->x_url ?? ' ',
+            'name' => $request->agencyName ?? ' ',
+            'user_id' => $id,
+            'address' => $request->address ?? '-',
+            'tiktok_url' => $request->tiktok_url ?? ' ',
+            'facebook_url' => $request->facebook_url ?? ' ',
+            'instagram_url' => $request->instagram_url ?? ' ',
+            'snapchat_url' => $request->snapchat_url ?? ' ',
+            'x_url' => $request->x_url ?? ' ',
         ];
         $agency = $user->agency;
 
-        if($user->role == 'agency') {
+        if ($user->role == 'agency') {
             if ($agency) {
                 $agency->update($data);
-            }else{
+            } else {
                 Agency::create($data);
             }
         }
-        if($user->role == 'agent') {
+        if ($user->role == 'agent') {
             if ($user->agent) {
                 $user->agent->update($data);
-            }else{
+            } else {
                 Agency::create($data);
             }
         }
@@ -228,7 +229,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
@@ -243,9 +244,7 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User deleted successfully']);
     }
-
 }
-
 
 /* $users = User::where('role', $role)
         ->when($status != 'all', function ($query) use ($status) {
@@ -257,7 +256,7 @@ class UserController extends Controller
         ->orderBy('id', 'desc')
         ->paginate($perPage); */
 
-        /* $users->getCollection()->transform(function ($user) {
-            $user->image_url = asset($user->image); // Assuming you store image paths in 'image_path' field
-            return $user;
-        }); */
+/* $users->getCollection()->transform(function ($user) {
+    $user->image_url = asset($user->image); // Assuming you store image paths in 'image_path' field
+    return $user;
+}); */

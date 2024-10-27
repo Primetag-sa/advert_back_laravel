@@ -147,6 +147,12 @@ class AuthController extends Controller
 
     public function userAuth(Request $request): JsonResponse
     {
-        return response()->json($request->user());
+        $user = Auth::user();
+        $state = false;
+        if ($user) {
+            $state = true;
+        }
+
+        return response()->json(['state' => $state, 'user' => $request->user()]);
     }
 }

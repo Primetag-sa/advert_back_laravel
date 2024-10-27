@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/tiktok/user', [TiktokController::class, 'getUserInfo']);
 
 Route::apiResource('users', UserController::class);
-Route::get('agency/agents', [UserController::class, 'agencyAgents']);
+Route::get('agency/agents', [UserController::class, 'agencyAgents'])->middleware('auth:sanctum');;
 Route::patch('users/{id}/change/status', [UserController::class, 'changeStatus']);
 
 Route::apiResource('notifications', NotificationController::class);
@@ -84,7 +84,7 @@ Route::middleware(['web'])->group(function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::get('/user_auth', [AuthController::class, 'userAuth'])->middleware('auth:sanctum');
+Route::get('/isAuthenticated', [AuthController::class, 'userAuth'])->middleware('auth:sanctum');
 
 Route::apiResource('role_access', RoleAccessController::class)->middleware('auth:sanctum');
 

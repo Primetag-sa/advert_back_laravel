@@ -41,8 +41,14 @@ class UserController extends Controller
     {
         $role = $request->role;
         $status = $request->status;
-        $agencyId = $request->agencyId;
-
+        $user = Auth::user();
+        $agencyId = $user->id;
+        if (! $request->status) {
+            $status = 'all';
+        }
+        if (! $request->role) {
+            $role = 'agency';
+        }
         $perPage = $request->input('per_page', 10);
 
         $users = User::where('role', $role)
@@ -67,12 +73,14 @@ class UserController extends Controller
         $user = Auth::user();
 
         $status = $request->status;
-
+        if (! $request->status) {
+            $status = 'all';
+        }
         $perPage = $request->input('per_page', 10);
 
         $users = User::where('role', 'agent')
-            ->when($status != 'all', function ($query) use ($status) {
-                return $query->where('is_confirmed', $status);
+            ->when($status != 'all', function ($query) {
+                return $query->where('is_confirmed', true);
             })
             ->whereHas('agent', function ($query) use ($user) {
                 $query->where('agency_id', $user->id);

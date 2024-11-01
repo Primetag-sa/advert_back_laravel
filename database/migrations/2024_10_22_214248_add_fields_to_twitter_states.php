@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::table('twitter_states', function (Blueprint $table) {
             $table->string('access_token')->nullable();  // Ajouter cette colonne
-            $table->dropColumn('session_id');
         });
     }
 

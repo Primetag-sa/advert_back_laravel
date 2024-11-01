@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\AdXAnalyticsController;
 use App\Http\Controllers\Api\FacebookController;
 use App\Http\Controllers\Api\InstagramController;
 use App\Http\Controllers\Api\NotificationController;
@@ -68,6 +70,7 @@ Route::delete('notifications/{id}', [NotificationController::class, 'destroy']);
 Route::get('/twitter/tweets', [TweetController::class, 'getUserTweets'])->middleware('auth:sanctum');
 Route::get('/ads/accounts/twitter', [TwitterAdsAuthController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
 Route::get('/ads/account/twitter', [TwitterAdsAuthController::class, 'getOneAccount'])->middleware('auth:sanctum');
+Route::get('/ads/account/active-entities', [TwitterAdsAuthController::class, 'getActiveEntities'])->middleware('auth:sanctum');
 Route::get('/twitter/signOut', [TwitterAuthController::class, 'signOutTweeter'])->middleware('auth:sanctum');
 
 // Authentication routes
@@ -87,6 +90,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::get('/isAuthenticated', [AuthController::class, 'userAuth'])->middleware('auth:sanctum');
 
 Route::apiResource('role_access', RoleAccessController::class)->middleware('auth:sanctum');
+Route::apiResource('account', AccountController::class)->middleware('auth:sanctum');
+Route::apiResource('active-entities', AdXAnalyticsController::class)->middleware('auth:sanctum');
 
 // Routes that require authentication
 Route::middleware('auth:api')->group(function () {

@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('twitter_states', function (Blueprint $table) {
-            $table->dropColumn('access_token');  // Ajouter cette colonne
+        Schema::table('accounts', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('twitter_states', function (Blueprint $table) {
+        Schema::table('accounts', function (Blueprint $table) {
             //
         });
     }

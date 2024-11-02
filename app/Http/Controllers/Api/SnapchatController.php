@@ -28,16 +28,16 @@ class SnapchatController extends Controller
     }
 
     // Step 1: Redirect to Snapchat for authorization
-    
-    
+
+
     public function redirectToSnapchat(Request $request)
-    {   
+    {
         session(['user_email' => $request->user_email]);
 
         $user = User::where('email',$request->user_email)->first();
 
         $user->snapchatAccounts()->delete();
-        
+
          // قم بتحديد الأذونات المطلوبة
          $scopes = ['snapchat-marketing-api'];
 
@@ -54,7 +54,7 @@ class SnapchatController extends Controller
         $email = session('user_email');
         $accessToken = $snapchatUser->token;
         $organization_id = $snapchatUser->user['me']['organization_id'];
-        
+
         $data = [
             'snapchat_name' => $snapchatUser->name,
             'snapchat_email' => $snapchatUser->email,
@@ -72,9 +72,9 @@ class SnapchatController extends Controller
 
         // Optionally, log the user in
         // Auth::login($user);
-        
+
         return redirect()->route('saveData',['id'=>$user->id]);
-        // return redirect()->to('http://localhost:4200/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        // return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
 
         // return response()->json($user);
     }
@@ -246,7 +246,7 @@ class SnapchatController extends Controller
             'Authorization' => 'Bearer ' . $accessToken,
             'Content-Type' => 'application/json',
         ])->get("https://adsapi.snapchat.com/v1/organizations/$organization_id/adaccounts");
-        
+
         $results = $response->json();
         if (isset($results['adaccounts']) && is_array($results['adaccounts'])) {
             foreach($results['adaccounts'] as $item){
@@ -268,9 +268,9 @@ class SnapchatController extends Controller
                     ];
 
                     $snapchatAccount = SnapchatAccount::updateOrCreate(['snap_adaccount_id'=>$item['adaccount']['id']],$account);
-                    
+
                     $ad_account_id = $snapchatAccount->snap_adaccount_id;
-                    
+
                     // Get All Campaigns
                     // GET https://adsapi.snapchat.com/v1/adaccounts/{ad_account_id}/campaigns
                     $response = Http::withHeaders([
@@ -361,7 +361,7 @@ class SnapchatController extends Controller
                                             if (isset($results['total_stats']) && is_array($results['total_stats']))
                                             foreach($results['total_stats'] as $item){
                                                 if(in_array($item['sub_request_status'],haystack: ['success','SUCCESS'])){
-                                                    
+
                                                     $data = [
                                                         'stats_id' => $item['total_stat']['id'],
                                                         'stats_type' => $item['total_stat']['type'],
@@ -383,7 +383,7 @@ class SnapchatController extends Controller
                                             /*
                                             foreach($results['timeseries_stats'] as $item){
                                                 if(in_array($item['sub_request_status'],haystack: ['success','SUCCESS'])){
-                                                    
+
                                                     $data = [
                                                         'stats_id' => $item['timeseries_stat']['id'],
                                                         'stats_type' => $item['timeseries_stat']['type'],
@@ -393,7 +393,7 @@ class SnapchatController extends Controller
                                                         'stats_end_time' => $item['timeseries_stat']['end_time'],
                                                         'stats_finalized_data_end_time' => $item['timeseries_stat']['finalized_data_end_time'],
 
-                                                        
+
                                                         'stats_' => $item['timeseries_stat'][''],
 
                                                         'stats_impressions' => $item['total_stat']['impressions'],
@@ -436,7 +436,7 @@ class SnapchatController extends Controller
         $user = User::with([
             'snapchatAccounts.snapchatCampaigns.snapchatAdsquads.snapAds'
         ])->find($id);
-    
+
         // Check if user exists
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
@@ -488,6 +488,6 @@ class SnapchatController extends Controller
 
 
 
-    
+
 
 }

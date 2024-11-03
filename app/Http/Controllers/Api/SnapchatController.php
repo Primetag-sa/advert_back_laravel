@@ -425,7 +425,7 @@ class SnapchatController extends Controller
         }
         // dd($user?->snapchatAccounts->toArray());
         return redirect()->to('http://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
-        // return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        // return redirect()->to('http://localhost:8080/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
 
         // dd($response->json());
 

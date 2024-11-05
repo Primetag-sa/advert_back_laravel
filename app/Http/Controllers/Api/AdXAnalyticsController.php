@@ -16,10 +16,10 @@ class AdXAnalyticsController extends Controller
         $perPage = $request->input('per_page', 3);
         $account = $request->input('accountId');
 
-        if($account){
-            $accounts = AdXAnalytic::where("account_id",$account)->orderBy('id', 'desc')->paginate($perPage); // Nombre d'éléments par page
+        if ($account) {
+            $accounts = AdXAnalytic::where('account_id', $account)->orderBy('id', 'desc')->paginate($perPage); // Nombre d'éléments par page
 
-        }else{
+        } else {
             $accounts = AdXAnalytic::orderBy('id', 'desc')->paginate($perPage); // Nombre d'éléments par page
 
         }
@@ -27,14 +27,10 @@ class AdXAnalyticsController extends Controller
         return response()->json($accounts);
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.

@@ -226,9 +226,186 @@ class TwitterAdsAuthController extends Controller
         $responseBody = $response->getBody()->getContents();
         $data = json_decode($responseBody)->data;
 
-
-
         return response()->json($data, 200);
 
     }
+
+/*    public function fetchDataAndMetrics()
+    {
+        // Récupérer et enregistrer les comptes, campagnes, line items, et tweets promus
+        $this->fetchAndStoreAccounts();
+        $this->fetchAndStoreCampaigns();
+        $this->fetchAndStoreLineItems();
+        $this->fetchAndStorePromotedTweets();
+
+        // Boucler sur les enregistrements pour extraire les données de métriques
+        $this->fetchMetricsForAllEntities();
+
+        return response()->json(['message' => 'Les entités et les métriques ont été sauvegardées avec succès.']);
+    }
+
+    private function fetchAndStoreAccounts()
+    {
+        $response = Http::withToken($this->token)->get("{$this->base_url}/accounts");
+
+        if ($response->successful()) {
+            $accounts = $response->json()['data'];
+
+            foreach ($accounts as $accountData) {
+                Account::updateOrCreate(
+                    ['account_id' => $accountData['id']],
+                    [
+                        'name' => $accountData['name'],
+                        'business_name' => $accountData['business_name'],
+                        'timezone' => $accountData['timezone'],
+                        'timezone_switch_at' => $accountData['timezone_switch_at'],
+                        'business_id' => $accountData['business_id'],
+                        'approval_status' => $accountData['approval_status'],
+                        'deleted' => $accountData['deleted'],
+                    ]
+                );
+            }
+        }
+    }
+
+    private function fetchAndStoreCampaigns()
+    {
+        $accounts = Account::all();
+
+        foreach ($accounts as $account) {
+            $response = Http::withToken($this->token)->get("{$this->base_url}/accounts/{$account->account_id}/campaigns");
+
+            if ($response->successful()) {
+                $campaigns = $response->json()['data'];
+
+                foreach ($campaigns as $campaignData) {
+                    Campaign::updateOrCreate(
+                        ['campaign_id' => $campaignData['id']],
+                        [
+                            'account_id' => $account->id,
+                            'name' => $campaignData['name'],
+                            'budget_optimization' => $campaignData['budget_optimization'],
+                            'reasons_not_servable' => $campaignData['reasons_not_servable'],
+                            'servable' => $campaignData['servable'],
+                            'effective_status' => $campaignData['effective_status'],
+                            'daily_budget_amount_local_micro' => $campaignData['daily_budget_amount_local_micro'],
+                            'funding_instrument_id' => $campaignData['funding_instrument_id'],
+                            'entity_status' => $campaignData['entity_status'],
+                            'currency' => $campaignData['currency'],
+                            'deleted' => $campaignData['deleted'],
+                        ]
+                    );
+                }
+            }
+        }
+    }
+
+    private function fetchAndStoreLineItems()
+    {
+        $campaigns = Campaign::all();
+
+        foreach ($campaigns as $campaign) {
+            $response = Http::withToken($this->token)->get("{$this->base_url}/accounts/{$campaign->account->account_id}/line_items");
+
+            if ($response->successful()) {
+                $lineItems = $response->json()['data'];
+
+                foreach ($lineItems as $lineItemData) {
+                    LineItem::updateOrCreate(
+                        ['line_item_id' => $lineItemData['id']],
+                        [
+                            'campaign_id' => $campaign->id,
+                            'name' => $lineItemData['name'],
+                            'placements' => $lineItemData['placements'],
+                            'start_time' => $lineItemData['start_time'],
+                            'bid_amount_local_micro' => $lineItemData['bid_amount_local_micro'],
+                            'goal' => $lineItemData['goal'],
+                            'product_type' => $lineItemData['product_type'],
+                            'objective' => $lineItemData['objective'],
+                            'entity_status' => $lineItemData['entity_status'],
+                            'currency' => $lineItemData['currency'],
+                            'pay_by' => $lineItemData['pay_by'],
+                            'creative_source' => $lineItemData['creative_source'],
+                            'deleted' => $lineItemData['deleted'],
+                        ]
+                    );
+                }
+            }
+        }
+    }
+
+    private function fetchAndStorePromotedTweets()
+    {
+        $lineItems = LineItem::all();
+
+        foreach ($lineItems as $lineItem) {
+            $response = Http::withToken($this->token)->get("{$this->base_url}/accounts/{$lineItem->campaign->account->account_id}/promoted_tweets");
+
+            if ($response->successful()) {
+                $promotedTweets = $response->json()['data'];
+
+                foreach ($promotedTweets as $tweetData) {
+                    PromotedTweet::updateOrCreate(
+                        ['tweet_id' => $tweetData['id']],
+                        [
+                            'line_item_id' => $lineItem->id,
+                            'entity_status' => $tweetData['entity_status'],
+                            'approval_status' => $tweetData['approval_status'],
+                            'deleted' => $tweetData['deleted'],
+                        ]
+                    );
+                }
+            }
+        }
+    }
+
+    private function fetchMetricsForAllEntities()
+    {
+        $metrics = ['BILLING', 'ENGAGEMENT', 'MEDIA', 'VIDEO', 'WEB_CONVERSION'];
+        $placements = ['ALL_ON_TWITTER', 'PUBLISHER_NETWORK'];
+        $granularities = ['DAY', 'HOUR', 'TOTAL'];
+        $today = Carbon::now()->toIso8601String();
+
+        foreach (Account::all() as $account) {
+            foreach ($metrics as $metricGroup) {
+                foreach ($placements as $placement) {
+                    foreach ($granularities as $granularity) {
+                        $startDate = Carbon::now()->subYear()->toIso8601String(); // par ex. date de début
+
+                        // Construire les paramètres pour la requête
+                        $params = [
+                            'entity' => 'ACCOUNT',
+                            'entity_ids' => $account->account_id,
+                            'metric_groups' => $metricGroup,
+                            'placement' => $placement,
+                            'granularity' => $granularity,
+                            'start_time' => $startDate,
+                            'end_time' => $today,
+                        ];
+
+                        $response = Http::withToken($this->token)->get("{$this->base_url}/stats/accounts/{$account->account_id}", $params);
+
+                        if ($response->successful()) {
+                            $metricsData = $response->json();
+
+                            AdsMetric::updateOrCreate(
+                                [
+                                    'account_id' => $account->id,
+                                    'metric_group' => $metricGroup,
+                                    'placement' => $placement,
+                                    'granularity' => $granularity,
+                                    'start_time' => $startDate,
+                                    'end_time' => $today,
+                                ],
+                                [
+                                    'metrics_data' => $metricsData,
+                                    'last_fetched_at' => now(),
+                                ]
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }*/
 }

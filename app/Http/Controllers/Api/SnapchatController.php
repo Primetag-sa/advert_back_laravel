@@ -54,7 +54,7 @@ class SnapchatController extends Controller
         if(!$user){
             return back();
         }
-        
+
         $accessToken = $snapchatUser->token;
         $organization_id = $snapchatUser->user['me']['organization_id'];
 
@@ -246,14 +246,14 @@ class SnapchatController extends Controller
             }
         }
 
-        return redirect()->to('http://localhost:8888/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
     }
 
     /* public function getAdStats($adId,Request $request)
     {
         $startTime = Carbon::now()->subMonth()->startOfDay()->toIso8601String(); // One month ago from today, start of day
         $endTime = Carbon::now()->toIso8601String(); // Current time
-        
+
         $user = User::find(22);
         $accessToken = $user->snapchat_access_token;
 
@@ -265,10 +265,10 @@ class SnapchatController extends Controller
     public function getAdStats($adId, Request $request)
     {
         return $this->snapchatService->processAdStatsTests();
-        
+
         $startTime = Carbon::now()->subMonth()->startOfDay()->toIso8601String(); // One month ago from today, start of day
         $endTime = Carbon::now()->toIso8601String(); // Current time
-        
+
         $user = User::find(22);
         $accessToken = $user->snapchat_access_token;
 
@@ -289,7 +289,7 @@ class SnapchatController extends Controller
     {
         // Get the accounts for the authenticated user
         $accounts = SnapchatAccount::where('user_id', 22/* Auth::id() */)->get();
-        
+
         return response()->json($accounts);
     }
 
@@ -538,8 +538,8 @@ class SnapchatController extends Controller
             }
         }
         // dd($user?->snapchatAccounts->toArray());
-        return redirect()->to('http://localhost:8888/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
-        // return redirect()->to('http://localhost:8888/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        // return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
 
         // dd($response->json());
 

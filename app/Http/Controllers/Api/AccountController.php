@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\AdXAnalytic;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -15,7 +16,16 @@ class AccountController extends Controller
     {
 
         $perPage = $request->input('pageSize', 3);
-        $accounts = Account::orderBy('id', 'desc')->paginate($perPage); // Nombre d'éléments par page
+        if ($perPage == 0) {
+            $accounts = Account::orderBy('id', 'desc')->get();
+        } else {
+            $accounts = Account::orderBy('id', 'desc')->paginate($perPage);
+        } // Nombre d'éléments par page
+
+        foreach ($accounts as $key=>$account) {
+            $active = AdXAnalytic::where('account_id',$account->account_id)->get();
+            $accounts[$key]->countActive = sizeof($active);
+        }
 
         return response()->json($accounts);
     }

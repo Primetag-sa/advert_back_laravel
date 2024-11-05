@@ -58,6 +58,7 @@ class SnapchatController extends Controller
         $accessToken = $snapchatUser->token;
         $organization_id = $snapchatUser->user['me']['organization_id'];
 
+
         $data = [
             'snapchat_name' => $snapchatUser->name,
             'snapchat_email' => $snapchatUser->email,
@@ -355,6 +356,7 @@ class SnapchatController extends Controller
             'Content-Type' => 'application/json',
         ])->get("https://adsapi.snapchat.com/v1/organizations/$organization_id/adaccounts");
 
+
         $results = $response->json();
         if (isset($results['adaccounts']) && is_array($results['adaccounts'])) {
             foreach ($results['adaccounts'] as $item) {
@@ -378,6 +380,7 @@ class SnapchatController extends Controller
                     $snapchatAccount = SnapchatAccount::updateOrCreate(['snap_adaccount_id' => $item['adaccount']['id']], $account);
 
                     $ad_account_id = $snapchatAccount->snap_adaccount_id;
+
 
                     // Get All Campaigns
                     // GET https://adsapi.snapchat.com/v1/adaccounts/{ad_account_id}/campaigns

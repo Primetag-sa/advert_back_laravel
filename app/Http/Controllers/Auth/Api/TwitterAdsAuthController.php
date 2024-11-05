@@ -215,20 +215,20 @@ class TwitterAdsAuthController extends Controller
         // Utiliser Guzzle pour envoyer la requête avec les en-têtes OAuth
         $client = new Client;
 
+        $response = $client->request('GET', $url, [
+            'headers' => [
+                'Authorization' => $oauthHeader,
+            ],
+            'timeout' => 60,
+        ]);
 
-            $response = $client->request('GET', $url, [
-                'headers' => [
-                    'Authorization' => $oauthHeader,
-                ],
-                'timeout' => 60,
-            ]);
+        // Afficher la réponse
+        $responseBody = $response->getBody()->getContents();
+        $data = json_decode($responseBody)->data;
 
-            // Afficher la réponse
-            $responseBody = $response->getBody()->getContents();
-            $data = json_decode($responseBody)->data;
 
-            return response()->json($data, 200);
 
+        return response()->json($data, 200);
 
     }
 }

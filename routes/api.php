@@ -33,6 +33,18 @@ Route::get('/auth/facebook/callback', [FacebookController::class, 'handleCallbac
 Route::get('/auth/instagram', [InstagramController::class, 'redirectToInstagram'])->name('instagram.redirect');
 Route::get('/auth/instagram/callback', [InstagramController::class, 'handleCallback'])->name('instagram.callback.redirect');
 
+
+// Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts']);
+    Route::get('/ads/snapchat/campaigns/{accountId}', [SnapchatController::class, 'getAdsCampaigns']);
+    Route::get('/ads/snapchat/squads/{campaignId}', [SnapchatController::class, 'getAdsQuads']);
+// });
+// dd('ss');
+Route::get('/ads/snapchat/ads/account/{accountId}', [SnapchatController::class, 'fetchAdsByAccount']);
+Route::get('/ads/snapchat/ads/campaign/{campaignId}', [SnapchatController::class, 'fetchAdsByCampaign']);
+Route::get('/ads/snapchat/ads/squad/{squadId}', [SnapchatController::class, 'fetchAdsByAdSquad']);
+
+
 Route::get('/auth/snapchat', [SnapchatController::class, 'redirectToSnapchat'])->name('snapchat.redirect');
 Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.callback.redirect');
 
@@ -42,6 +54,7 @@ Route::get('/snapchat/ad-data', [SnapchatController::class, 'getAdData']);
 Route::get('/snapchat/ads', [SnapchatController::class, 'retrieveAds']);
 Route::get('/save-data/{id}', [SnapchatController::class, 'saveData'])->name('saveData');
 Route::get('/get-data/{id}', [SnapchatController::class, 'getData'])->name('getData');
+Route::get('/get-status/{id}', [SnapchatController::class, 'getAdStats'])->name('getAdStats');
 
 // Route::get('/get-ads', function () {
 

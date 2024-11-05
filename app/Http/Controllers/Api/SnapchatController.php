@@ -552,7 +552,7 @@ class SnapchatController extends Controller
         // Eager load nested relationships
         $user = User::with([
             'snapchatAccounts.snapchatCampaigns.snapchatAdsquads.snapAds',
-        ])->find(22);
+        ])->find($id);
 
         // Check if user exists
         if (!$user) {

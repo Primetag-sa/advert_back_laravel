@@ -34,7 +34,7 @@ Route::get('/auth/instagram', [InstagramController::class, 'redirectToInstagram'
 Route::get('/auth/instagram/callback', [InstagramController::class, 'handleCallback'])->name('instagram.callback.redirect');
 
 Route::get('/auth/snapchat', [SnapchatController::class, 'redirectToSnapchat'])->name('snapchat.redirect');
-Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.callback.redirect');
+
 
 /* Route::get('auth/snapchat', [SnapchatController::class, 'redirectToSnapchat']);
 Route::get('auth/snapchat/callback', [SnapchatController::class, 'handleSnapchatCallback']); */
@@ -72,6 +72,7 @@ Route::get('/ads/accounts/twitter', [TwitterAdsAuthController::class, 'getAdsAcc
 Route::get('/ads/account/twitter', [TwitterAdsAuthController::class, 'getOneAccount'])->middleware('auth:sanctum');
 Route::get('/ads/account/active-entities', [TwitterAdsAuthController::class, 'getActiveEntities'])->middleware('auth:sanctum');
 Route::get('/twitter/signOut', [TwitterAuthController::class, 'signOutTweeter'])->middleware('auth:sanctum');
+Route::get('/twitter/accounts', [TwitterAdsAuthController::class, 'fetchAndStoreAccounts'])->middleware('auth:sanctum');
 
 // Authentication routes
 
@@ -82,6 +83,7 @@ Route::get('/auth/tiktok/callback', [TicktokAuthController::class, 'handleTikTok
 
 Route::middleware(['web'])->group(function () {
     Route::get('/auth/twitter/callback', [TwitterAuthController::class, 'handleTwitterCallback'])->name('twitter.callback');
+    Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.callback.redirect');
 });
 // Routes that require authentication
 Route::post('/register', [AuthController::class, 'register']);

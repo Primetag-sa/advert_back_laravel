@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccountsX;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
@@ -230,7 +231,7 @@ class TwitterAdsAuthController extends Controller
 
     }
 
-/*    public function fetchDataAndMetrics()
+    public function fetchDataAndMetrics()
     {
         // Récupérer et enregistrer les comptes, campagnes, line items, et tweets promus
         $this->fetchAndStoreAccounts();
@@ -244,28 +245,82 @@ class TwitterAdsAuthController extends Controller
         return response()->json(['message' => 'Les entités et les métriques ont été sauvegardées avec succès.']);
     }
 
-    private function fetchAndStoreAccounts()
+    private function fetchAndStoreAccounts(Request $request)
     {
-        $response = Http::withToken($this->token)->get("{$this->base_url}/accounts");
+        $url = $request->query('url');
 
-        if ($response->successful()) {
-            $accounts = $response->json()['data'];
+        // Vérifier si un token utilisateur est présent
+        $user = Auth::user();
+        if (! $user) {
+            // Rediriger avec une erreur sur l'URL
+            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
 
-            foreach ($accounts as $accountData) {
-                Account::updateOrCreate(
-                    ['account_id' => $accountData['id']],
-                    [
-                        'name' => $accountData['name'],
-                        'business_name' => $accountData['business_name'],
-                        'timezone' => $accountData['timezone'],
-                        'timezone_switch_at' => $accountData['timezone_switch_at'],
-                        'business_id' => $accountData['business_id'],
-                        'approval_status' => $accountData['approval_status'],
-                        'deleted' => $accountData['deleted'],
-                    ]
-                );
-            }
+            return redirect($redirectUrl);
         }
+
+        // Vérifier si l'utilisateur a des tokens d'accès
+        if (! $user || ! $user->twitter_access_token || ! $user->twitter_access_token_secret) {
+            // Rediriger vers le processus d'autorisation si pas de tokens
+            return redirect()->route('twitter.ads.redirect'); // ou l'URL appropriée
+        }
+
+        // URL de l'API Twitter Ads
+        $url = 'https://ads-api-sandbox.twitter.com/12/accounts';
+
+        // Paramètres OAuth de base
+        $oauthParams = [
+            'oauth_consumer_key' => config('services.twitter.api_key'),
+            'oauth_token' => $user->twitter_access_token, // Utiliser le token d'accès stocké
+            'oauth_nonce' => $this->generateNonce(),
+            'oauth_timestamp' => time(),
+            'oauth_signature_method' => 'HMAC-SHA1',
+            'oauth_version' => '1.0',
+        ];
+
+        // Générer la signature OAuth
+        $oauthParams['oauth_signature'] = $this->buildOAuthSignature('GET', $url, $oauthParams, config('services.twitter.api_secret'), $user->twitter_access_token_secret);
+
+        // Créer les en-têtes OAuth
+        $oauthHeader = $this->buildOAuthHeader($oauthParams);
+
+        // Utiliser Guzzle pour envoyer la requête avec les en-têtes OAuth
+        $client = new Client;
+
+        try {
+            $response = $client->request('GET', $url, [
+                'headers' => [
+                    'Authorization' => $oauthHeader,
+                ],
+                'timeout' => 60,
+            ]);
+
+            // Afficher la réponse
+            $responseBody = $response->getBody()->getContents();
+            $data = json_decode($responseBody)->data;
+            if ($data) {
+
+                foreach ($data as $accountData) {
+                    AccountsX::updateOrCreate(
+                        ['account_id' => $accountData['id']],
+                        [
+                            'name' => $accountData['name'],
+                            'business_name' => $accountData['business_name'],
+                            'timezone' => $accountData['timezone'],
+                            'timezone_switch_at' => $accountData['timezone_switch_at'],
+                            'business_id' => $accountData['business_id'],
+                            'approval_status' => $accountData['approval_status'],
+                            'deleted' => $accountData['deleted'],
+                        ]
+                    );
+                }
+            }
+
+            return response()->json($data, 200);
+        } catch (RequestException $e) {
+            // Gérer les erreurs de requête
+            return response()->json(['error' => 'حدث خطأ أثناء استخراج البيانات'], 402);
+        }
+
     }
 
     private function fetchAndStoreCampaigns()
@@ -407,5 +462,5 @@ class TwitterAdsAuthController extends Controller
                 }
             }
         }
-    }*/
+    }
 }

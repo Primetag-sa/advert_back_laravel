@@ -58,7 +58,7 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'url_frontend' => env('APP_URL_FRONTEND', 'http://localhost:4200'),
-    'url_backend' => env('APP_URL_BACKEND', 'http://localhost:8080'),
+    'url_backend' => env('APP_URL_BACKEND', 'https://advert.sa'),
 
    /* 'url_frontend' => env('APP_URL', 'https://advert.sa'),
     'url_backend' => env('APP_URL', 'https://advert.sa/api'),*/

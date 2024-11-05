@@ -76,15 +76,16 @@ class SnapchatController extends Controller
         // Optionally, log the user in
         // Auth::login($user);
 
-        // return redirect()->route('saveData', ['id' => $user->id]);
-        return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        return redirect()->route('saveData', ['id' => $user->id]);
+        // return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
 
         // return response()->json($user);
     }
 
     public function saveData($id)
     {
-        $user = User::find($id);
+        $user = Auth()->user();
+        // $user = User::find($id);
         $accessToken = $user->snapchat_access_token;
         $organization_id = $user->snapchat_organization_id;
 
@@ -245,7 +246,7 @@ class SnapchatController extends Controller
             }
         }
 
-        return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        return redirect()->to('https://advert.sa/snapchat' );
     }
 
     /* public function getAdStats($adId,Request $request)
@@ -265,10 +266,11 @@ class SnapchatController extends Controller
     {
         return $this->snapchatService->processAdStatsTests();
 
+
         $startTime = Carbon::now()->subMonth()->startOfDay()->toIso8601String(); // One month ago from today, start of day
         $endTime = Carbon::now()->toIso8601String(); // Current time
 
-        $user = User::find(22);
+        $user = Auth()->user();
         $accessToken = $user->snapchat_access_token;
 
         // Call the service method to get stats
@@ -286,8 +288,9 @@ class SnapchatController extends Controller
      */
     public function getAdsAccounts()
     {
+        $user = Auth()->user();
         // Get the accounts for the authenticated user
-        $accounts = SnapchatAccount::where('user_id', 22/* Auth::id() */)->get();
+        $accounts = SnapchatAccount::where('user_id', $user->id/* Auth::id() */)->get();
 
         return response()->json($accounts);
     }

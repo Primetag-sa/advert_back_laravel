@@ -35,7 +35,7 @@ Route::get('/auth/instagram/callback', [InstagramController::class, 'handleCallb
 
 
 // Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts']);
+    Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
     Route::get('/ads/snapchat/campaigns/{accountId}', [SnapchatController::class, 'getAdsCampaigns']);
     Route::get('/ads/snapchat/squads/{campaignId}', [SnapchatController::class, 'getAdsQuads']);
 // });
@@ -53,8 +53,8 @@ Route::get('auth/snapchat/callback', [SnapchatController::class, 'handleSnapchat
 Route::get('/snapchat/ad-data', [SnapchatController::class, 'getAdData']);
 Route::get('/snapchat/ads', [SnapchatController::class, 'retrieveAds']);
 Route::get('/save-data/{id}', [SnapchatController::class, 'saveData'])->name('saveData');
-Route::get('/get-data/{id}', [SnapchatController::class, 'getData'])->name('getData');
-Route::get('/get-status/{id}', [SnapchatController::class, 'getAdStats'])->name('getAdStats');
+Route::get('/get-data/{id}', [SnapchatController::class, 'getData'])->name('getData')->middleware('auth:sanctum');
+Route::get('/get-status/{id}', [SnapchatController::class, 'getAdStats'])->name('getAdStats')->middleware('auth:sanctum');
 
 // Route::get('/get-ads', function () {
 

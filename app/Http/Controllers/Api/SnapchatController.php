@@ -245,6 +245,7 @@ class SnapchatController extends Controller
                 }
             }
         }
+        
 
         return redirect()->to('https://advert.sa/snapchat' );
     }

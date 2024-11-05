@@ -53,7 +53,7 @@ Route::get('auth/snapchat/callback', [SnapchatController::class, 'handleSnapchat
 Route::get('/snapchat/ad-data', [SnapchatController::class, 'getAdData']);
 Route::get('/snapchat/ads', [SnapchatController::class, 'retrieveAds']);
 Route::get('/save-data/{id}', [SnapchatController::class, 'saveData'])->name('saveData');
-Route::get('/get-data/{id}', [SnapchatController::class, 'getData'])->name('getData')->middleware('auth:sanctum');
+Route::get('/get-data/{id}', [SnapchatController::class, 'getData'])->name('getData');//->middleware('auth:sanctum');
 Route::get('/get-status/{id}', [SnapchatController::class, 'getAdStats'])->name('getAdStats')->middleware('auth:sanctum');
 
 // Route::get('/get-ads', function () {

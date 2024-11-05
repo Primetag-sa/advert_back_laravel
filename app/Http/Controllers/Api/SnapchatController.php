@@ -84,8 +84,8 @@ class SnapchatController extends Controller
 
     public function saveData($id)
     {
-        $user = Auth()->user();
-        // $user = User::find($id);
+        // $user = Auth()->user();
+        $user = User::find($id);
         $accessToken = $user->snapchat_access_token;
         $organization_id = $user->snapchat_organization_id;
 

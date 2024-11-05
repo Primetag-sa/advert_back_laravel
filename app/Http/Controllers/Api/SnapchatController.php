@@ -76,8 +76,8 @@ class SnapchatController extends Controller
         // Optionally, log the user in
         // Auth::login($user);
 
-        return redirect()->route('saveData', ['id' => $user->id]);
-        // return redirect()->to('http://localhost:4200/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        // return redirect()->route('saveData', ['id' => $user->id]);
+        return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
 
         // return response()->json($user);
     }

@@ -61,7 +61,7 @@ return [
     'url_backend' => env('APP_URL_BACKEND', 'https://localhost:8000'),
 
    /* 'url_frontend' => env('APP_URL', 'https://localhost:8000'),
-    'url_backend' => env('APP_URL', 'http://localhost:8000/api'),*/
+    'url_backend' => env('APP_URL', 'https://advert.sa/api'),*/
 
     'asset_url' => env('ASSET_URL'),
 

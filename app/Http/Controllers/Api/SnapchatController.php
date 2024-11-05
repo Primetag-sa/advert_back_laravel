@@ -33,7 +33,6 @@ class SnapchatController extends Controller
         if(!$user){
             return back();
         }
-        session(['user_email' => $request->user_email]);
 
         $user->snapchatAccounts()->delete();
         // قم بتحديد الأذونات المطلوبة
@@ -72,13 +71,13 @@ class SnapchatController extends Controller
             'snapchat_token_expires_at' => now()->addSeconds($snapchatUser->expiresIn), // إضافة الوقت المناسب
         ];
         // update or create user in your database
-        User::update( $data);
+        $user->update( $data);
 
         // Optionally, log the user in
         // Auth::login($user);
 
-        return redirect()->route('saveData', ['id' => $user->id]);
-        // return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        // return redirect()->route('saveData', ['id' => $user->id]);
+        return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
 
         // return response()->json($user);
     }

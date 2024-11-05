@@ -95,8 +95,9 @@ Route::get('/auth/tiktok', [TicktokAuthController::class, 'redirectToTikTok']);
 Route::get('/auth/tiktok/callback', [TicktokAuthController::class, 'handleTikTokCallback']);
 
 Route::middleware(['web'])->group(function () {
-    Route::get('/auth/twitter/callback', [TwitterAuthController::class, 'handleTwitterCallback'])->name('twitter.callback');
     Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.callback.redirect');
+    Route::get('/auth/twitter/callback', [TwitterAuthController::class, 'handleTwitterCallback'])->name('twitter.callback');
+    // Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.callback.redirect');
 });
 // Routes that require authentication
 Route::post('/register', [AuthController::class, 'register']);

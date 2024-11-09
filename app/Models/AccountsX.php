@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AccountsX extends Model
 {
-    use HasFactory, SoftDeletes;
+    protected $table = 'accounts_x';
+
+    use HasFactory;
 
     protected $fillable = [
         'name',
@@ -20,7 +22,9 @@ class AccountsX extends Model
         'salt',
         'approval_status',
         'deleted',
+        'user_id',
     ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

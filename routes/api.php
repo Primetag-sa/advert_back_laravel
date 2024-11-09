@@ -45,17 +45,15 @@ Route::get('/visitor-events', [TrackingsController::class, 'index']);
 Route::post('/tracking', [TrackingsController::class, 'trackingPost'])->name('trackingPost');
 Route::post('/track-event', [TrackingsController::class, 'trackEvent'])->name('trackEvent');
 
-// dd('ss');
-Route::get('/ads/snapchat/ads/account/{accountId}', [SnapchatController::class, 'fetchAdsByAccount']);
-Route::get('/ads/snapchat/ads/campaign/{campaignId}', [SnapchatController::class, 'fetchAdsByCampaign']);
-Route::get('/ads/snapchat/ads/squad/{squadId}', [SnapchatController::class, 'fetchAdsByAdSquad']);
+
 
 
 Route::get('/auth/snapchat', [SnapchatController::class, 'redirectToSnapchat'])->name('snapchat.redirect');
 
+Route::get('/ads/snapchat/ads/account/{accountId}', [SnapchatController::class, 'fetchAdsByAccount']);
+Route::get('/ads/snapchat/ads/campaign/{campaignId}', [SnapchatController::class, 'fetchAdsByCampaign']);
+Route::get('/ads/snapchat/ads/squad/{squadId}', [SnapchatController::class, 'fetchAdsByAdSquad']);
 
-/* Route::get('auth/snapchat', [SnapchatController::class, 'redirectToSnapchat']);
-Route::get('auth/snapchat/callback', [SnapchatController::class, 'handleSnapchatCallback']); */
 Route::get('/snapchat/ad-data', [SnapchatController::class, 'saveData'])->middleware('auth:sanctum');
 Route::get('/snapchat/ads', [SnapchatController::class, 'retrieveAds']);
 Route::get('/save-data', [SnapchatController::class, 'saveData'])->name('saveData')->middleware('auth:sanctum');

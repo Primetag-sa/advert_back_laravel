@@ -71,7 +71,7 @@ class SnapchatController extends Controller
         ];
         // update or create user in your database
         $user->update( $data);
-        return redirect()->to('http://127.0.0.1:4200/snapchat');
+        return redirect()->to('http://advert.sa/snapchat');
         // return response()->json($user);
     }
 
@@ -308,23 +308,6 @@ class SnapchatController extends Controller
         ]);
     }
 
-    /* public function getAdStats($adId, Request $request)
-    {
-        // return $this->snapchatService->processAdStatsTests();
-
-        $startTime = Carbon::now()->subMonth()->startOfDay()->toIso8601String(); // One month ago from today, start of day
-        $endTime = Carbon::now()->toIso8601String(); // Current time
-        
-        $user = User::find(22);
-        $accessToken = $user->snapchat_access_token;
-
-        // Call the service method to get stats
-        $stats = $this->snapchatService->getAdStats($adId, $startTime, $endTime, $accessToken);
-
-        // Return the stats directly since it's already a JSON response from the service
-        return $stats;
-    } */
-
     public function getAdStats($adId, Request $request)
     {
         // return $this->snapchatService->processAdStatsTests();
@@ -349,7 +332,7 @@ class SnapchatController extends Controller
         $snap = SnapAd::find($adId);
 
         // Call the service method to get stats with the dynamic date range
-        $stats = $this->snapchatService->getAdStats($snap->id, $startTime, $endTime,$type, $accessToken);
+        $stats = $this->snapchatService->getAdStats($snap->snap_id, $startTime, $endTime,$type, $accessToken);
 
         // Return the stats as a JSON response
         return response()->json($stats);
@@ -366,8 +349,11 @@ class SnapchatController extends Controller
         $user = Auth::user();
         $accessToken = $user->snapchat_access_token;
 
+
+        $squad = SnapchatAdsquad::find($adSquad);
+
         // Call the service method to get stats
-        $stats = $this->snapchatService->getAdSquadStats($adSquad, $startTime, $endTime,$type, $accessToken);
+        $stats = $this->snapchatService->getAdSquadStats($squad->snap_id, $startTime, $endTime,$type, $accessToken);
 
         // Return the stats directly since it's already a JSON response from the service
         return $stats;
@@ -402,15 +388,7 @@ class SnapchatController extends Controller
         // Return the stats directly since it's already a JSON response from the service
         return $stats;
     }
-
     
-
-
-    /**
-     * Get the authenticated user's Snapchat accounts.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getAdsAccounts()
     {
         $user = Auth::user();

@@ -45,9 +45,11 @@ class User extends Authenticatable
         'twitter_access_token_secret',
         'twitter_account_id',
         'snapchat_access_token',
-         'snapchat_refresh_token',
-         'snapchat_organization_id',
-          'snapchat_token_expires_at'
+        'snapchat_refresh_token',
+        'snapchat_organization_id',
+        'snapchat_token_expires_at',
+        'tracking_website',
+        'tracking_client_id',
     ];
 
     /**

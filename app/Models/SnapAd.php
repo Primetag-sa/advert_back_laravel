@@ -36,6 +36,11 @@ class SnapAd extends Model
         'stats_conversion_level_completes',
         'stats_conversion_app_opens',
         'stats_conversion_page_views',
+
+        //new fiels
+        'snapchat_account_id',
+        'snapchat_campaign_id',
+        'snapchat_adsquad_id_code',
         //
     ];
 
@@ -43,5 +48,15 @@ class SnapAd extends Model
     public function adsquad()
     {
         return $this->belongsTo(SnapchatAdsquad::class, 'snapchat_adsquad_id');
+    }
+
+    public function snapchat_campaign()
+    {
+        return $this->belongsTo(SnapchatCampaign::class, 'snapchat_campaign_id');
+    }
+
+    public function snapchat_account()
+    {
+        return $this->belongsTo(SnapchatAccount::class, 'snapchat_account_id');
     }
 }

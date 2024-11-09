@@ -55,13 +55,13 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://localhost:8000'),
+    'url' => env('APP_URL', 'https://localhost:8888'),
 
-    'url_frontend' => env('APP_URL_FRONTEND', 'https://localhost:8000'),
-    'url_backend' => env('APP_URL_BACKEND', 'https://localhost:8000'),
+    'url_frontend' => env('APP_URL_FRONTEND', 'https://localhost:8888'),
+    'url_backend' => env('APP_URL_BACKEND', 'https://localhost:8888'),
 
-   /* 'url_frontend' => env('APP_URL', 'https://localhost:8000'),
-    'url_backend' => env('APP_URL', 'http://localhost:8000/api'),*/
+   /* 'url_frontend' => env('APP_URL', 'https://localhost:8888'),
+    'url_backend' => env('APP_URL', 'http://localhost:8888/api'),*/
 
     'asset_url' => env('ASSET_URL'),
 

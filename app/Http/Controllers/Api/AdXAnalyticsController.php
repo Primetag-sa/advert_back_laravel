@@ -14,7 +14,15 @@ class AdXAnalyticsController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('per_page', 3);
-        $accounts = AdXAnalytic::orderBy('id', 'desc')->paginate($perPage); // Nombre d'éléments par page
+        $account = $request->input('accountId');
+
+        if ($account) {
+            $accounts = AdXAnalytic::where('account_id', $account)->orderBy('id', 'desc')->paginate($perPage); // Nombre d'éléments par page
+
+        } else {
+            $accounts = AdXAnalytic::orderBy('id', 'desc')->paginate($perPage); // Nombre d'éléments par page
+
+        }
 
         return response()->json($accounts);
     }
@@ -22,10 +30,7 @@ class AdXAnalyticsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.

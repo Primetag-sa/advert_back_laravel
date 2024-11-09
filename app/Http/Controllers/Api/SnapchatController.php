@@ -53,9 +53,10 @@ class SnapchatController extends Controller
         if(!$user){
             return back();
         }
-        
+
         $accessToken = $snapchatUser->token;
         $organization_id = $snapchatUser->user['me']['organization_id'];
+
 
         $data = [
             'snapchat_name' => $snapchatUser->name,

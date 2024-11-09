@@ -4,33 +4,26 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\TikTokService;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Laravel\Sanctum\PersonalAccessToken;
-use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
 
 class TiktokController extends Controller
 {
-
-
-    public function getUserInfo(Request $request,TikTokService $tikTokService)
+    public function getUserInfo(Request $request, TikTokService $tikTokService)
     {
 
-        $token = $request->query('token');
+        $user = Auth::user();
+
         $url = $request->query('url');
         // Vérifier si un token utilisateur est présent
-        $user = null;
-        if ($token) {
-            $personalAccessToken = PersonalAccessToken::findToken($token);
-            if ($personalAccessToken) {
-                $user = $personalAccessToken->tokenable;
-            } else {
-                // Rediriger avec une erreur sur l'URL
-                $redirectUrl = config('app.url_frontend').$url.'?status=failure';
 
-                return redirect($redirectUrl);
-            }
+        if (! $user) {
+
+            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
+            return redirect($redirectUrl);
+
         }
+
         $newTokenData = $tikTokService->refreshAccessToken($user->tiktok_token);
 
         if (isset($newTokenData['access_token'])) {

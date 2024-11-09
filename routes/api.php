@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\AccountsXController;
 use App\Http\Controllers\Api\AdXAnalyticsController;
 use App\Http\Controllers\Api\FacebookController;
 use App\Http\Controllers\Api\InstagramController;
@@ -36,7 +36,7 @@ Route::get('/auth/instagram/callback', [InstagramController::class, 'handleCallb
 
 
 // Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts']);
+    Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
     Route::get('/ads/snapchat/campaigns/{accountId}', [SnapchatController::class, 'getAdsCampaigns']);
     Route::get('/ads/snapchat/squads/{campaignId}', [SnapchatController::class, 'getAdsQuads']);
 // });
@@ -76,11 +76,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/tiktok/user', [TiktokController::class, 'getUserInfo']);
 
-Route::apiResource('users', UserController::class);
+
 Route::get('agency/agents', [UserController::class, 'agencyAgents'])->middleware('auth:sanctum');;
 Route::patch('users/{id}/change/status', [UserController::class, 'changeStatus']);
 
-Route::apiResource('notifications', NotificationController::class);
 
 /* Route::get('notifications', [NotificationController::class, 'index']);
 Route::get('notifications/user/{userId}', [NotificationController::class, 'userNotifications']);
@@ -88,31 +87,41 @@ Route::post('notifications', [NotificationController::class, 'store']);
 Route::get('notifications/{id}', [NotificationController::class, 'show']);
 Route::put('notifications/{id}', [NotificationController::class, 'update']);
 Route::delete('notifications/{id}', [NotificationController::class, 'destroy']); */
+
+
+
+// Authentication routes
+Route::post('/profile/edit', [AuthController::class, 'editProfile']);
+Route::get('/auth/twitter', [TwitterAuthController::class, 'redirectToTwitter']);
+Route::get('/auth/tiktok', [TicktokAuthController::class, 'redirectToTikTok']);
+
+//twitter
 Route::get('/twitter/tweets', [TweetController::class, 'getUserTweets'])->middleware('auth:sanctum');
 Route::get('/ads/accounts/twitter', [TwitterAdsAuthController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
 Route::get('/ads/account/twitter', [TwitterAdsAuthController::class, 'getOneAccount'])->middleware('auth:sanctum');
 Route::get('/ads/account/active-entities', [TwitterAdsAuthController::class, 'getActiveEntities'])->middleware('auth:sanctum');
 Route::get('/twitter/signOut', [TwitterAuthController::class, 'signOutTweeter'])->middleware('auth:sanctum');
+Route::get('/twitter/accounts', [TwitterAdsAuthController::class, 'fetchAndStoreAccounts'])->middleware('auth:sanctum');
+Route::get('/twitter/account/datas', [TwitterAdsAuthController::class, 'fetchData'])->middleware('auth:sanctum');
+Route::get('/twitter/metrics', [TwitterAdsAuthController::class, 'getMetrics'])->middleware('auth:sanctum');
 
-// Authentication routes
-
-Route::post('/profile/edit', [AuthController::class, 'editProfile']);
-Route::get('/auth/twitter', [TwitterAuthController::class, 'redirectToTwitter']);
-Route::get('/auth/tiktok', [TicktokAuthController::class, 'redirectToTikTok']);
-Route::get('/auth/tiktok/callback', [TicktokAuthController::class, 'handleTikTokCallback']);
-
+//callback
 Route::middleware(['web'])->group(function () {
-    Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.callback.redirect');
     Route::get('/auth/twitter/callback', [TwitterAuthController::class, 'handleTwitterCallback'])->name('twitter.callback');
+    Route::get('/auth/snapchat/callback', [SnapchatController::class, 'handleCallback'])->name('snapchat.callback.redirect');
+    Route::get('/auth/tiktok/callback', [TicktokAuthController::class, 'handleTikTokCallback']);
 });
+
 // Routes that require authentication
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('/isAuthenticated', [AuthController::class, 'userAuth'])->middleware('auth:sanctum');
 
+Route::apiResource('users', UserController::class);
+Route::apiResource('notifications', NotificationController::class);
 Route::apiResource('role_access', RoleAccessController::class)->middleware('auth:sanctum');
-Route::apiResource('account', AccountController::class)->middleware('auth:sanctum');
+Route::apiResource('account', AccountsXController::class)->middleware('auth:sanctum');
 Route::apiResource('active-entities', AdXAnalyticsController::class)->middleware('auth:sanctum');
 
 // Routes that require authentication

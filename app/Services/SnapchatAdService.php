@@ -29,7 +29,7 @@ class SnapchatAdService
 
     public function getCampaignStats($campaignId, $startTime, $endTime, $type, $accessToken)
     {
-        $url = "https://adsapi.snapchat.com/v1/campaigns/{$campaignId}";
+        $url = "https://adsapi.snapchat.com/v1/campaigns/{$campaignId}/stats";
 
         // return [$campaignId, $startTime, $endTime, $type, $accessToken];
         // try {
@@ -38,12 +38,12 @@ class SnapchatAdService
                     'Authorization' => "Bearer {$accessToken}",
                     'Content-Type' => 'application/json',
                 ],
-                // 'query' => [
-                //     'granularity' => $type,
-                //     'fields' => 'impressions,swipes,conversion_purchases,conversion_save,conversion_start_checkout,conversion_add_cart,conversion_view_content,conversion_add_billing,conversion_sign_ups,conversion_searches,conversion_level_completes,conversion_app_opens,conversion_page_views',
-                //     'start_time' => $startTime,
-                //     'end_time' => $endTime,
-                // ],
+                'query' => [
+                    'granularity' => $type,
+                    'fields' => 'impressions,swipes,conversion_purchases,conversion_save,conversion_start_checkout,conversion_add_cart,conversion_view_content,conversion_add_billing,conversion_sign_ups,conversion_searches,conversion_level_completes,conversion_app_opens,conversion_page_views',
+                    'start_time' => $startTime,
+                    'end_time' => $endTime,
+                ],
             ]);
 
             return $response->json();//$this->processAccountStats($response->json());

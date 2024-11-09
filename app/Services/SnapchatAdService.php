@@ -62,8 +62,8 @@ class SnapchatAdService
             // Generate random data for each metric
             $clicks[] = rand(50, 150);         // Random number for clicks
             $sales[] = rand(10, 50);           // Random number for sales
-            $interactions[] = rand(100, 300);  // Random number for interactions
-            $visitors[] = rand(70, 200);       // Random number for visitors
+            $interactions[] = rand( 50, 100);  // Random number for interactions
+            $visitors[] = rand(100, 300);       // Random number for visitors
         }
 
         // Calculate the total impressions and total engagements
@@ -71,8 +71,12 @@ class SnapchatAdService
         $totalEngagements = array_sum($interactions);  // Assuming interactions represent engagements
 
         // Calculate engagement per impression
-        $engagementPeerImpressions = $totalImpressions > 0 ? $totalEngagements / $totalImpressions : 0;
-
+        $engagementPeerImpressions = $totalImpressions > 0 ? ($totalEngagements / $totalImpressions) * 100 : 0;
+        $engagementPeerImpressions = round($engagementPeerImpressions,2);
+        // dump($totalImpressions);
+        // dump($totalEngagements);
+        // dd(round($engagementPeerImpressions,2) );
+        
 
         return response()->json([
             'hourly' => [
@@ -124,7 +128,8 @@ class SnapchatAdService
         $totalEngagements = array_sum($interactions);  // Assuming interactions represent engagements
 
         // Calculate engagement per impression
-        $engagementPeerImpressions = $totalImpressions > 0 ? $totalEngagements / $totalImpressions : 0;
+        $engagementPeerImpressions = $totalImpressions > 0 ? ($totalEngagements / $totalImpressions) * 100 : 0;
+        $engagementPeerImpressions = round($engagementPeerImpressions,2);
 
         // Return the processed data in JSON format
         return response()->json([

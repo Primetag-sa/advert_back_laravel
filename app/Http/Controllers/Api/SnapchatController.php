@@ -33,7 +33,6 @@ class SnapchatController extends Controller
         if(!$user){
             return back();
         }
-        session(['user_email' => $request->user_email]);
 
         $user->snapchatAccounts()->delete();
         // قم بتحديد الأذونات المطلوبة
@@ -72,19 +71,20 @@ class SnapchatController extends Controller
             'snapchat_token_expires_at' => now()->addSeconds($snapchatUser->expiresIn), // إضافة الوقت المناسب
         ];
         // update or create user in your database
-        User::update( $data);
+        $user->update( $data);
 
         // Optionally, log the user in
         // Auth::login($user);
 
-        return redirect()->route('saveData', ['id' => $user->id]);
-        // return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        // return redirect()->route('saveData', ['id' => $user->id]);
+        return redirect()->to('https://advert.sa/snapchat');
 
         // return response()->json($user);
     }
 
     public function saveData($id)
     {
+        // $user = Auth()->user();
         $user = User::find($id);
         $accessToken = $user->snapchat_access_token;
         $organization_id = $user->snapchat_organization_id;
@@ -245,8 +245,9 @@ class SnapchatController extends Controller
                 }
             }
         }
+        
 
-        return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        return redirect()->to('https://advert.sa/snapchat' );
     }
 
     /* public function getAdStats($adId,Request $request)
@@ -266,10 +267,11 @@ class SnapchatController extends Controller
     {
         return $this->snapchatService->processAdStatsTests();
 
+
         $startTime = Carbon::now()->subMonth()->startOfDay()->toIso8601String(); // One month ago from today, start of day
         $endTime = Carbon::now()->toIso8601String(); // Current time
 
-        $user = User::find(22);
+        $user = Auth()->user();
         $accessToken = $user->snapchat_access_token;
 
         // Call the service method to get stats
@@ -287,8 +289,9 @@ class SnapchatController extends Controller
      */
     public function getAdsAccounts()
     {
+        $user = Auth()->user();
         // Get the accounts for the authenticated user
-        $accounts = SnapchatAccount::where('user_id', 22/* Auth::id() */)->get();
+        $accounts = SnapchatAccount::where('user_id', $user->id/* Auth::id() */)->get();
 
         return response()->json($accounts);
     }
@@ -550,7 +553,7 @@ class SnapchatController extends Controller
         // Eager load nested relationships
         $user = User::with([
             'snapchatAccounts.snapchatCampaigns.snapchatAdsquads.snapAds',
-        ])->find(22);
+        ])->find($id);
 
         // Check if user exists
         if (!$user) {

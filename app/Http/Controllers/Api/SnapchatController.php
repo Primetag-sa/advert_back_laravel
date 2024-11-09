@@ -74,7 +74,7 @@ class SnapchatController extends Controller
         // Auth::login($user);
 
         return redirect()->route('saveData',['id'=>$user->id]);
-        // return redirect()->to('http://localhost:4200/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        // return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
 
         // return response()->json($user);
     }
@@ -229,7 +229,7 @@ class SnapchatController extends Controller
         }
     }
 
-    return redirect()->to('http://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+    return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
 }
 
 
@@ -424,7 +424,7 @@ class SnapchatController extends Controller
             }
         }
         // dd($user?->snapchatAccounts->toArray());
-        return redirect()->to('http://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
+        return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
         // return redirect()->to('https://advert.sa/auth/snapchat/callback?user=' . urlencode(json_encode($user)));
 
         // dd($response->json());

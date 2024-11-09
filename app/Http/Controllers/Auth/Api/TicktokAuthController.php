@@ -3,22 +3,25 @@
 namespace App\Http\Controllers\Auth\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\TikTokService;
 use Illuminate\Http\Request;
-use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Facades\Auth;
 
 class TicktokAuthController extends Controller
 {
     public function redirectToTikTok(Request $request)
     {
-        $token = $request->query('token');
+
         $url = $request->query('url');
+        $user=Auth::user();
+
 
         $clientId = config('services.tiktok.client_id');
         $redirectUri = config('services.tiktok.redirect');
         $state = [
-            'token' => $token,
             'url' => $url,
+            'user_id' => $user->id,
         ];
 
         $url = 'https://www.tiktok.com/v2/auth/authorize?response_type=code&scope=user.info.basic&client_key='.$clientId.'&redirect_uri='.urlencode($redirectUri).'&state='.json_encode($state);
@@ -30,23 +33,19 @@ class TicktokAuthController extends Controller
     {
 
         $state = json_decode($request->input('state'), true);
-        $token = $state['token'] ?? null;
         $url = $state['url'] ?? null;
+        $user_id = $state['user_id'] ?? null;
+
+        $user = User::find($user_id);
 
         try {
 
-            // Vérifier si un token utilisateur est présent
-            $user = null;
-            if ($token) {
-                $personalAccessToken = PersonalAccessToken::findToken($token);
-                if ($personalAccessToken) {
-                    $user = $personalAccessToken->tokenable;
-                } else {
-                    // Rediriger avec une erreur sur l'URL
-                    $redirectUrl = config('app.url_frontend').$url.'?status=failure';
+            if (!$user) {
 
-                    return redirect($redirectUrl);
-                }
+                // Rediriger avec une erreur sur l'URL
+                $redirectUrl = config('app.url_frontend').$url.'?status=failure';
+
+                return redirect($redirectUrl);
             }
 
             $code = $request->input('code');

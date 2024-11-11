@@ -253,18 +253,3 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully']);
     }
 }
-
-/* $users = User::where('role', $role)
-        ->when($status != 'all', function ($query) use ($status) {
-            return $query->where('is_confirmed', $status);
-        })
-        ->when($role == 'agent', function ($query) use ($agencyId) {
-            return $query->where('agent.agency_id', $agencyId);
-        })
-        ->orderBy('id', 'desc')
-        ->paginate($perPage); */
-
-/* $users->getCollection()->transform(function ($user) {
-    $user->image_url = asset($user->image); // Assuming you store image paths in 'image_path' field
-    return $user;
-}); */

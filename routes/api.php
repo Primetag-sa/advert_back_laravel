@@ -19,34 +19,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
-/* Route::get('auth/facebook', function () {
-    return Socialite::driver('facebook')->scopes(['ads_read', 'ads_management'])->redirect();
-});
-
-Route::get('auth/facebook/callback', function () {
-    $user = Socialite::driver('facebook')->user();
-    // Store user tokens, such as $user->token, for later API requests.
-}); */
-
 Route::get('/auth/facebook', [FacebookController::class, 'redirectToSnapchat'])->name('facebook.redirect');
 Route::get('/auth/facebook/callback', [FacebookController::class, 'handleCallback'])->name('facebook.callback.redirect');
 
 Route::get('/auth/instagram', [InstagramController::class, 'redirectToInstagram'])->name('instagram.redirect');
 Route::get('/auth/instagram/callback', [InstagramController::class, 'handleCallback'])->name('instagram.callback.redirect');
 
-
-// Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
-    Route::get('/ads/snapchat/campaigns/{accountId}', [SnapchatController::class, 'getAdsCampaigns']);
-    Route::get('/ads/snapchat/squads/{campaignId}', [SnapchatController::class, 'getAdsQuads']);
-// });
+Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
+Route::get('/ads/snapchat/campaigns/{accountId}', [SnapchatController::class, 'getAdsCampaigns']);
+Route::get('/ads/snapchat/squads/{campaignId}', [SnapchatController::class, 'getAdsQuads']);
 
 Route::get('/visitor-events', [TrackingsController::class, 'index']);
 Route::post('/tracking', [TrackingsController::class, 'trackingPost'])->name('trackingPost');
 Route::post('/track-event', [TrackingsController::class, 'trackEvent'])->name('trackEvent');
-
-
-
 
 Route::get('/auth/snapchat', [SnapchatController::class, 'redirectToSnapchat'])->name('snapchat.redirect');
 
@@ -64,12 +49,6 @@ Route::get('/get-status/{id}', [SnapchatController::class, 'getAdStats'])->name(
 Route::get('/get-campaign-status/{id}', [SnapchatController::class, 'getCampaignStats'])->name('getCampaignStats')->middleware('auth:sanctum');
 Route::get('/get-ad-squad-status/{id}', [SnapchatController::class, 'getAdSquadStats'])->name('getAdSquadStats')->middleware('auth:sanctum');
 
-// Route::get('/get-ads', function () {
-
-// })->name('get.snapchat.ads');
-
-//
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -79,16 +58,6 @@ Route::get('/tiktok/user', [TiktokController::class, 'getUserInfo']);
 
 Route::get('agency/agents', [UserController::class, 'agencyAgents'])->middleware('auth:sanctum');;
 Route::patch('users/{id}/change/status', [UserController::class, 'changeStatus']);
-
-
-/* Route::get('notifications', [NotificationController::class, 'index']);
-Route::get('notifications/user/{userId}', [NotificationController::class, 'userNotifications']);
-Route::post('notifications', [NotificationController::class, 'store']);
-Route::get('notifications/{id}', [NotificationController::class, 'show']);
-Route::put('notifications/{id}', [NotificationController::class, 'update']);
-Route::delete('notifications/{id}', [NotificationController::class, 'destroy']); */
-
-
 
 // Authentication routes
 Route::post('/profile/edit', [AuthController::class, 'editProfile']);

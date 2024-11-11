@@ -8,33 +8,16 @@ use App\Models\VisitorEvent;
 use Facebook\Facebook;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\SnapchatAccount;
-use App\Models\SnapchatAdsquad;
-use App\Models\SnapchatCampaign;
 use App\Http\Controllers\Controller;
 use App\Models\Visitor;
-use Illuminate\Support\Facades\Http;
-use Laravel\Socialite\Facades\Socialite;
-use Facebook\Exceptions\FacebookSDKException;
-use Facebook\Exceptions\FacebookResponseException;
-
 
 class TrackingsController extends Controller
 {
 
     public function index(Request $request)
     {
-        // Validate the request to ensure the email is provided
-        $request->validate([
-            // 'email' => 'required|email',
-        ]);
-
         $user = Auth()->user();
 
-        // Get the user based on the provided email
-        // $user = User::where('email', $request->email)->first();
-
-        // If the user is not found, return an appropriate response
         if (!$user) {
             return response()->json(['message' => 'User not found.'], 404);
         }
@@ -84,9 +67,6 @@ class TrackingsController extends Controller
         return response()->json(['message' => 'Event tracked successfully'], 200);
     }
 
-
-
-    
     public function trackingPost(Request $request)
     {
         // Validate the website input
@@ -100,20 +80,15 @@ class TrackingsController extends Controller
 
         // Generate a unique tracking client ID
         $trackingClientId = Str::random(24);
-
-        // Assuming authenticated user, you can get the user like this
-        // $user = auth()->user();
         
         $user = Auth()->user();
 
 
-        // Save the tracking website and tracking_client_id in the user's record
         $user->update([
             'tracking_website' => $website,
             'tracking_client_id' => $trackingClientId
         ]);
 
-        // Prepare the JavaScript snippet with the tracking client ID
         $javascriptCode = "
 <script>
 (function() {
@@ -199,7 +174,7 @@ class TrackingsController extends Controller
             'trackingKey'=>$trackingClientId,
             'website'=>$website,
         ];
-        // Return the JavaScript snippet as the response
+        
         return response()->json(['data' => $data]);
     }
 

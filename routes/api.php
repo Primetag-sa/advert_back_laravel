@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AdXAnalyticsController;
 use App\Http\Controllers\Api\FacebookController;
 use App\Http\Controllers\Api\InstagramController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\RoleAccessController;
 use App\Http\Controllers\Api\SnapchatController;
 use App\Http\Controllers\Api\TiktokController;
@@ -100,3 +101,7 @@ Route::middleware('auth:api')->group(function () {
     });
 
 });
+
+Route::apiResource('plans', PlanController::class, [
+    'only' => ['index', 'show']
+]);

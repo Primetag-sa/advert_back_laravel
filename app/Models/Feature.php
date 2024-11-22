@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Services\Period;
+use App\Traits\BelongsToPlan;
+use App\Traits\HasSlug;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,7 +16,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Feature extends Model implements Sortable
 {
-    use HasTranslations, SoftDeletes, SortableTrait;
+    use HasTranslations, SoftDeletes, SortableTrait, HasSlug, BelongsToPlan;
 
     protected $fillable = [
         'plan_id',

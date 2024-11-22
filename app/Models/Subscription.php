@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToPlan;
+use App\Traits\HasSlug;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +17,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Subscription extends Model
 {
-    use SoftDeletes, HasTranslations;
+    use SoftDeletes, HasTranslations, HasSlug, BelongsToPlan;
 
 
     protected $fillable = [

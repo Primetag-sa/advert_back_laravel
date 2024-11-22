@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +13,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Plan extends Model implements Sortable
 {
-    use SoftDeletes, SortableTrait, HasTranslations;
+    use SoftDeletes, SortableTrait, HasTranslations, HasSlug;
 
 
     protected $fillable = [

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AdXAnalyticsController;
 use App\Http\Controllers\Api\FacebookController;
 use App\Http\Controllers\Api\InstagramController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\RoleAccessController;
 use App\Http\Controllers\Api\SnapchatController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Auth\Api\AuthController;
 use App\Http\Controllers\Auth\Api\TicktokAuthController;
 use App\Http\Controllers\Auth\Api\TwitterAdsAuthController;
 use App\Http\Controllers\Auth\Api\TwitterAuthController;
+use App\Http\Controllers\Api\SubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
@@ -105,3 +107,14 @@ Route::middleware('auth:api')->group(function () {
 Route::apiResource('plans', PlanController::class, [
     'only' => ['index', 'show']
 ]);
+
+Route::prefix('subscription')->controller(SubscriptionController::class)->group(function () {
+    Route::post('/subscribe', 'subscribe');
+    Route::middleware('subscribed')->group(function(){
+        Route::get('/cancel', 'cancel');
+    });
+});
+
+Route::get('/payment/redirect', [PaymentController::class, 'redirect'])->name('payment.redirect');
+Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+

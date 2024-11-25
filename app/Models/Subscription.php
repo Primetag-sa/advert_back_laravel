@@ -110,6 +110,11 @@ class Subscription extends Model
         return $this->hasMany(SubscriptionUsage::class);
     }
 
+    public function paymentTransactions()
+    {
+        return $this->hasMany(PaymentTransaction::class);
+    }
+
     ////////////////////////////////////// Functions ///////////////////////////
     public function active(): bool
     {

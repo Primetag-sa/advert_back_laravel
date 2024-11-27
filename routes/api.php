@@ -113,9 +113,16 @@ Route::prefix('subscription')->controller(SubscriptionController::class)->group(
     Route::middleware('subscribed')->group(function(){
         Route::get('/cancel', 'cancel');
         Route::post('/change-plan', 'changePlan');
+        Route::get('/subscriptions', 'index');
+        Route::get('/subscriptions/{id}', 'show');
     });
 });
 
-Route::get('/payment/redirect', [PaymentController::class, 'redirect'])->name('payment.redirect');
-Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+Route::prefix('payment')->controller(PaymentController::class)->group(function(){
+    Route::get('/redirect', 'redirect')->name('payment.redirect');
+    Route::post('/callback', 'callback')->name('payment.callback');
+    Route::get('transactions', 'index');
+    Route::get('transactions/{id}', 'show');
+});
+
 

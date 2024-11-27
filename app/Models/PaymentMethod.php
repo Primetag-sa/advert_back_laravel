@@ -5,27 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentTransaction extends Model
+class PaymentMethod extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'subscription_id',
-        'ref',
-        'amount',
-        'status',
-        'currency',
-        'description'
+        'card_id',
+        'customer_id',
+        'payment_agreement_id'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function subscription()
-    {
-        return $this->belongsTo(Subscription::class);
     }
 }

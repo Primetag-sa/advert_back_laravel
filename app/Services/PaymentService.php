@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\PaymentMethod;
 use App\Models\Plan;
 use App\Models\User;
 use Exception;
@@ -22,7 +23,8 @@ class PaymentService
             'amount' => $plan->price,
             'currency' => 'SAR',
             'customer_initiated' => true,
-            'save_card' => false,
+            "description" => "New Subscription",
+            'save_card' => true,
             'receipt' => [
                 'email' => true,
             ],
@@ -49,8 +51,7 @@ class PaymentService
         if($response->status() == 200){
             return $response->json('transaction.url');
         } else {
-            dd($response->json());
-            // Throw new Exception('Error generating payment link');
+            Throw new Exception('Error generating payment link');
         }
     }
 
@@ -67,8 +68,15 @@ class PaymentService
                 'user_id' => $user->id,
                 'status' => $request->status,
                 'amount' => $request->amount,
-                'currency' => $request->currency
+                'currency' => $request->currency,
+                'description' => $request->description
             ], $subscription);
+
+            $this->storeUserCard([
+                'card_id' => $request->card['id'],
+                'customer_id' => $request->customer['id'],
+                'payment_agreement_id' => $request->payment_agreement['id']
+            ], $user);
         }
     }
 
@@ -97,5 +105,10 @@ class PaymentService
     public function storeTransaction($data, $subscription)
     {
         $subscription->paymentTransactions()->create($data);
+    }
+
+    public function storeUserCard($data, $user)
+    {
+        PaymentMethod::updateOrCreate(['user_id'=> $user->id], $data);
     }
 }

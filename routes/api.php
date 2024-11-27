@@ -112,6 +112,7 @@ Route::prefix('subscription')->controller(SubscriptionController::class)->group(
     Route::post('/subscribe', 'subscribe');
     Route::middleware('subscribed')->group(function(){
         Route::get('/cancel', 'cancel');
+        Route::post('/change-plan', 'changePlan');
     });
 });
 

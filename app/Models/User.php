@@ -121,4 +121,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(AccountsX::class);
     }
+
+    public function paymentMethod()
+    {
+        return $this->hasOne(PaymentMethod::class);
+    }
 }

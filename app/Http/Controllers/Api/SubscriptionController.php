@@ -23,15 +23,22 @@ class SubscriptionController extends Controller
 
         if(count($user->activePlanSubscriptions())){
             return response()->json([
-                'message' => 'You already have a Subscription',
+                'message' => 'You already has an active Subscription',
                 'status' => false,
             ], 400);
         }
 
-        if($plan->hasTrial() && !$user->planSubscriptions()->exists()){
+        if($plan->isFree()){
+            if(count($user->planSubscriptions)){
+                return response()->json([
+                    'message' => "You already subscribed before, Can't get the trial plan",
+                    'status' => false,
+                ], 400);
+            }
+
             $user->newPlanSubscription('main', $plan);
             return response()->json([
-                'message' => 'Congratulations, Now You Have '. $plan->trial_period . ' '. $plan->trial_interval . "/s as Trial Period" ,
+                'message' => 'Congratulations, Now You Have '. $plan->invoice_period . ' '. $plan->invoice_interval . "/s as Trial Period" ,
                 'status' => true,
             ]);
         } else {
@@ -44,23 +51,39 @@ class SubscriptionController extends Controller
         }
     }
 
-    // public function changePlan(Request $request)
-    // {
-    //     // TODO: implement change plan logic
-    //     $request->validate([
-    //         'plan_id' => ['required', 'exists:plans,id'],
-    //     ]);
-    //     // $user = auth()->user();
-    //     $user = User::first();
-    //     $plan = Plan::find($request->plan_id);
+    public function changePlan(Request $request)
+    {
+        $request->validate([
+            'plan_id' => ['required', 'exists:plans,id'],
+        ]);
 
-    //     if(count($user->activePlanSubscriptions()) == 0){
-    //         return response()->json([
-    //             'message' => "You Don't have any Subscription",
-    //             'status' => false,
-    //         ], 400);
-    //     }
-    // }
+        // $user = auth()->user();
+        $user = User::first();
+
+        if(count($user->activePlanSubscriptions()) == 0){
+            return response()->json([
+                'message' => "You Don't have any Subscription",
+                'status' => false,
+            ], 400);
+        }
+
+        $plan = Plan::find($request->plan_id);
+
+        $userSubscription = $user->activePlanSubscriptions()->last();
+        if($plan->id == $userSubscription->plan_id){
+            return response()->json([
+                'message' => "Can't Upgrade or Downgrade to the same Plan",
+                'status' => false,
+            ], 400);
+        }
+
+        $userSubscription->changePlan($plan);
+
+        return response()->json([
+            'message' => "Plan Changed Successfully",
+            'status' => true,
+        ]);
+    }
 
     public function cancel()
     {
@@ -78,7 +101,7 @@ class SubscriptionController extends Controller
                 $subscription->cancel();
             }
             return response()->json([
-                'message' => "Subscription Cancelled",
+                'message' => "Success, The Subscription has been canceled",
                 'status' => true,
             ]);
         }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Period;
 use App\Traits\BelongsToPlan;
 use App\Traits\HasSlug;
 use Carbon\Carbon;

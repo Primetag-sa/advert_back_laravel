@@ -63,21 +63,21 @@ trait HasPlanSubscriptions
 
     public function newPlanSubscription(string $subscription, Plan $plan, ?Carbon $startDate = null): Subscription
     {
-        $trial = new Period(
-            interval: $plan->trial_interval,
-            count: $plan->trial_period,
-            start: $startDate ?? Carbon::now()
-        );
+        // $trial = new Period(
+        //     interval: $plan->trial_interval,
+        //     count: $plan->trial_period,
+        //     start: $startDate ?? Carbon::now()
+        // );
         $period = new Period(
             interval: $plan->invoice_interval,
             count: $plan->invoice_period,
-            start: $trial->getEndDate()
+            start: $startDate ?? Carbon::now()
         );
 
         return $this->planSubscriptions()->create([
             'name' => $subscription,
             'plan_id' => $plan->getKey(),
-            'trial_ends_at' => $trial->getEndDate(),
+            'trial_ends_at' => now(),
             'starts_at' => $period->getStartDate(),
             'ends_at' => $period->getEndDate(),
         ]);

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Subscription;
+use App\Services\SubscriptionService;
 use Illuminate\Console\Command;
 
 class RenewSubscriptions extends Command
@@ -26,6 +27,10 @@ class RenewSubscriptions extends Command
      */
     public function handle()
     {
-        $subscriptions = Subscription::where('ends_at', '=', today())->get();
+        $subscriptions = Subscription::whereDate('ends_at', today())->get();
+        $subscriptionService = new SubscriptionService();
+        foreach($subscriptions as $subscription){
+            $subscriptionService->renewSubscription($subscription);
+        }
     }
 }

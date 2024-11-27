@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Models\PaymentMethod;
 use App\Models\Plan;
+use App\Models\Subscription;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class PaymentService
@@ -23,7 +25,7 @@ class PaymentService
             'amount' => $plan->price,
             'currency' => 'SAR',
             'customer_initiated' => true,
-            "description" => "New Subscription",
+            "description" => "new subscription",
             'save_card' => true,
             'receipt' => [
                 'email' => true,
@@ -60,23 +62,44 @@ class PaymentService
         $this->verifySignature($request);
         if($request->status == 'CAPTURED'){
             $user = User::where('email', $request->customer['email'])->first();
-            $plan = Plan::find($request->metadata['udf1']);
-            $subscriptionService = new SubscriptionService();
-            $subscription = $subscriptionService->subscribe($user, $plan);
-            $this->storeTransaction([
-                'ref' => $request->id,
-                'user_id' => $user->id,
-                'status' => $request->status,
-                'amount' => $request->amount,
-                'currency' => $request->currency,
-                'description' => $request->description
-            ], $subscription);
 
-            $this->storeUserCard([
-                'card_id' => $request->card['id'],
-                'customer_id' => $request->customer['id'],
-                'payment_agreement_id' => $request->payment_agreement['id']
-            ], $user);
+            switch ($request->description) {
+                case 'new subscription':
+                    $plan = Plan::find($request->metadata['udf1']);
+                    $subscriptionService = new SubscriptionService();
+                    $subscription = $subscriptionService->subscribe($user, $plan);
+                    $this->storeTransaction([
+                        'ref' => $request->id,
+                        'user_id' => $user->id,
+                        'status' => $request->status,
+                        'amount' => $request->amount,
+                        'currency' => $request->currency,
+                        'description' => $request->description
+                    ], $subscription);
+
+                    $this->storeUserCard([
+                        'card_id' => $request->card['id'],
+                        'customer_id' => $request->customer['id'],
+                        'payment_agreement_id' => $request->payment_agreement['id']
+                    ], $user);
+                    break;
+                case 'renew subscription':
+                    $subscription = Subscription::find($request->metadata['udf2']);
+                    $subscription->renew();
+                    $this->storeTransaction([
+                        'ref' => $request->id,
+                        'user_id' => $user->id,
+                        'status' => $request->status,
+                        'amount' => $request->amount,
+                        'currency' => $request->currency,
+                        'description' => $request->description
+                    ], $subscription);
+                    break;
+                default:
+                    Log::info("unknown callback type", $request->all());
+                    break;
+            }
+
         }
     }
 

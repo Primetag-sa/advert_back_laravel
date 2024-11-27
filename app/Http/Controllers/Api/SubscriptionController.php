@@ -7,7 +7,8 @@ use App\Models\User;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Http\Resources\SubscriptionResource;
+use App\Models\Subscription;
 
 class SubscriptionController extends Controller
 {
@@ -105,5 +106,20 @@ class SubscriptionController extends Controller
                 'status' => true,
             ]);
         }
+    }
+
+    public function index()
+    {
+        // $user = auth()->user();
+        $user = User::first();
+        $subscriptions = $user->planSubscriptions;
+
+        return SubscriptionResource::collection($subscriptions);
+    }
+
+    public function show($id)
+    {
+        $subscription = Subscription::findOrFail($id);
+        return new SubscriptionResource($subscription);
     }
 }

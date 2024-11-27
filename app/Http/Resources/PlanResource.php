@@ -20,8 +20,6 @@ class PlanResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'invoice_interval' => $this->invoice_interval,
-            'trial_period' => $this->trial_period,
-            'trial_interval' => $this->trial_period,
             'is_subscribed' => auth()->user() ? auth()->user()->subscribedTo($this->id) : false,
             'features' => FeatureResource::collection($this->features)
         ];

@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\FacebookAd;
+use App\Models\FacebookAdAccount;
+use App\Models\FacebookAdSet;
+use App\Models\FacebookCampaign;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Laravel\Socialite\Facades\Socialite;
+use GuzzleHttp\Client;
+
+class FacebookController extends Controller
+{
+
+    // Step 1: Redirect to facebook for authorization
+    // ads_management, ads_read ,business_management
+    public function redirectToFacebook(Request $request)
+    {
+        return Socialite::driver('facebook')
+            ->scopes(['ads_management'])
+            ->redirect();
+    }
+
+    public function saveDataOrg($userId)
+    {
+        $user = User::find($userId);
+        $client = new Client([
+            'base_uri' => 'https://graph.facebook.com/v17.0/',
+            'timeout'  => 10.0,
+        ]);
+
+        try {
+            $adAccountsResponse = $client->get('me/adaccounts', [
+                'query' => ['access_token' => $user->facebook_token],
+            ]);
+            $adAccounts = json_decode($adAccountsResponse->getBody()->getContents(), true)['data'];
+
+            foreach ($adAccounts as $adAccount) {
+                $adAccountModel = FacebookAdAccount::updateOrCreate(
+                    ['account_id' => $adAccount['id']],
+                    [
+                        'name' => $adAccount['name'] ?? null,
+                        'currency' => $adAccount['currency'] ?? null,
+                        'account_status' => $adAccount['account_status'] ?? null,
+                        'user_id' => $user->id,
+                    ]
+                );
+
+                // Option 1: Fetch Ads Directly from Ad Account
+                $adsResponse = $client->get("{$adAccount['id']}/ads", [
+                    'query' => ['access_token' => $user->facebook_token],
+                ]);
+                
+                $ads = json_decode($adsResponse->getBody()->getContents(), true)['data'];
+
+                foreach ($ads as $ad) {
+                    FacebookAd::updateOrCreate(
+                        ['ad_id' => $ad['id']],
+                        [
+                            'name' => $ad['name'] ?? null,
+                            'status' => $ad['status'] ?? null,
+                            'creative' => json_encode($ad['creative']) ?? null,
+                            'facebook_ad_account_id' => $adAccountModel->id,
+                        ]
+                    );
+                }
+
+                // Option 2: Fetch Ads Directly from Campaigns
+                $campaignsResponse = $client->get("{$adAccount['id']}/campaigns", [
+                    'query' => ['access_token' => $user->facebook_token],
+                ]);
+                $campaigns = json_decode($campaignsResponse->getBody()->getContents(), true)['data'];
+
+                foreach ($campaigns as $campaign) {
+                    $campaignModel = FacebookCampaign::updateOrCreate(
+                        ['campaign_id' => $campaign['id']],
+                        [
+                            'name' => $campaign['name'] ?? null,
+                            'status' => $campaign['status'] ?? null,
+                            'objective' => $campaign['objective'] ?? null,
+                            'facebook_ad_account_id' => $adAccountModel->id,
+                        ]
+                    );
+
+                    $adsResponse = $client->get("{$campaign['id']}/ads", [
+                        'query' => ['access_token' => $user->facebook_token],
+                    ]);
+                    $ads = json_decode($adsResponse->getBody()->getContents(), true)['data'];
+
+                    foreach ($ads as $ad) {
+                        FacebookAd::updateOrCreate(
+                            ['ad_id' => $ad['id']],
+                            [
+                                'name' => $ad['name'] ?? null,
+                                'status' => $ad['status'] ?? null,
+                                'creative' => json_encode($ad['creative']) ?? null,
+                                'facebook_campaign_id' => $campaignModel->id,
+                            ]
+                        );
+                    }
+                    //
+                    $adSetsResponse = $client->get("{$campaign['id']}/adsets", [
+                        'query' => ['access_token' => $user->facebook_token],
+                    ]);
+                    $adSets = json_decode($adSetsResponse->getBody()->getContents(), true)['data'];
+
+                    foreach ($adSets as $adSet) {
+                        $adSetModel = FacebookAdSet::updateOrCreate(
+                            ['ad_set_id' => $adSet['id']],
+                            [
+                                'name' => $adSet['name'] ?? null,
+                                'status' => $adSet['status'] ?? null,
+                                'budget' => $adSet['daily_budget'] ?? null,
+                                'campaign_id' => $campaignModel->id,
+                            ]
+                        );
+
+                        $adsResponse = $client->get("{$adSet['id']}/ads", [
+                            'query' => ['access_token' => $user->facebook_token],
+                        ]);
+                        $ads = json_decode($adsResponse->getBody()->getContents(), true)['data'];
+
+                        foreach ($ads as $ad) {
+                            FacebookAd::updateOrCreate(
+                                ['ad_id' => $ad['id']],
+                                [
+                                    'name' => $ad['name'] ?? null,
+                                    'status' => $ad['status'] ?? null,
+                                    'creative' => json_encode($ad['creative']) ?? null,
+                                    'facebook_ad_set_id' => $adSetModel->id,
+                                ]
+                            );
+                        }
+                    }
+                }
+            }
+
+            return response()->json(['message' => 'Ad data successfully saved.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function handleCallback(Request $request)
+    {
+        try{
+            $facebookUser = Socialite::driver('facebook')->user();
+        }catch(\Exception $exception){
+            dd($exception->getMessage());
+        }
+        
+        $user = Auth()->user();
+        $user->update([
+            'facebook_name'=>$facebookUser->user['name'],
+            'facebook_email'=>$facebookUser->user['email'],
+            'facebook_avatar'=>$facebookUser->user['avatar'],
+            'facebook_id'=>$facebookUser->user['id'],
+            'facebook_token'=>$facebookUser->token,
+            'facebook_refresh_token'=>$facebookUser->refreshToken,
+        ]);
+
+        $this->saveDataOrg($user->id);
+        return redirect()->to('http://advert.sa/facebook');
+    }
+
+}

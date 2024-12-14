@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TwitterAdsAuthController extends Controller
 {
@@ -181,41 +182,44 @@ class TwitterAdsAuthController extends Controller
 
         $url = $request->query('url');
         $id = $request->query('account_id');
-        $entity = $request->query('entity');
+        $entity = 'CAMPAIGN'; // Corrected to CAMPAIGN
         $entity_ids = $request->query('entity_ids');
         $start_time = $request->query('start_time');
         $end_time = $request->query('end_time');
-        $granularity = $request->query('granularity');
-        $placement = $request->query('placement');
+        $granularity = 'DAY'; // Corrected to DAY
+        $placement = 'ALL_ON_TWITTER'; // Corrected to ALL_ON_TWITTER
         $segmentation = $request->query('segmentation');
 
         // Vérifier si un token utilisateur est présent
         $user = Auth::user();
-        if (! $user) {
+        if (!$user) {
             // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
+            $redirectUrl = config('app.url_frontend') . $url . '?status=failure';
             return redirect($redirectUrl);
         }
 
         // Vérifier si l'utilisateur a des tokens d'accès
-        if (! $user || ! $user->twitter_access_token || ! $user->twitter_access_token_secret) {
+        if (!$user || !$user->twitter_access_token || !$user->twitter_access_token_secret) {
             // Rediriger vers le processus d'autorisation si pas de tokens
             return redirect()->route('twitter.ads.redirect'); // ou l'URL appropriée
         }
 
         // URL de l'API Twitter Ads
-        $apiUrl = 'https://ads-api.x.com/12/stats/accounts/'.$id;
-        $start=new \Datetime($start_time);
-        $end=new \Datetime($end_time);
+        $apiUrl = 'https://ads-api.x.com/12/stats/accounts/' . $id;
+
+        // Prepare start and end dates
+        $start = new \Datetime($start_time);
+        $end = new \Datetime($end_time);
+
+        // Prepare the query parameters
         $query = [
-            "segmentation_type"=> $segmentation,
-            'entity' => $entity,
+            'segmentation_type' => $segmentation,
+            'entity' => 'CAMPAIGN', // Corrected to CAMPAIGN
             'entity_ids' => $entity_ids,
             'start_time' => $start->format('Y-m-d'),
             'end_time' => $end->format('Y-m-d'),
-            'granularity' => $granularity,
-            'placement' => $placement,
+            'granularity' => 'DAY', // Corrected to DAY
+            'placement' => 'ALL_ON_TWITTER', // Corrected to ALL_ON_TWITTER
             'metric_groups' => 'ENGAGEMENT,BILLING',
         ];
 
@@ -234,12 +238,12 @@ class TwitterAdsAuthController extends Controller
         ksort($signatureParams);
 
         // 2. Créer la base string pour la signature
-        $baseString = 'GET&'.
-            rawurlencode($apiUrl).'&'.
+        $baseString = 'GET&' .
+            rawurlencode($apiUrl) . '&' .
             rawurlencode(http_build_query($signatureParams));
 
         // 3. Créer la clé de signature
-        $signingKey = rawurlencode(config('services.twitter.api_secret')).'&'.
+        $signingKey = rawurlencode(config('services.twitter.api_secret')) . '&' .
             rawurlencode($user->twitter_access_token_secret);
 
         // 4. Générer la signature
@@ -251,12 +255,13 @@ class TwitterAdsAuthController extends Controller
         $authorizationHeader = 'OAuth ';
         $authParams = [];
         foreach ($oauthParams as $key => $value) {
-            $authParams[] = rawurlencode($key).'="'.rawurlencode($value).'"';
+            $authParams[] = rawurlencode($key) . '="' . rawurlencode($value) . '"';
         }
         $authorizationHeader .= implode(', ', $authParams);
 
-            // 6. Faire la requête avec Guzzle
-            $client = new Client;
+        // 6. Faire la requête avec Guzzle
+        $client = new Client;
+        try {
             $response = $client->request('GET', $apiUrl, [
                 'headers' => [
                     'Authorization' => $authorizationHeader,
@@ -265,14 +270,22 @@ class TwitterAdsAuthController extends Controller
                 'query' => $query,
                 'timeout' => 60,
             ]);
-
             return response()->json(
                 json_decode($response->getBody()->getContents())
             );
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            // Log the full error response for debugging
+            $errorResponse = $e->getResponse()->getBody()->getContents();
+            Log::error("API Request Error: " . $errorResponse);
 
-
-
+            // Handle error
+            return response()->json([
+                'error' => 'Bad Request',
+                'message' => $errorResponse,
+            ], 400);
+        }
     }
+
 
     public function getOneAccount(Request $request): \Illuminate\Foundation\Application|\Illuminate\Http\JsonResponse|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse
     {
@@ -281,6 +294,7 @@ class TwitterAdsAuthController extends Controller
         $url = $request->query('url');
         // Vérifier si un token utilisateur est présent
         $user = Auth::user();
+
         if (! $user) {
             // Rediriger avec une erreur sur l'URL
             $redirectUrl = config('app.url_frontend').$url.'?status=failure';
@@ -296,7 +310,6 @@ class TwitterAdsAuthController extends Controller
 
         // URL de l'API Twitter Ads
         $url = 'https://ads-api.x.com/12/stats/jobs/accounts/'.$id_account;
-
         // Paramètres OAuth de base
         $oauthParams = [
             'oauth_consumer_key' => config('services.twitter.api_key'),
@@ -336,62 +349,91 @@ class TwitterAdsAuthController extends Controller
 
     public function getActiveEntities(Request $request)
     {
-
         $url = $request->query('url');
         $accountId = $request->query('accountId');
+        $entity = $request->query('entity', 'PROMOTED_TWEET'); // Default entity
+        $startTime = $request->query('start_time', '2019-02-28T00:00:00Z'); // Default start time with UTC format
+        $endTime = $request->query('end_time', '2019-03-01T00:00:00Z');     // Default end time with UTC format
 
-        // Vérifier si un token utilisateur est présent
+        // Validate that the end time is after the start time
+        if (strtotime($endTime) <= strtotime($startTime)) {
+            return response()->json([
+                'error' => 'Invalid time range',
+                'message' => 'The end_time must be after the start_time.',
+            ], 400);
+        }
+
+        // Check if a user is authenticated
         $user = Auth::user();
-
-        if (! $user) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
-
+        if (!$user) {
+            $redirectUrl = config('app.url_frontend') . $url . '?status=failure';
             return redirect($redirectUrl);
         }
 
-        // Vérifier si l'utilisateur a des tokens d'accès
-        if (! $user || ! $user->twitter_access_token || ! $user->twitter_access_token_secret) {
-            // Rediriger vers le processus d'autorisation si pas de tokens
-            return redirect()->route('twitter.ads.redirect'); // ou l'URL appropriée
+        if (!$user->twitter_access_token || !$user->twitter_access_token_secret) {
+            return redirect()->route('twitter.ads.redirect');
         }
 
-        // URL de l'API Twitter Ads
-        $url = "https://ads-api.x.com/12/stats/accounts/$accountId/active_entities";
 
-        // Paramètres OAuth de base
+        // Construct the API URL with the query parameters
+        $apiBaseUrl = "https://ads-api.x.com/12/stats/accounts/$accountId/active_entities";
+        $queryParams = [
+            'entity' => $entity,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+            'granularity' => $request->query('granularity', 'DAY'),
+            'placement' => $request->query('placement', 'ALL_ON_TWITTER'),
+            'segmentation_type' => $request->query('segmentation_type', 'AGE'),
+            'platform' => $request->query('platform', 'WEB'),
+            'country' => $request->query('country', 'US'),
+            'entity_ids' => $request->query('entity_ids', '1234'),
+        ];
+
+        $fullUrl = $apiBaseUrl . '?' . http_build_query($queryParams); // Build query string
+
+        // OAuth parameters
         $oauthParams = [
             'oauth_consumer_key' => config('services.twitter.api_key'),
-            'oauth_token' => $user->twitter_access_token, // Utiliser le token d'accès stocké
+            'oauth_token' => $user->twitter_access_token,
             'oauth_nonce' => $this->generateNonce(),
             'oauth_timestamp' => time(),
             'oauth_signature_method' => 'HMAC-SHA1',
             'oauth_version' => '1.0',
         ];
 
-        // Générer la signature OAuth
-        $oauthParams['oauth_signature'] = $this->buildOAuthSignature('GET', $url, $oauthParams, config('services.twitter.api_secret'), $user->twitter_access_token_secret);
+        // Generate OAuth signature
+        $oauthParams['oauth_signature'] = $this->buildOAuthSignature('GET', $apiBaseUrl, array_merge($queryParams, $oauthParams), config('services.twitter.api_secret'), $user->twitter_access_token_secret);
 
-        // Créer les en-têtes OAuth
+        // Create OAuth header
         $oauthHeader = $this->buildOAuthHeader($oauthParams);
 
-        // Utiliser Guzzle pour envoyer la requête avec les en-têtes OAuth
-        $client = new Client;
+        // Make the API request with Guzzle
+        $client = new Client();
+        try {
+            $response = $client->request('GET', $fullUrl, [
+                'headers' => [
+                    'Authorization' => $oauthHeader,
+                ],
+                'timeout' => 60,
+            ]);
 
-        $response = $client->request('GET', $url, [
-            'headers' => [
-                'Authorization' => $oauthHeader,
-            ],
-            'timeout' => 60,
-        ]);
+            // Parse and return the response
+            $responseBody = $response->getBody()->getContents();
+            $data = json_decode($responseBody, true);
 
-        // Afficher la réponse
-        $responseBody = $response->getBody()->getContents();
-        $data = json_decode($responseBody)->data;
+            return response()->json($data, 200);
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            Log::error('Guzzle Error: ' . $e->getMessage());
+            Log::error('Response Body: ' . $e->getResponse()->getBody()->getContents());
 
-        return response()->json($data, 200);
+            return response()->json(['error' => 'Bad Request', 'message' => $e->getMessage()], 400);
+        } catch (\Exception $e) {
+            Log::error('Unexpected Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Unexpected Error', 'message' => $e->getMessage()], 500);
+        }
 
-    }
+
+}
 
     public function fetchAndStoreAccounts(Request $request)
     {

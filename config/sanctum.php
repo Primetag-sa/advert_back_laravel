@@ -26,7 +26,6 @@ return [
                 127.0.0.1:4200,
                 127.0.0.1:8080,
                 127.0.0.1:8888,
-                ec2-3-28-121-92.me-central-1.compute.amazonaws.com,
                 127.0.0.1:8888,
                 ::1',
         Sanctum::currentApplicationUrlWithPort()

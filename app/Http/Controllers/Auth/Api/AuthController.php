@@ -23,7 +23,8 @@ class AuthController extends Controller
             $user = Auth::user();
             if ($user->is_confirmed) {
                 $request->session()->regenerate();
-
+                $token = $user->createToken('advert')->plainTextToken;
+                $user->token = $token;
                 return response()->json($user, 200);
             } else {
                 return response()->json(['message' => 'الحساب غير مفعل', 'type' => 'not_confirmed'], 401);

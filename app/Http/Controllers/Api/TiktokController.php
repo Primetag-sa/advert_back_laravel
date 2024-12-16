@@ -11,6 +11,7 @@ use App\Services\TikTokService;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TiktokController extends Controller
 {
@@ -86,54 +87,57 @@ class TiktokController extends Controller
     public function fetchAndStoreAccounts(Request $request, TikTokService $tikTokService)
     {
         $url = $request->query('url');
-
-        // Vérifier si un token utilisateur est présent
         $user = Auth::user();
-        if (! $user || ! $user->tiktok_token) {
-            // Rediriger avec une erreur sur l'URL
-            $redirectUrl = config('app.url_frontend').$url.'?status=failure';
 
+        if (!$user || !$user->tiktok_token) {
+            $redirectUrl = config('app.url_frontend') . $url . '?status=failure';
             return redirect($redirectUrl);
         }
 
         try {
-
+            // Fetch data from TikTok API
             $data = $tikTokService->getAdvertiserGet($user->tiktok_token);
+
+            // Check if data is valid
+            if (empty($data['data']['list'])) {
+                return response()->json(['error' => 'No TikTok accounts found'], 404);
+            }
+
+            // Save TikTok account data
             $user->tiktok_id = json_encode($data['data']['list']);
             $user->save();
 
-            /*if (count($data) > 0) {
-
-                foreach ($data as $accountData) {
-                    AccountsX::updateOrCreate(
-                        ['account_id' => $accountData->id],
-                        [
-                            'name' => $accountData->name,
-                            'business_name' => $accountData->business_name,
-                            'timezone' => $accountData->timezone,
-                            'timezone_switch_at' => $accountData->timezone_switch_at,
-                            'business_id' => $accountData->business_id,
-                            'approval_status' => $accountData->approval_status,
-                            'deleted' => $accountData->deleted,
-                            'user_id' => $user->id,
-                        ]
-                    );
-                }
+            // Optionally update or create accounts
+            /*
+            foreach ($data['data']['list'] as $accountData) {
+                AccountsX::updateOrCreate(
+                    ['account_id' => $accountData['id']],
+                    [
+                        'name' => $accountData['name'],
+                        'business_name' => $accountData['business_name'],
+                        'timezone' => $accountData['timezone'],
+                        'timezone_switch_at' => $accountData['timezone_switch_at'],
+                        'business_id' => $accountData['business_id'],
+                        'approval_status' => $accountData['approval_status'],
+                        'deleted' => $accountData['deleted'],
+                        'user_id' => $user->id,
+                    ]
+                );
             }
-
-            $accounts = AccountsX::where('user_id', $user->id)->orderBy('id', 'desc')->get();
-            foreach ($accounts as $key => $account) {
-                $active = AdXAnalytic::where('account_id', $account->account_id)->get();
-                $accounts[$key]->countActive = count($active);
-            }*/
+            */
 
             return response()->json($data, 200);
-        } catch (RequestException $e) {
-            // Gérer les erreurs de requête
-            return response()->json(['error' => 'حدث خطأ أثناء استخراج البيانات'], 402);
-        }
 
+        } catch (RequestException $e) {
+            Log::error('TikTok API Request Failed: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while fetching data'], 402);
+        } catch (\Exception $e) {
+            Log::error('Unexpected Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Unexpected error occurred'], 500);
+        }
     }
+
+
 
     public function accounts(Request $request, TikTokService $tikTokService)
     {

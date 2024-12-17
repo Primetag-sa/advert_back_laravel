@@ -13,6 +13,7 @@ use App\Services\SnapchatService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
@@ -510,14 +511,16 @@ class SnapchatController extends Controller
         ]);
     }
 
+
     public function getAdStats($adId, Request $request)
     {
-        // Set default date range: one month ago to today
-        $startTime = $request->query('startDate', Carbon::now()->subMonth()->startOfDay()->toIso8601String());
-        $endTime = $request->query('endDate', Carbon::now()->toIso8601String());
+        // Set default date range: one day ago to today
+        $startTime = $request->query('start_time', Carbon::now()->subDay()->startOfDay()->toIso8601String());
+        $endTime = $request->query('end_time', Carbon::now()->endOfDay()->toIso8601String());
 
-
-        $type = $request->query('type', 'DAY'); // Default to 'DAY'
+        // Default granularity and fields
+        $granularity = $request->query('granularity', 'DAY'); // Ensure DAY granularity
+        $fields = $request->query('fields', 'impressions,swipes'); // Default to basic fields
 
         // Fetch the authenticated user
         $user = Auth::user();
@@ -525,7 +528,7 @@ class SnapchatController extends Controller
             return response()->json(['error' => 'Unauthenticated user'], 401);
         }
 
-        // Check for user's Snapchat access token
+        // Check for Snapchat access token
         $accessToken = $user->snapchat_access_token;
         if (!$accessToken) {
             return response()->json(['error' => 'Access token not found for the user.'], 401);
@@ -539,30 +542,55 @@ class SnapchatController extends Controller
 
         // Fetch ad stats from Snapchat service
         try {
-            // Call the Snapchat service to fetch ad stats
-            $stats = $this->snapchatService->getAdStats($snap->snap_id, $startTime, $endTime, $type, $accessToken);
+            // Call the Snapchat service with simplified parameters
+            $stats = $this->snapchatService->getAdStats(
+                $snap->snap_id,
+                $startTime,
+                $endTime,
+                $granularity,
+                $accessToken,
+                $fields
+            );
         } catch (\Exception $e) {
-            // If 401 Unauthorized error (expired token), refresh the token and retry
+            // Handle 401 Unauthorized error and refresh access token
             if ($e->getCode() === 401) {
-                // Try refreshing the access token
                 $refreshResponse = $this->refreshSnapchatAccessToken($user);
 
                 if ($refreshResponse['success']) {
-                    // Retry fetching the ad stats with the new access token
-                    $stats = $this->snapchatService->getAdStats($snap->snap_id, $startTime, $endTime, $type, $user->snapchat_access_token);
+                    // Retry with the new access token
+                    $stats = $this->snapchatService->getAdStats(
+                        $snap->snap_id,
+                        $startTime,
+                        $endTime,
+                        $granularity,
+                        $user->snapchat_access_token,
+                        $fields
+                    );
                     return response()->json($stats);
                 } else {
                     return response()->json(['error' => 'Failed to refresh access token.', 'details' => $refreshResponse['details']], 401);
                 }
             }
 
-            // For other exceptions, return an error response
+            // Handle 400 Bad Request errors
+            if ($e->getCode() === 400) {
+                return response()->json([
+                    'error' => 'Unsupported request parameters. Please verify the time range and fields.',
+                    'details' => json_decode($e->getResponse()->getBody()->getContents(), true)
+                ], 400);
+            }
+
+            // Return other exception details
             return response()->json(['error' => 'Failed to fetch ad stats.', 'details' => $e->getMessage()], 500);
         }
 
         // Return stats in a JSON response
         return response()->json($stats);
     }
+
+
+
+
 
 
     private function refreshSnapchatAccessToken($user)
@@ -575,12 +603,11 @@ class SnapchatController extends Controller
             $response = $this->client->post($url, [
                 'form_params' => [
                     'refresh_token' => $user->snapchat_refresh_token, // Refresh token
-                    'client_id' => 'b48d23b3-5c26-4921-93a5-2d41d1488577', // Client ID (from .env or config)
-                    'client_secret' => 'd3dc2b4467137ff9e6ac', // Client Secret (from .env or config)
+                    'client_id' => env('SNAPCHAT_CLIENT_ID'), // Client ID from .env
+                    'client_secret' => env('SNAPCHAT_CLIENT_SECRET'), // Client Secret from .env
                     'grant_type' => 'refresh_token', // Grant type
                 ]
             ]);
-
 
             // Parse the response
             $data = json_decode($response->getBody()->getContents(), true);
@@ -601,45 +628,29 @@ class SnapchatController extends Controller
             }
 
             return ['success' => false, 'details' => 'Refresh token request failed.'];
+
         } catch (\Exception $e) {
             return ['success' => false, 'details' => $e->getMessage()];
         }
     }
 
 
+
+// Adjusted to handle the correct time zone conversion and end-of-day formatting
     public function getAdSquadStats($adSquad, Request $request)
     {
-        // return $this->snapchatService->processCampaignStatsTests();
+        // Fetch start and end time from request, with default values
+        $startTime = $request->query('start_time', Carbon::now()->subMonth()->startOfDay()->toIso8601String());
+        $endTime = $request->query('end_time', Carbon::now()->toIso8601String());
 
-        $startTime = $request->query('startDate', Carbon::now()->subMonth()->startOfDay()->toIso8601String());
-        $endTime = $request->query('endDate', Carbon::now()->toIso8601String());
-        $type = $request->query('type', "DAY");
-
-        $user = Auth::user();
-        $accessToken = $user->snapchat_access_token;
-
-
-        $squad = SnapchatAdsquad::find($adSquad);
-
-        // Call the service method to get stats
-        $stats = $this->snapchatService->getAdSquadStats($squad->snap_id, $startTime, $endTime, $accessToken,$type);
-
-        // Return the stats directly since it's already a JSON response from the service
-        return $stats;
-    }
-
-    public function getCampaignStats($adCampaign, Request $request)
-    {
-        // return $this->snapchatService->processCampaignStatsTests();
-
-        $startTime = $request->query('startDate', Carbon::now()->subMonth()->startOfDay()->toIso8601String());
-        $endTime = $request->query('endDate', Carbon::now()->toIso8601String());
-        $type = $request->query('type', 'DAY');
+        // Set granularity and fields
+        $granularity = $request->query('granularity', 'DAY');
+        $fields = $request->query('fields', 'impressions,swipes');
 
         // Fetch user access token
         $user = Auth::user();
         if (!$user) {
-            return response()->json(['error' => 'Unauthetification user'], 401);
+            return response()->json(['error' => 'Unauthenticated user'], 401);
         }
 
         $accessToken = $user->snapchat_access_token;
@@ -649,13 +660,126 @@ class SnapchatController extends Controller
             return response()->json(['error' => 'Access token not found for the user.'], 401);
         }
 
+        // Log the access token for debugging (optional)
+        \Log::info('Access Token:', ['token' => $accessToken]);
+
+        // Find the Ad Squad
+        $adSquadObj = SnapchatAdsquad::find($adSquad);
+        if (!$adSquadObj) {
+            return response()->json(['error' => 'Ad Squad not found'], 404);
+        }
+
+        // Retrieve snap_id from the found Ad Squad
+        $snapId = $adSquadObj->snap_id;
+
+        // Ensure snap_id is available
+        if (!$snapId) {
+            return response()->json(['error' => 'Invalid snap_id'], 400);
+        }
+
+        // Adjust the start time and end time to the beginning of the day in the user's time zone (America/Los_Angeles)
+        $startTime = Carbon::parse($startTime)->timezone('America/Los_Angeles')->startOfDay()->toIso8601String();
+        $endTime = Carbon::parse($endTime)->timezone('America/Los_Angeles')->endOfDay()->toIso8601String();
+
+        // Prepare the API URL
+        $url = "https://adsapi.snapchat.com/v1/ad-squads/{$snapId}/stats";
+        $queryParams = [
+            'granularity' => $granularity,
+            'fields' => $fields,
+            'start_time' => $startTime,
+            'end_time' => $endTime
+        ];
+
+        try {
+            // Send the request using Guzzle
+            $response = Http::withToken($accessToken)
+                ->get($url, $queryParams);
+
+            // Check for successful response
+            if ($response->successful()) {
+                return $response->json();  // Return the stats data
+            } else {
+                // Log and return the detailed error message
+                Log::error('Snapchat API Error', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+                return response()->json([
+                    'error' => 'Failed to fetch stats',
+                    'message' => $response->body(),
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the request
+            return response()->json(['error' => 'Request failed', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
+
+
+
+    public function getCampaignStats($adCampaign, Request $request)
+    {
+        // Fetch start and end time from request, with default values
+        $startTime = $request->query('start_time', Carbon::now()->subMonth()->startOfDay()->toIso8601String());
+        $endTime = $request->query('end_time', Carbon::now()->toIso8601String());
+
+        // Set granularity and fields
+        $granularity = $request->query('granularity', 'DAY');
+        $fields = $request->query('fields', 'impressions,swipes');
+
+        // Fetch user access token
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated user'], 401);
+        }
+
+        $accessToken = $user->snapchat_access_token;
+
+        // Check if access token is available
+        if (!$accessToken) {
+            return response()->json(['error' => 'Access token not found for the user.'], 401);
+        }
+
+        // Find the campaign
         $campaign = SnapchatCampaign::find($adCampaign);
+        if (!$campaign) {
+            return response()->json(['error' => 'Campaign not found'], 404);
+        }
 
-        // Call the service method to get stats
-        $stats = $this->snapchatService->getCampaignStats($campaign->snap_id, $startTime, $endTime,$type, $accessToken);
+        // Adjust the start time and end time to the beginning of the day in the user's time zone (America/Los_Angeles)
+        $startTime = Carbon::parse($startTime)->timezone('America/Los_Angeles')->startOfDay()->toIso8601String();
+        $endTime = Carbon::parse($endTime)->timezone('America/Los_Angeles')->startOfDay()->toIso8601String(); // Ensure end_time is also start of the day
 
-        // Return the stats directly since it's already a JSON response from the service
-        return $stats;
+        // Prepare the API URL
+        $url = "https://adsapi.snapchat.com/v1/campaigns/{$campaign->snap_id}/stats";
+        $queryParams = [
+            'granularity' => $granularity,
+            'fields' => $fields,
+            'start_time' => $startTime,
+            'end_time' => $endTime
+        ];
+
+        try {
+            // Send the request using Guzzle
+            $response = Http::withToken($accessToken)
+                ->get($url, $queryParams);
+
+            // Check for successful response
+            if ($response->successful()) {
+                return $response->json();  // Return the stats data
+            } else {
+                return response()->json([
+                    'error' => 'Failed to fetch stats',
+                    'message' => $response->body(),
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the request
+            return response()->json(['error' => 'Request failed', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function getAdsAccounts()

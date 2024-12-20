@@ -20,17 +20,19 @@ use App\Http\Controllers\Auth\Api\TwitterAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
-
+use App\Http\Controllers\PlanController;
+use Abraham\TwitterOAuth\TwitterOAuth;
 
 
 Route::get('/auth/instagram', [InstagramController::class, 'redirectToInstagram'])->name('instagram.redirect');
+Route::apiResource('plans', PlanController::class);
 
 Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
 Route::get('/ads/snapchat/campaigns/{accountId}', [SnapchatController::class, 'getAdsCampaigns']);
 Route::get('/ads/snapchat/squads/{campaignId}', [SnapchatController::class, 'getAdsQuads']);
 
 Route::get('/visitor-events', [TrackingsController::class, 'index']);
-//change in auth 
+//change in auth
 Route::post('/tracking', [TrackingsController::class, 'trackingPost'])->name('trackingPost')->middleware('auth:sanctum');
 Route::post('/track-event', [TrackingsController::class, 'trackEvent'])->name('trackEvent');
 
@@ -160,4 +162,36 @@ Route::middleware('auth:api')->group(function () {
         return $request->user();
     });
 
+});
+
+
+Route::get('/check-twitter-keys', function () {
+    $apiKey = env('TWITTER_API_KEY');
+    $apiSecret = env('TWITTER_API_SECRET');
+
+    try {
+        // Create a new instance of the TwitterOAuth class
+        $twitter = new TwitterOAuth($apiKey, $apiSecret);
+
+        // Request a bearer token to check if the keys are valid
+        $response = $twitter->oauth2('oauth2/token', ['grant_type' => 'client_credentials']);
+
+        if (isset($response->access_token)) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Twitter API keys are valid!',
+                'access_token' => $response->access_token,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Invalid Twitter API keys.',
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ]);
+    }
 });

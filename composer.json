@@ -12,6 +12,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "guzzlehttp/oauth-subscriber": "^0.6",
         "janyksteenbeek/socialite-instagram-business": "^1.0",
+        "laravel/breeze": "^1.29",
         "laravel/framework": "^10.10",
         "laravel/passport": "^12.2",
         "laravel/sanctum": "^3.3",
@@ -19,6 +20,7 @@
         "laravel/tinker": "^2.8",
         "socialiteproviders/snapchat": "^4.1",
         "socialiteproviders/tiktok": "^5.2",
+        "spatie/laravel-permission": "^6.10",
         "yz/laravel-socialite-snapchat-marketing-api": "^1.2"
     },
     "require-dev": {

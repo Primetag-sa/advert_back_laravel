@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Agency;
+use App\Models\Plan;
 use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +23,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            if ($user->is_confirmed) {
+            if ($user->is_confirmed ) {
                 $request->session()->regenerate();
                 $token = $user->createToken('advert')->plainTextToken;
                 $user->token = $token;
@@ -91,40 +93,88 @@ class AuthController extends Controller
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
+//    public function register(Request $request)
+//    {
+//        $validator = Validator::make($request->all(), [
+//            'name' => 'required|string|max:255',
+//            'email' => 'required|string|email|max:255|unique:users',
+//            'password' => 'required|string|min:8|confirmed',
+//        ]);
+//
+//        if ($validator->fails()) {
+//            return response()->json($validator->errors(), 422);
+//        }
+//
+//        $user = User::create([
+//            'name' => $request->name,
+//            'email' => $request->email,
+//            'password' => Hash::make($request->password),
+//            'is_confirmed' => false,
+//            'role' => 'agency',
+//        ]);
+//
+//        $agency = Agency::create([
+//            'name' => $user->agencyName,
+//            'user_id' => $user->id,
+//            'tiktok_url' => '',
+//            'facebook_url' => '',
+//            'instagram_url' => '',
+//            'snapchat_url' => '',
+//            'x_url' => '',
+//        ]);
+//
+//        $token = $user->createToken('advert')->plainTextToken;
+//
+//        return response()->json(['token' => $token, 'user' => $user], 201);
+//    }
+
+
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+                'plan_id' => 'required|integer',
+                'agency_name' => 'nullable|string',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            $plan = Plan::findOrFail($request->plan_id);
+
+            $minimumBasePrice = Plan::min('base_price');
+            $type = $plan->base_price === $minimumBasePrice ? 'user' : 'agency';
+
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => $type,
+            ]);
+
+            $user->assignRole($type);
+
+            if ($type === 'user') {
+                UserDetail::create(['user_id' => $user->id]);
+            } else {
+                Agency::create(['user_id' => $user->id, 'name' => $request->agency_name]);
+            }
+
+            $token = $user->createToken('advert')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Registered successfully',
+                'user' => $user,
+                'token' => $token
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
         }
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'is_confirmed' => false,
-            'role' => 'agency',
-        ]);
-
-        $agency = Agency::create([
-            'name' => $user->agencyName,
-            'user_id' => $user->id,
-            'tiktok_url' => '',
-            'facebook_url' => '',
-            'instagram_url' => '',
-            'snapchat_url' => '',
-            'x_url' => '',
-        ]);
-
-        $token = $user->createToken('advert')->plainTextToken;
-
-        return response()->json(['token' => $token, 'user' => $user], 201);
     }
+
 
     public function logout(Request $request)
     {

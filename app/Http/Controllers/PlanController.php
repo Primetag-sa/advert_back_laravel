@@ -23,7 +23,8 @@ class PlanController extends Controller
             'max_users' => 'required|integer|min:1',
             'features' => 'array',
             'features.*.name' => 'required|string|max:255',
-            'features.*.price' => 'required|numeric|min:0'
+            'features.*.price' => 'required|numeric|min:0',
+            'features.*.is_include' => 'required|boolean',
         ]);
 
         $plan = Plan::create($validated);
@@ -33,7 +34,11 @@ class PlanController extends Controller
             foreach ($validated['features'] as $featureData) {
                 $feature = new Feature($featureData);
                 $plan->features()->save($feature);
-                $totalFeaturePrice += $feature->price;
+
+                // Include price only if is_include is true
+                if ($featureData['is_include']) {
+                    $totalFeaturePrice += $feature->price;
+                }
             }
         }
 
@@ -42,6 +47,7 @@ class PlanController extends Controller
 
         return response()->json($plan->load('features'), 201);
     }
+
 
     public function show($id)
     {
@@ -62,25 +68,35 @@ class PlanController extends Controller
             'max_users' => 'sometimes|integer|min:1',
             'features' => 'array',
             'features.*.name' => 'required|string|max:255',
-            'features.*.price' => 'required|numeric|min:0'
+            'features.*.price' => 'required|numeric|min:0',
+            'features.*.is_include' => 'required|boolean',
         ]);
 
         $plan->update($validated);
 
         if (isset($validated['features'])) {
             $plan->features()->delete();
+
             $totalFeaturePrice = 0;
+
             foreach ($validated['features'] as $featureData) {
                 $feature = new Feature($featureData);
                 $plan->features()->save($feature);
-                $totalFeaturePrice += $feature->price;
+
+                if ($featureData['is_include']) {
+                    $totalFeaturePrice += $feature->price;
+                }
             }
+
+            // Update the total price
             $plan->total_price = $plan->base_price + $totalFeaturePrice;
         }
 
         $plan->save();
+
         return response()->json($plan->load('features'));
     }
+
 
     public function destroy($id)
     {

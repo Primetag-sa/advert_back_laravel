@@ -16,7 +16,8 @@ class Plan extends Model
         'base_price',
         'min_users',
         'max_users',
-        'total_price'
+        'total_price',
+        'user_cost'
     ];
 
     public function features()

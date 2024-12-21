@@ -11,7 +11,8 @@ class Feature extends Model
     protected $fillable = [
         'plan_id',
         'name',
-        'price'
+        'price',
+        'is_include'
     ];
 
     public function plan()

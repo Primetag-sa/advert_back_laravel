@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('features', function (Blueprint $table) {
             $table->boolean('is_include')->default(false); // Add this line
+            $table->integer('user_cost')->nullable(); // Add this line
 
         });
     }

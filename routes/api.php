@@ -21,11 +21,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\FeatureController;
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 
 Route::get('/auth/instagram', [InstagramController::class, 'redirectToInstagram'])->name('instagram.redirect');
 Route::apiResource('plans', PlanController::class);
+Route::apiResource('features', FeatureController::class);
 
 Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
 Route::get('/ads/snapchat/campaigns/{accountId}', [SnapchatController::class, 'getAdsCampaigns']);

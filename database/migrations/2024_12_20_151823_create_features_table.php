@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('features', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('plan_id');
             $table->string('name');
             $table->decimal('price', 10, 2);
-            $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->timestamps();
         });
     }

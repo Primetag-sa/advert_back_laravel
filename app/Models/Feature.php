@@ -9,7 +9,6 @@ class Feature extends Model
     use HasFactory;
 
     protected $fillable = [
-        'plan_id',
         'name',
         'price',
         'is_include'

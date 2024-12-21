@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('min_users');
             $table->integer('max_users');
             $table->decimal('total_price', 10, 2)->default(0);
+            $table->integer('user_cost')->nullable();
+
             $table->timestamps();
         });
     }

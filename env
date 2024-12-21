@@ -1,0 +1,280 @@
+# https://advert.sa/api/isAuthenticated
+#
+# SNAPCHAT_CLIENT_ID=b48d23b3-5c26-4921-93a5-2d41d1488577
+# SNAPCHAT_CLIENT_SECRET=d3dc2b4467137ff9e6ac
+# SNAPCHAT_REDIRECT_URI=http://localhost:8888/api/auth/snapchat/callback
+
+# Facebook Login for Business nécessite un accès Avancé
+# Votre application dispose d’un accès standard au public_profile. Pour utiliser Facebook Login for Business, basculez le public_profile sur un accès Avancé.
+
+
+APP_NAME=Advert
+APP_ENV=local
+APP_KEY=base64:v8dQAAfSeseSGWFgVoZ3bK6h4ufWb/KSIZ7Njp+Cmj4=
+APP_DEBUG=true
+APP_URL=http://localhost:8888,https://advert.sa
+
+FRONTEND_URL=http://localhost:4200
+FRONTEND_API_URL=http://localhost:8888
+FRONTEND_APP_NAME=Advert
+
+SESSION_DOMAIN=localhost
+SANCTUM_STATEFUL_DOMAINS=localhost:4200
+
+LOG_CHANNEL=stack
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3307
+# DB_DATABASE=advert_online
+DB_DATABASE=advert_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+SESSION_SECURE_COOKIE=true
+
+# BROADCAST_DRIVER=log
+# CACHE_DRIVER=file
+# FILESYSTEM_DISK=local
+# QUEUE_CONNECTION=sync
+# SESSION_DRIVER=file
+# SESSION_LIFETIME=120
+
+MEMCACHED_HOST=localhost
+
+REDIS_HOST=localhost
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=us-west-2
+AWS_BUCKET=backadvert
+AWS_USE_PATH_STYLE_ENDPOINT=false
+
+PUSHER_APP_ID=
+PUSHER_APP_KEY=
+PUSHER_APP_SECRET=
+PUSHER_HOST=
+PUSHER_PORT=443
+PUSHER_SCHEME=https
+PUSHER_APP_CLUSTER=mt1
+
+VITE_APP_NAME="${APP_NAME}"
+VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+VITE_PUSHER_HOST="${PUSHER_HOST}"
+VITE_PUSHER_PORT="${PUSHER_PORT}"
+VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+
+
+#   INFO  Personal access client created successfully.
+
+#   Client ID ................................................................ 3
+#   Client secret ..................... vijCTuB1QDvqO28YhJrErFBDtAin5iONNTbF64lv
+
+#    INFO  Password grant client created successfully.
+
+#   Client ID ................................................................ 4
+#   Client secret ..................... bbqsx6uBhbnzSpNJquEoUxxsOlzfv6T1uaqzNcr7
+
+
+# SNAPCHAT_CLIENT_ID=c7d417f6-2802-4670-ad0c-b171679efaf7
+# SNAPCHAT_CLIENT_SECRET=e716a27d-eb71-4db5-9f05-3aecf96cf32a
+# SNAPCHAT_REDIRECT_URI=http://localhost:4200/snapchat/callback
+
+
+
+# SNAPCHAT_CLIENT_ID=your_client_id
+# SNAPCHAT_CLIENT_SECRET=your_client_secret
+# SNAPCHAT_REDIRECT_URI=your_redirect_uri
+# SNAPCHAT_API_BASE_URL=https://adsapi.snapchat.com/v1/
+
+# SNAPCHAT_CLIENT_ID=your-client-id
+# SNAPCHAT_CLIENT_SECRET=your-client-secret
+# SNAPCHAT_REDIRECT_URI=https://yourapp.com/auth/snapchat/callback
+
+SNAPCHAT_CLIENT_ID=5c5316fd-954d-4df9-93fd-992206583725
+SNAPCHAT_CLIENT_SECRET=c3256c6a2fdf7c62beb5
+SNAPCHAT_REDIRECT_URI=https://advert.sa/auth/snapchat/callback
+
+# App Name
+# advert-pro
+# Snap Redirect URI
+# https://localhost:8888/auth/snapchat/callback
+# Snap Client ID
+# 5c5316fd-954d-4df9-93fd-992206583725
+# Please make sure you save your Snap Client Secret Key below. It will not be available again.
+# Snap Client Secret Key:
+#   c3256c6a2fdf7c62beb5
+
+
+#http://localhost:4200
+
+
+# prof
+# Identifiant de l’application
+# 2570496409805819
+
+# Clé secrète
+# 7696f57cac57e0e1e29749a6af37e41d
+
+
+# advert-auth
+# 1651954612016949
+# 2da69a966426a1237cff709fdfbf8125
+
+FACEBOOK_CLIENT_ID=1651954612016949
+FACEBOOK_CLIENT_SECRET=2da69a966426a1237cff709fdfbf8125
+# FACEBOOK_REDIRECT_URL=http://localhost:8888/api/auth/facebook/callback
+FACEBOOK_REDIRECT_URL=http://localhost:8888/api/auth/facebook/callback
+
+INSTAGRAM_BUSINESS_CLIENT_ID=1315344859452418
+INSTAGRAM_BUSINESS_CLIENT_SECRET=77a4e839ea7c6efce92eda58a265f21b
+INSTAGRAM_BUSINESS_REDIRECT_URI=http://localhost:8888/api/auth/instagram/callback
+
+# INSTAGRAM_CLIENT_ID=your-instagram-client-id
+# INSTAGRAM_CLIENT_SECRET=your-instagram-client-secret
+# INSTAGRAM_REDIRECT_URI=https://your-domain.com/auth/instagram/callback
+
+
+# http://localhost:8888/api/auth/facebook
+
+# EAAXecafVlzUBO5vkmTpAGhMfv75jSLZCYmJtiSkFDzzzirg8D2L5hqpZBKqyJAFodpyoDjjVLgAjfPnulTH7ZBqD4ACCmQiTpl7MAYpk8K7FaUEZBpxKUjbsL76rrqwGZBcWvbZC7FpcHZCRFWO5raH6kUrRQJCyeFm7by1g0J0qQWBCtSCYjF6PV9yr5CkOcV3
+#new: EAAXecafVlzUBOZBM0feGda6iPhHAd1sSbvwh2JsD1vtuHkX0RPV1MEx4DtiZCAzWwoP7HlH5Gu9LDeWRKSZBj9mKLG2yZB9830BqgZBgVl8Wv8HZButCdLG59ZA1SJVy524x1xIDZCyWzud2aEiYGbuIIjM9RUB85rLY819Pu2drBRetZApINQ1aBQBnXImoEXd9h
+# other : EAAXecafVlzUBO1aEDhtUXmh9zRr4jDFyTPyQ5jj1FE2a2dZCBZCAcy4cb31Yp8xrcReMBLi3EfeXiH7uCtM2m7WEbw3itzvYqXvvylMDdtzDuJ2s1I3GijJWFB1xG5ULrAac9qj4pFsZCJ6uXtJ0G806aq6aLYMVNIqAyWL7NKleRloSk8HWM6og2z7fO0a23tjDzma
+# advert-sandbox (779830564277017)
+
+
+# old app
+# take Token
+# EAASsTJca1AIBOxkqP1tUHibWGZBRss4VuQHSmWDS7OJdZAvoJRledWZB6XSfXaVPj69lyr0Vpzys1VD70baliCXi8vKU3jfLrf02BqQRSAJJ6SZBfXlMPlc6819Ia4B78ddsYAJ5AgZArhsWo5ZCYd4YwzzJYq8DmCtLrvtmgZAhU4oHZALK5ZAwhc3aHBNyJkPcm
+
+
+# http://127:8888/api/auth/facebook/callback
+# http://localhost:8888/api/auth/facebook/callback
+
+# FACEBOOK_CLIENT_ID=418654461339370
+# FACEBOOK_CLIENT_SECRET=feff43a0fee56dc1b84e90e933b3fdea
+# FACEBOOK_REDIRECT_URL=https://localhost:8888/api/auth/facebook/callback
+# FACEBOOK_REDIRECT_URL=https://localhost:8888/api/auth/facebook/callback
+
+# advert-IG
+INSTAGRAM_BUSINESS_CLIENT_ID=1315344859452418
+INSTAGRAM_BUSINESS_CLIENT_SECRET=77a4e839ea7c6efce92eda58a265f21b
+INSTAGRAM_BUSINESS_REDIRECT_URI=https://localhost:8888/api/auth/instagram/callback
+
+
+
+
+
+
+# Clé secrète
+# feff43a0fee56dc1b84e90e933b3fdea
+
+# Identifiant de l’application
+# 418654461339370
+
+# http://localhost:4200/auth/snapchat/callback
+
+# App Name
+# advert
+# Snap Redirect URI
+# https://8260-160-177-23-94.ngrok-free.app/auth/snapchat/callback
+# Snap Client ID
+# 042c637d-1510-4702-ad86-05555dcf4a74
+# Please make sure you save your Snap Client Secret Key below. It will not be available again.
+# Snap Client Secret Key:
+#   9fe5d15d3c46b821488e
+
+
+
+
+
+
+
+# eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzI4NjM5ODA1LCJzdWIiOiJkNWJhN2VkZi04YjNjLTRhZTYtYjMxOC05OGYxODBkNzc0ZDl-UFJPRFVDVElPTn41Y2ZlZDhlZi1iZDE4LTQ5NjYtOTA1Ni0xMzk5MDkyOTdhMWUifQ._5lWKKDSGUKphfTJ87v5sT1klxH2tfLfu2XFKfePoDg
+
+
+# be155fcf-b845-4e12-bfc7-ea4139fe4c4c
+
+# Staging
+# Confidential Client Secret
+# Use this Client Secret for persistent server-side authentication. This key is generated on a one-time basis and will need to be regenerated if lost. Please copy and store safely before closing.
+# Confidential Client ID
+# 0d524eac-6f3f-441d-a865-1216350b2c64
+# Confidential Client Secret
+# 7y-m3DaNVf_GXbGb6eg5LdnQZTWEstPAWJ8P-zAfDeU
+
+
+TWITTER_API_KEY=EbVxKofUQ3pXLq6sXP5YPjSw1
+TWITTER_API_SECRET=XS8ZqpsWS83sOucX6eOLmkHb2eymPlFVKoBrEcgdqn9O3cayhs
+TWITTER_CALLBACK_URL=http://localhost:8888/api/auth/twitter/callback
+
+
+
+# Confidential Client ID
+# 25f97961-975e-4977-888d-1dcdf6d5f11d
+# Confidential Client Secret
+# LKG46EOKuJgYqUk_VCYVweG7WJultjmoJr0G8k-FFWg
+
+
+# curl -X POST \
+#   -d "grant_type=authorization_code" \
+#   -d "client_id=25f97961-975e-4977-888d-1dcdf6d5f11d" \
+#   -d "client_secret=LKG46EOKuJgYqUk_VCYVweG7WJultjmoJr0G8k-FFWg" \
+#   -d "code=Access Token" \
+#   -d "redirect_uri=http://localhost:4200/auth/snapchat/callback"
+#   https://accounts.snapchat.com/login/oauth2/access_token
+
+
+
+
+
+
+# Confidential Client ID
+# fc1b8edc-1932-4d6b-9224-7408dcf20335
+
+# Confidential Client Secret
+# uW20p1Y8aes44ihTl2mignylIgRXvLSCCCPNHWh2WTc
+
+
+
+
+# Public OAuth 2.0 Client ID
+# prod
+# 08de31d3-ecf8-44fc-8418-30fcb03142c2
+# staging
+# e716a27d-eb71-4db5-9f05-3aecf96cf32a
+
+# API Tokens
+# prod
+# eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzI3ODkxMjAzLCJzdWIiOiJjN2Q0MTdmNi0yODAyLTQ2NzAtYWQwYy1iMTcxNjc5ZWZhZjd-UFJPRFVDVElPTn45ZjcwYzU2Zi04NTc5LTQ3NmMtYWQxYS1jMjEwNWJiYjc1MmIifQ.o76OsvyfkpoizMyW7-mYc-htJu3AmKgWHMMceQwJngU
+# staging
+# eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzI3ODkxMjAzLCJzdWIiOiJjN2Q0MTdmNi0yODAyLTQ2NzAtYWQwYy1iMTcxNjc5ZWZhZjd-U1RBR0lOR34xNDcxNjU3OC1jNTEwLTRiZWUtYjIwMC1kMmZiMzc2M2JlNzIifQ.vNQy_RqcNsDEwtwcvbYOWXcwfjpl8AdOOuaVOVrAh0g
+
+
+
+
+
+# Public OAuth 2.0 Client ID e716a27d-eb71-4db5-9f05-3aecf96cf32a
+# ID c7d417f6-2802-4670-ad0c-b171679efaf7
+# Organization ID d5ba7edf-8b3c-4ae6-b318-98f180d774d9

@@ -22,31 +22,25 @@ class PlanController extends Controller
             'min_users' => 'required|integer|min:1',
             'max_users' => 'required|integer|min:1',
             'user_cost' => 'required|integer',
-            'features' => 'array',
-            'features.*.name' => 'required|string|max:255',
-            'features.*.price' => 'required|numeric|min:0',
-            'features.*.is_include' => 'required|boolean',
+            'feature_ids' => 'array',
+            'feature_ids.*' => 'exists:features,id',
         ]);
 
         $plan = Plan::create($validated);
-        $totalFeaturePrice = 0;
-
-        if (!empty($validated['features'])) {
-            foreach ($validated['features'] as $featureData) {
-                $feature = new Feature($featureData);
-                $plan->features()->save($feature);
-
-                // Include price only if is_include is true
-                if ($featureData['is_include']) {
-                    $totalFeaturePrice += $feature->price;
-                }
-            }
+        if (!empty($validated['feature_ids'])) {
+            $plan->features()->sync($validated['feature_ids']);
         }
 
+        // Calculate total price
+        $totalFeaturePrice = Feature::whereIn('id', $validated['feature_ids'])
+            ->sum('price');
         $plan->total_price = $plan->base_price + $totalFeaturePrice;
         $plan->save();
 
-        return response()->json($plan->load('features'), 201);
+        return response()->json([
+            'message' => 'Plan created successfully!',
+            'data' => $plan->load('features')
+        ], 201);
     }
 
 
@@ -68,37 +62,25 @@ class PlanController extends Controller
             'min_users' => 'sometimes|integer|min:1',
             'max_users' => 'sometimes|integer|min:1',
             'user_cost' => 'sometimes|integer',
-            'features' => 'array',
-            'features.*.name' => 'required|string|max:255',
-            'features.*.price' => 'required|numeric|min:0',
-            'features.*.is_include' => 'required|boolean',
+            'feature_ids' => 'array',
+            'feature_ids.*' => 'exists:features,id',
         ]);
 
         $plan->update($validated);
 
-        if (isset($validated['features'])) {
-            $plan->features()->delete();
-
-            $totalFeaturePrice = 0;
-
-            foreach ($validated['features'] as $featureData) {
-                $feature = new Feature($featureData);
-                $plan->features()->save($feature);
-
-                if ($featureData['is_include']) {
-                    $totalFeaturePrice += $feature->price;
-                }
-            }
-
-            // Update the total price
-            $plan->total_price = $plan->base_price + $totalFeaturePrice;
+        if (isset($validated['feature_ids'])) {
+            $plan->features()->sync($validated['feature_ids']);
         }
 
+        // Update total price
+        $totalFeaturePrice = Feature::whereIn('id', $validated['feature_ids'] ?? [])
+            ->where('is_include', true)
+            ->sum('price');
+        $plan->total_price = $plan->base_price + $totalFeaturePrice;
         $plan->save();
 
         return response()->json($plan->load('features'));
     }
-
 
     public function destroy($id)
     {
@@ -107,4 +89,6 @@ class PlanController extends Controller
 
         return response()->json(['message' => 'Plan deleted successfully']);
     }
+
+
 }

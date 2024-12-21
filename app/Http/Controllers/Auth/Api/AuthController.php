@@ -7,6 +7,7 @@ use App\Models\Agency;
 use App\Models\Plan;
 use App\Models\User;
 use App\Models\UserDetail;
+use App\Models\UserPlan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -138,6 +139,8 @@ class AuthController extends Controller
                 'password' => 'required|string|min:8|confirmed',
                 'plan_id' => 'required|integer',
                 'agency_name' => 'nullable|string',
+                'number_of_sites' => 'nullable|string',
+                'number_of_users' => 'nullable|string',
             ]);
 
             $plan = Plan::findOrFail($request->plan_id);
@@ -151,8 +154,10 @@ class AuthController extends Controller
                 'password' => Hash::make($validated['password']),
                 'role' => $type,
             ]);
+            $totalPrice=$plan->total_price+($plan->user_cost*$request->number_of_users);
 
             $user->assignRole($type);
+            UserPlan::create(['user_id' => $user->id,'plan_id' => $request->plan_id, 'number_of_sites' => $request->number_of_sites,'number_of_users' => $request->number_of_users,'total_price' => $totalPrice]);
 
             if ($type === 'user') {
                 UserDetail::create(['user_id' => $user->id]);

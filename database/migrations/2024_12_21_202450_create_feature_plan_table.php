@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->text('customers_google')->nullable();
+        Schema::create('feature_plan', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+            $table->foreignId('feature_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('feature_plan');
     }
 };

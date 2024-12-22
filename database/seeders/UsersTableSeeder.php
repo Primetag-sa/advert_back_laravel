@@ -17,7 +17,6 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'admin',
                 'email' => 'john2@example.com',
-                'phone' => '123',
                 'image' => 'profile1.jpg',
                 'role' => 'admin',
                 'permissions' => 'all',
@@ -35,7 +34,6 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'admin2',
                 'email' => 'admin2@example.com',
-                'phone' => '1234567890',
                 'image' => 'profile1.jpg',
                 'role' => 'admin',
                 'permissions' => 'all',
@@ -53,7 +51,6 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'agency1',
                 'email' => 'agency1@example.com',
-                'phone' => '1234567890',
                 'image' => 'profile1.jpg',
                 'role' => 'agency',
                 'permissions' => 'all',
@@ -71,7 +68,6 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'agency2',
                 'email' => 'agency2@example.com',
-                'phone' => '1234567890',
                 'image' => 'profile1.jpg',
                 'role' => 'agency',
                 'permissions' => 'all',
@@ -89,7 +85,6 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'agency3',
                 'email' => 'agency3@example.com',
-                'phone' => '1234567890',
                 'image' => 'profile1.jpg',
                 'role' => 'agency',
                 'permissions' => 'all',
@@ -107,7 +102,6 @@ class UsersTableSeeder extends Seeder
             [
                 'name' => 'agent',
                 'email' => 'agent@example.com',
-                'phone' => '1234567890',
                 'image' => 'profile1.jpg',
                 'role' => 'agency',
                 'permissions' => 'all',

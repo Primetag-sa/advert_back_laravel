@@ -19,6 +19,7 @@ class UserPlan extends Model
         'number_of_users',
         'number_of_sites',
         'plan_id',
+        'total_price',
     ];
 
 

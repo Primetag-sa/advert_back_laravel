@@ -26,7 +26,7 @@ class AuthController extends Controller
             $user = Auth::user();
             if ($user->is_confirmed ) {
                 $request->session()->regenerate();
-                $token = $user->createToken('advert')->plainTextToken;
+                $token = $user->createToken('advert', [], now()->addHours(12))->plainTextToken;
                 $user->token = $token;
                 return response()->json($user, 200);
             } else {
@@ -147,13 +147,13 @@ class AuthController extends Controller
 
             $minimumBasePrice = Plan::min('base_price');
             $type = $plan->base_price === $minimumBasePrice ? 'user' : 'agency';
-
             $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'role' => $type,
             ]);
+
             $totalPrice=$plan->total_price+($plan->user_cost*$request->number_of_users);
 
             $user->assignRole($type);
@@ -165,7 +165,7 @@ class AuthController extends Controller
                 Agency::create(['user_id' => $user->id, 'name' => $request->agency_name]);
             }
 
-            $token = $user->createToken('advert')->plainTextToken;
+            $token = $user->createToken('advert', [], now()->addHours(12))->plainTextToken;
 
             return response()->json([
                 'message' => 'Registered successfully',

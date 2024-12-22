@@ -23,19 +23,38 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\FeatureController;
 use Abraham\TwitterOAuth\TwitterOAuth;
-
+use App\Http\Controllers\UserDetailsController;
+use App\Http\Controllers\AgencyController;
 
 Route::get('/auth/instagram', [InstagramController::class, 'redirectToInstagram'])->name('instagram.redirect');
-Route::apiResource('plans', PlanController::class);
-Route::apiResource('features', FeatureController::class);
+Route::apiResource('plans', PlanController::class)->middleware(['auth:sanctum', 'token.expiry']);
+Route::apiResource('features', FeatureController::class)->middleware(['auth:sanctum', 'token.expiry']);
 
-Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
+
+Route::prefix('user-details')->group(function () {
+    Route::get('/', [UserDetailsController::class, 'index']);
+    Route::get('/{id}', [UserDetailsController::class, 'show']);
+    Route::post('/', [UserDetailsController::class, 'store']);
+    Route::put('/{id}', [UserDetailsController::class, 'update']);
+    Route::delete('/{id}', [UserDetailsController::class, 'destroy']);
+});
+
+Route::prefix('agencies')->group(function () {
+    Route::get('/', [AgencyController::class, 'index']);
+    Route::get('/{id}', [AgencyController::class, 'show']);
+    Route::post('/', [AgencyController::class, 'store']);
+    Route::put('/{id}', [AgencyController::class, 'update']);
+    Route::delete('/{id}', [AgencyController::class, 'destroy']);
+});
+
+
+Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts'])->middleware(['auth:sanctum', 'token.expiry']);
 Route::get('/ads/snapchat/campaigns/{accountId}', [SnapchatController::class, 'getAdsCampaigns']);
 Route::get('/ads/snapchat/squads/{campaignId}', [SnapchatController::class, 'getAdsQuads']);
 
 Route::get('/visitor-events', [TrackingsController::class, 'index']);
 //change in auth
-Route::post('/tracking', [TrackingsController::class, 'trackingPost'])->name('trackingPost')->middleware('auth:sanctum');
+Route::post('/tracking', [TrackingsController::class, 'trackingPost'])->name('trackingPost')->middleware(['auth:sanctum', 'token.expiry']);
 Route::post('/track-event', [TrackingsController::class, 'trackEvent'])->name('trackEvent');
 
 Route::get('/auth/snapchat', [SnapchatController::class, 'redirectToSnapchat'])->name('snapchat.redirect');
@@ -53,16 +72,16 @@ Route::get('/ads/snapchat/ads/account/{accountId}', [SnapchatController::class, 
 Route::get('/ads/snapchat/ads/campaign/{campaignId}', [SnapchatController::class, 'fetchAdsByCampaign']);
 Route::get('/ads/snapchat/ads/squad/{squadId}', [SnapchatController::class, 'fetchAdsByAdSquad']);
 
-Route::get('/snapchat/ad-data', [SnapchatController::class, 'saveData'])->middleware('auth:sanctum');
-Route::get('/facebook/ad-data', [FacebookController::class, 'saveData'])->middleware('auth:sanctum');
+Route::get('/snapchat/ad-data', [SnapchatController::class, 'saveData'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/facebook/ad-data', [FacebookController::class, 'saveData'])->middleware(['auth:sanctum', 'token.expiry']);
 Route::get('/snapchat/ads', [SnapchatController::class, 'retrieveAds']);
-Route::get('/save-data', [SnapchatController::class, 'saveData'])->name('saveData')->middleware('auth:sanctum');
-Route::get('/get-snap-data', [SnapchatController::class, 'getData'])->name('getData')->middleware('auth:sanctum');
+Route::get('/save-data', [SnapchatController::class, 'saveData'])->name('saveData')->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/get-snap-data', [SnapchatController::class, 'getData'])->name('getData')->middleware(['auth:sanctum', 'token.expiry']);
 
 /* status */
-Route::get('/get-status/{id}', [SnapchatController::class, 'getAdStats'])->name('getAdStats')->middleware('auth:sanctum');
-Route::get('/get-campaign-status/{id}', [SnapchatController::class, 'getCampaignStats'])->name('getCampaignStats')->middleware('auth:sanctum');
-Route::get('/get-ad-squad-status/{id}', [SnapchatController::class, 'getAdSquadStats'])->name('getAdSquadStats')->middleware('auth:sanctum');
+Route::get('/get-status/{id}', [SnapchatController::class, 'getAdStats'])->name('getAdStats')->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/get-campaign-status/{id}', [SnapchatController::class, 'getCampaignStats'])->name('getCampaignStats')->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/get-ad-squad-status/{id}', [SnapchatController::class, 'getAdSquadStats'])->name('getAdSquadStats')->middleware(['auth:sanctum', 'token.expiry']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -70,7 +89,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
-Route::get('agency/agents', [UserController::class, 'agencyAgents'])->middleware('auth:sanctum');;
+Route::get('agency/agents', [UserController::class, 'agencyAgents'])->middleware(['auth:sanctum', 'token.expiry']);;
 Route::patch('users/{id}/change/status', [UserController::class, 'changeStatus']);
 
 // Authentication routes
@@ -80,33 +99,33 @@ Route::get('/auth/tiktok', [TicktokAuthController::class, 'redirectToTikTok']);
 Route::get('/auth/google-ads', [GoogleAdsAuthController::class, 'redirectToGoogle']);
 
 //twitter
-Route::get('/twitter/tweets', [TweetController::class, 'getUserTweets'])->middleware('auth:sanctum');
-Route::get('/ads/accounts/twitter', [TwitterAdsAuthController::class, 'getAdsAccounts'])->middleware('auth:sanctum');
-Route::get('/ads/account/twitter', [TwitterAdsAuthController::class, 'getOneAccount'])->middleware('auth:sanctum');
-Route::get('/ads/account/active-entities', [TwitterAdsAuthController::class, 'getActiveEntities'])->middleware('auth:sanctum');
-Route::get('/twitter/signOut', [TwitterAuthController::class, 'signOutTweeter'])->middleware('auth:sanctum');
-Route::get('/twitter/accounts', [TwitterAdsAuthController::class, 'fetchAndStoreAccounts'])->middleware('auth:sanctum');
-Route::get('/twitter/account/datas', [TwitterAdsAuthController::class, 'fetchData'])->middleware('auth:sanctum');
-Route::get('/twitter/metrics', [TwitterAdsAuthController::class, 'getMetrics'])->middleware('auth:sanctum');
-Route::get('/twitter/campaigns', [TwitterAdsAuthController::class, 'getCampains'])->middleware('auth:sanctum');
-Route::get('/twitter/conversionsperonethousandimpressions', [TwitterAdsAuthController::class, 'getConversionsPerOneThousandImpressions'])->middleware('auth:sanctum');
-Route::get('/twitter/conversionsperimpressions', [TwitterAdsAuthController::class, 'getConversionsPerOneThousandImpressions'])->middleware('auth:sanctum');
-Route::get('/twitter/impressionsperaudiance', [TwitterAdsAuthController::class, 'getConversionsPerOneThousandImpressions'])->middleware('auth:sanctum');
-Route::get('/twitter/conversionsperrevenue', [TwitterAdsAuthController::class, 'getConversionsPerOneThousandImpressions'])->middleware('auth:sanctum');
+Route::get('/twitter/tweets', [TweetController::class, 'getUserTweets'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/ads/accounts/twitter', [TwitterAdsAuthController::class, 'getAdsAccounts'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/ads/account/twitter', [TwitterAdsAuthController::class, 'getOneAccount'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/ads/account/active-entities', [TwitterAdsAuthController::class, 'getActiveEntities'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/twitter/signOut', [TwitterAuthController::class, 'signOutTweeter'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/twitter/accounts', [TwitterAdsAuthController::class, 'fetchAndStoreAccounts'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/twitter/account/datas', [TwitterAdsAuthController::class, 'fetchData'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/twitter/metrics', [TwitterAdsAuthController::class, 'getMetrics'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/twitter/campaigns', [TwitterAdsAuthController::class, 'getCampains'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/twitter/conversionsperonethousandimpressions', [TwitterAdsAuthController::class, 'getConversionsPerOneThousandImpressions'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/twitter/conversionsperimpressions', [TwitterAdsAuthController::class, 'getConversionsPerOneThousandImpressions'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/twitter/impressionsperaudiance', [TwitterAdsAuthController::class, 'getConversionsPerOneThousandImpressions'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/twitter/conversionsperrevenue', [TwitterAdsAuthController::class, 'getConversionsPerOneThousandImpressions'])->middleware(['auth:sanctum', 'token.expiry']);
 
 
 //tiktok
-Route::get('/tiktok/user', [TiktokController::class, 'getUserInfo'])->middleware('auth:sanctum');;
-Route::get('/tiktok/signOut', [TicktokAuthController::class, 'signOutTiktok'])->middleware('auth:sanctum');
-Route::get('/tiktok/accounts', [TiktokController::class, 'fetchAndStoreAccounts'])->middleware('auth:sanctum');
-Route::get('/tiktok/allAccounts', [TiktokController::class, 'accounts'])->middleware('auth:sanctum');
-Route::get('/tiktok/campaigns', [TiktokController::class, 'getCampains'])->middleware('auth:sanctum');
-Route::get('/tiktok/adgroup', [TiktokController::class, 'getAdGroup'])->middleware('auth:sanctum');
-Route::get('/tiktok/ad', [TiktokController::class, 'getAd'])->middleware('auth:sanctum');
-Route::get('/tiktok/conversionsperonethousandimpressions', [TiktokController::class, 'getConversionsPerOneThousandImpressions'])->middleware('auth:sanctum');
-Route::get('/tiktok/conversionsperimpressions', [TiktokController::class, 'getConversionsPerImpressions'])->middleware('auth:sanctum');
-Route::get('/tiktok/impressionsperaudiance', [TiktokController::class, 'getImpressionsPerAudiance'])->middleware('auth:sanctum');
-Route::get('/tiktok/conversionsperrevenue', [TiktokController::class, 'getConversionsPerRevenue'])->middleware('auth:sanctum');
+Route::get('/tiktok/user', [TiktokController::class, 'getUserInfo'])->middleware(['auth:sanctum', 'token.expiry']);;
+Route::get('/tiktok/signOut', [TicktokAuthController::class, 'signOutTiktok'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/tiktok/accounts', [TiktokController::class, 'fetchAndStoreAccounts'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/tiktok/allAccounts', [TiktokController::class, 'accounts'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/tiktok/campaigns', [TiktokController::class, 'getCampains'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/tiktok/adgroup', [TiktokController::class, 'getAdGroup'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/tiktok/ad', [TiktokController::class, 'getAd'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/tiktok/conversionsperonethousandimpressions', [TiktokController::class, 'getConversionsPerOneThousandImpressions'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/tiktok/conversionsperimpressions', [TiktokController::class, 'getConversionsPerImpressions'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/tiktok/impressionsperaudiance', [TiktokController::class, 'getImpressionsPerAudiance'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/tiktok/conversionsperrevenue', [TiktokController::class, 'getConversionsPerRevenue'])->middleware(['auth:sanctum', 'token.expiry']);
 
 
 //google
@@ -131,7 +150,7 @@ Route::prefix('/google-ads')->group(function () {
 
     // Recherche et filtrage
     Route::post('/search', [GoogleAdsController::class, 'searchEntities']);
-})->middleware('auth:sanctum');
+})->middleware(['auth:sanctum', 'token.expiry']);
 
 
 
@@ -148,15 +167,15 @@ Route::middleware(['web'])->group(function () {
 // Routes that require authentication
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::get('/isAuthenticated', [AuthController::class, 'userAuth'])->middleware('auth:sanctum');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/isAuthenticated', [AuthController::class, 'userAuth'])->middleware(['auth:sanctum', 'token.expiry']);
 
-Route::apiResource('users', UserController::class)->middleware('auth:sanctum');
+Route::apiResource('users', UserController::class)->middleware(['auth:sanctum', 'token.expiry']);
 
 Route::apiResource('notifications', NotificationController::class);
-Route::apiResource('role_access', RoleAccessController::class)->middleware('auth:sanctum');
-Route::apiResource('account', AccountsXController::class)->middleware('auth:sanctum');
-Route::apiResource('active-entities', AdXAnalyticsController::class)->middleware('auth:sanctum');
+Route::apiResource('role_access', RoleAccessController::class)->middleware(['auth:sanctum', 'token.expiry']);
+Route::apiResource('account', AccountsXController::class)->middleware(['auth:sanctum', 'token.expiry']);
+Route::apiResource('active-entities', AdXAnalyticsController::class)->middleware(['auth:sanctum', 'token.expiry']);
 
 // Routes that require authentication
 Route::middleware('auth:api')->group(function () {

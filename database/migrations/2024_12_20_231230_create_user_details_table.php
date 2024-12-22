@@ -22,8 +22,10 @@ return new class extends Migration
             $table->string('snapchat_url')->nullable();
             $table->string('x_url')->nullable();
             $table->string('instagram_url')->nullable();
-            $table->unsignedBigInteger('pack_id')->nullable();
-            $table->foreign('pack_id')->references('id')->on('packs')->onDelete('cascade');//restrict
+            $table->string('linkedin_url')->nullable();
+            $table->string('pixel_url')->nullable();
+            // $table->unsignedBigInteger('pack_id')->nullable();
+            // $table->foreign('pack_id')->references('id')->on('packs')->onDelete('cascade');//restrict
             $table->timestamps();
         });
     }

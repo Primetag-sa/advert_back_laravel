@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('facebook_campaigns', function (Blueprint $table) {
-            $table->id();
-            $table->string('campaign_id')->nullable();
-            $table->string('name')->nullable();
-            $table->foreignId('facebook_ad_account_id')->nullable()->constrained()->onDelete('cascade'); 
-            $table->timestamps();
-        });
+        // Schema::create('facebook_campaigns', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('campaign_id')->nullable();
+        //     $table->string('name')->nullable();
+        //     $table->foreignId('facebook_ad_account_id')->nullable()->constrained()->onDelete('cascade'); 
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('facebook_campaigns');
+        // Schema::dropIfExists('facebook_campaigns');
     }
 };

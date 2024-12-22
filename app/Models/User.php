@@ -121,10 +121,10 @@ class User extends Authenticatable
         return $this->hasOne(Agent::class);
     }
 
-    public function sentNotifications()
-    {
-        return $this->hasMany(Notification::class, 'sender_id');
-    }
+    // public function sentNotifications()
+    // {
+    //     return $this->hasMany(Notification::class, 'sender_id');
+    // }
 
     public function visitors()
     {
@@ -154,5 +154,13 @@ class User extends Authenticatable
     public function accounts(): HasMany
     {
         return $this->hasMany(AccountsX::class);
+    }
+
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable');
+    }
+    public function readNotificaions(){
+        return $this->hasMany(ReadNotifications::class);
     }
 }

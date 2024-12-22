@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('snap_ads', function (Blueprint $table) {
-            //'snapchat_account_id',
-            // 'snapchat_campaign_id',
-            // 'snapchat_adsquad_id_code',
-            $table->string('snapchat_adsquad_id_code')->nullable();
-            $table->foreignId('snapchat_account_id')->nullable()->constrained()->onDelete('cascade'); 
-            $table->foreignId('snapchat_campaign_id')->nullable()->constrained()->onDelete('cascade');
-        });
+        // Schema::table('snap_ads', function (Blueprint $table) {
+        //     //'snapchat_account_id',
+        //     // 'snapchat_campaign_id',
+        //     // 'snapchat_adsquad_id_code',
+        //     $table->string('snapchat_adsquad_id_code')->nullable();
+        //     $table->foreignId('snapchat_account_id')->nullable()->constrained()->onDelete('cascade'); 
+        //     $table->foreignId('snapchat_campaign_id')->nullable()->constrained()->onDelete('cascade');
+        // });
     }
 
     /**
@@ -26,8 +26,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('snap_ads', function (Blueprint $table) {
-            //
-        });
+        // Schema::table('snap_ads', function (Blueprint $table) {
+        //     //
+        // });
     }
 };

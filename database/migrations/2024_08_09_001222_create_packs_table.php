@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('packs', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->integer('months')->nullable();
-            $table->decimal('price', 8, 2);
-            $table->decimal('nb_product_private', 8, 2)->nullable();
-            $table->longText('advantages');
-            $table->timestamps();
-        });
+        // Schema::create('packs', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name');
+        //     $table->integer('months')->nullable();
+        //     $table->decimal('price', 8, 2);
+        //     $table->decimal('nb_product_private', 8, 2)->nullable();
+        //     $table->longText('advantages');
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('packs');
+        // Schema::dropIfExists('packs');
     }
 };

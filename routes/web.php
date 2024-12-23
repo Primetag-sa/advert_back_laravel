@@ -13,4 +13,5 @@ use Laravel\Socialite\Facades\Socialite;
 
 // Step 1: Show the welcome page with a button to start operations
 Route::get('/', function () {
+    return view('welcome');
 })->name('welcome');

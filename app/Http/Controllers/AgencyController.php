@@ -12,7 +12,10 @@ class AgencyController extends Controller
     public function index()
     {
         $agencies = Agency::with('user')->get();
-        return response()->json($agencies, 200);
+        return response()->json([
+            'message' => 'User details retrieved successfully!',
+            'data' => $agencies
+        ], 200);
     }
 
     public function show($id)
@@ -21,7 +24,10 @@ class AgencyController extends Controller
         if (!$agency) {
             return response()->json(['message' => 'Agency not found'], 404);
         }
-        return response()->json($agency, 200);
+        return response()->json([
+            'message' => 'User details retrieved successfully!',
+            'data' => $agency
+        ], 200);
     }
 
     public function store(Request $request)
@@ -42,22 +48,23 @@ class AgencyController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'phone' => $validated['phone'],
+
             'password' => Hash::make($validated['password']),
             'role' => 'agency', // Default role for agency
-            'is_active' => true, // Mark as active
-            'active_at' => now(),
+            'is_activated' => true, // Mark as active
+            'activated_at' => now(),
         ]);
 
         $agency = Agency::create([
             'user_id' => $user->id,
             'name' => $validated['name'],
-            'address' => $validated['address'],
-            'snapchat_url' => $validated['snapchat_url'],
-            'instagram_url' => $validated['instagram_url'],
-            'tiktok_url' => $validated['tiktok_url'],
-            'facebook_url' => $validated['facebook_url'],
-            'x_url' => $validated['x_url'],
+            'address' => $validated['address']??null,
+            'phone' => $validated['phone']??null,
+            'snapchat_url' => $validated['snapchat_url']??null,
+            'instagram_url' => $validated['instagram_url']??null,
+            'tiktok_url' => $validated['tiktok_url']??null,
+            'facebook_url' => $validated['facebook_url']??null,
+            'x_url' => $validated['x_url']??null,
         ]);
 
         return response()->json(['message' => 'Agency created successfully!', 'data' => $agency], 201);
@@ -85,17 +92,18 @@ class AgencyController extends Controller
         $agency->user->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'phone' => $validated['phone'],
+
         ]);
 
         $agency->update([
-            'name' => $validated['name'],
-            'address' => $validated['address'],
-            'snapchat_url' => $validated['snapchat_url'],
-            'instagram_url' => $validated['instagram_url'],
-            'tiktok_url' => $validated['tiktok_url'],
-            'facebook_url' => $validated['facebook_url'],
-            'x_url' => $validated['x_url'],
+            'name' => $validated['name']?? $agency->name,
+            'address' => $validated['address']?? $agency->address,
+            'snapchat_url' => $validated['snapchat_url']?? $agency->snapchat_url,
+            'instagram_url' => $validated['instagram_url']?? $agency->instagram_url,
+            'tiktok_url' => $validated['tiktok_url']?? $agency->tiktok_url,
+            'facebook_url' => $validated['facebook_url']?? $agency->facebook_url,
+            'x_url' => $validated['x_url']?? $agency->x_url,
+            'phone' => $validated['phone']?? $agency->phone,
         ]);
 
         return response()->json(['message' => 'Agency updated successfully!', 'data' => $agency], 200);

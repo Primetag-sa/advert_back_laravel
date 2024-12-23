@@ -179,18 +179,18 @@ Route::get('/isAuthenticated', [AuthController::class, 'userAuth'])->middleware(
 
 Route::apiResource('users', UserController::class)->middleware(['auth:sanctum', 'token.expiry']);
 
-Route::apiResource('notifications', NotificationController::class);
+// Route::apiResource('notifications', NotificationController::class);
 Route::apiResource('role_access', RoleAccessController::class)->middleware('auth:sanctum');
 Route::apiResource('account', AccountsXController::class)->middleware('auth:sanctum');
 Route::apiResource('active-entities', AdXAnalyticsController::class)->middleware('auth:sanctum');
 
 // Routes that require authentication
-// Route::middleware('auth:api')->group(function () {
-    // Route::get('/user', function (Request $request) {
-        // return $request->user();
-    // });
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-// });
+});
 
 
 // Route::get('/check-twitter-keys', function () {

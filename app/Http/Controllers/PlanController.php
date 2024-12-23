@@ -9,7 +9,11 @@ class PlanController extends Controller
 {
     public function index()
     {
-        return Plan::with('features')->get();
+       $plans= Plan::with('features')->get();
+        return response()->json([
+            'message' => 'Plans retrieved successfully!',
+            'data' => $plans
+        ], 200);
     }
 
     public function store(Request $request)

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('twitter_states', function (Blueprint $table) {
-            $table->string('access_token')->nullable();  // Ajouter cette colonne
-        });
+        // Schema::table('twitter_states', function (Blueprint $table) {
+        //     $table->string('access_token')->nullable();  // Ajouter cette colonne
+        // });
     }
 
     /**
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('twitter_states', function (Blueprint $table) {
-            //
-        });
+        // Schema::table('twitter_states', function (Blueprint $table) {
+        //     //
+        // });
     }
 };

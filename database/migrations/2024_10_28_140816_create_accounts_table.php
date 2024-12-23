@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('accounts', function (Blueprint $table) {
-            $table->id(); // ID auto-incrémenté par Laravel
-            $table->string('name');
-            $table->string('business_name')->nullable();
-            $table->string('timezone');
-            $table->timestamp('timezone_switch_at')->nullable();
-            $table->string('account_id')->unique(); // Le champ ID spécifique du compte
-            $table->string('salt')->nullable();
-            $table->string('approval_status');
-            $table->boolean('deleted')->default(false);
-            $table->timestamps();
-            $table->softDeletes(); // Ajoute une colonne pour la suppression en douceur
-        });
+        // Schema::create('accounts', function (Blueprint $table) {
+        //     $table->id(); // ID auto-incrémenté par Laravel
+        //     $table->string('name');
+        //     $table->string('business_name')->nullable();
+        //     $table->string('timezone');
+        //     $table->timestamp('timezone_switch_at')->nullable();
+        //     $table->string('account_id')->unique(); // Le champ ID spécifique du compte
+        //     $table->string('salt')->nullable();
+        //     $table->string('approval_status');
+        //     $table->boolean('deleted')->default(false);
+        //     $table->timestamps();
+        //     $table->softDeletes(); // Ajoute une colonne pour la suppression en douceur
+        // });
     }
 
     /**
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('accounts');
+        // Schema::dropIfExists('accounts');
     }
 };

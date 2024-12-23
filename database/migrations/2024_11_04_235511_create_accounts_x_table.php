@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('accounts_x', function (Blueprint $table) {
-            $table->id();
-            $table->string('account_id')->unique();
-            $table->string('name')->nullable();
-            $table->string('business_name')->nullable();
-            $table->string('timezone')->nullable();
-            $table->timestamp('timezone_switch_at')->nullable();
-            $table->string('business_id')->nullable();
-            $table->string('approval_status')->nullable();
-            $table->boolean('deleted')->default(false);
-            $table->timestamps();
-        });
+        // Schema::create('accounts_x', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('account_id')->unique();
+        //     $table->string('name')->nullable();
+        //     $table->string('business_name')->nullable();
+        //     $table->string('timezone')->nullable();
+        //     $table->timestamp('timezone_switch_at')->nullable();
+        //     $table->string('business_id')->nullable();
+        //     $table->string('approval_status')->nullable();
+        //     $table->boolean('deleted')->default(false);
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('accounts_x');
+        // Schema::dropIfExists('accounts_x');
     }
 };

@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('agencies', function (Blueprint $table) {
-            $table->string('address')->nullable();
-            $table->text('permissions')->nullable();
-            $table->string('facebook_url')->nullable();
-            $table->string('tiktok_url')->nullable();
-            $table->string('snapchat_url')->nullable();
-            $table->string('x_url')->nullable();
-            $table->string('instagram_url')->nullable();
-            $table->unsignedBigInteger('pack_id')->nullable();
-            $table->foreign('pack_id')->references('id')->on('packs')->onDelete('cascade');//restrict
-        });
+        // Schema::table('agencies', function (Blueprint $table) {
+        //     $table->string('address')->nullable();
+        //     $table->text('permissions')->nullable();
+        //     $table->string('facebook_url')->nullable();
+        //     $table->string('tiktok_url')->nullable();
+        //     $table->string('snapchat_url')->nullable();
+        //     $table->string('x_url')->nullable();
+        //     $table->string('instagram_url')->nullable();
+        //     $table->unsignedBigInteger('pack_id')->nullable();
+        //     $table->foreign('pack_id')->references('id')->on('packs')->onDelete('cascade');//restrict
+        // });
     }
 
     /**
@@ -29,19 +29,19 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('agencies', function (Blueprint $table) {
-            Schema::table('agencies', function (Blueprint $table) {
-                $table->dropColumn([
-                    'address',
-                    'permissions',
-                    'facebook_url',
-                    'tiktok_url',
-                    'snapchat_url',
-                    'x_url',
-                    'instagram_url',
-                    'pack_id'
-                ]);
-            });
-        });
+        // Schema::table('agencies', function (Blueprint $table) {
+        //     Schema::table('agencies', function (Blueprint $table) {
+        //         $table->dropColumn([
+        //             'address',
+        //             'permissions',
+        //             'facebook_url',
+        //             'tiktok_url',
+        //             'snapchat_url',
+        //             'x_url',
+        //             'instagram_url',
+        //             'pack_id'
+        //         ]);
+        //     });
+        // });
     }
 };

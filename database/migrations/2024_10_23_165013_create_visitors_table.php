@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('visitors', function (Blueprint $table) {
-            $table->id(); 
-            $table->string('website')->nullable(); 
-            $table->string('ip_address')->nullable(); 
-            $table->foreignId('user_id')->nullable()->constrained('users'); 
-            $table->timestamps(); 
-        });
+        // Schema::create('visitors', function (Blueprint $table) {
+        //     $table->id(); 
+        //     $table->string('website')->nullable(); 
+        //     $table->string('ip_address')->nullable(); 
+        //     $table->foreignId('user_id')->nullable()->constrained('users'); 
+        //     $table->timestamps(); 
+        // });
     }
 
     /**
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('visitors');
+        // Schema::dropIfExists('visitors');
     }
 };

@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ads_x_metrics', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('account_id')->constrained('accounts');
-            $table->string('metric_group');
-            $table->string('placement');
-            $table->string('granularity');
-            $table->json('metrics_data');
-            $table->timestamp('last_fetched_at')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('ads_x_metrics', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('account_id')->constrained('accounts');
+        //     $table->string('metric_group');
+        //     $table->string('placement');
+        //     $table->string('granularity');
+        //     $table->json('metrics_data');
+        //     $table->timestamp('last_fetched_at')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ads_x_metrics');
+        // Schema::dropIfExists('ads_x_metrics');
     }
 };

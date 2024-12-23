@@ -11,22 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('snap_ads', function (Blueprint $table) {
-            $table->string('start_time')->nullable();
-            $table->string('end_time')->nullable();
-            $table->string('stats_conversion_purchases')->nullable();
-            $table->string('stats_conversion_save')->nullable();
-            $table->string('stats_conversion_start_checkout')->nullable();
-            $table->string('stats_conversion_add_cart')->nullable();
-            $table->string('stats_conversion_view_content')->nullable();
-            $table->string('stats_conversion_add_billing')->nullable();
-            $table->string('stats_conversion_sign_ups')->nullable();
-            $table->string('stats_conversion_searches')->nullable();
-            $table->string('stats_conversion_level_completes')->nullable();
-            $table->string('stats_conversion_app_opens')->nullable();
-            $table->string('stats_conversion_page_views')->nullable();
+        // Schema::table('snap_ads', function (Blueprint $table) {
+        //     $table->string('start_time')->nullable();
+        //     $table->string('end_time')->nullable();
+        //     $table->string('stats_conversion_purchases')->nullable();
+        //     $table->string('stats_conversion_save')->nullable();
+        //     $table->string('stats_conversion_start_checkout')->nullable();
+        //     $table->string('stats_conversion_add_cart')->nullable();
+        //     $table->string('stats_conversion_view_content')->nullable();
+        //     $table->string('stats_conversion_add_billing')->nullable();
+        //     $table->string('stats_conversion_sign_ups')->nullable();
+        //     $table->string('stats_conversion_searches')->nullable();
+        //     $table->string('stats_conversion_level_completes')->nullable();
+        //     $table->string('stats_conversion_app_opens')->nullable();
+        //     $table->string('stats_conversion_page_views')->nullable();
             
-        });
+        // });
     }
 
     /**
@@ -34,8 +34,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('snap_ads', function (Blueprint $table) {
-            //
-        });
+        // Schema::table('snap_ads', function (Blueprint $table) {
+        //     //
+        // });
     }
 };

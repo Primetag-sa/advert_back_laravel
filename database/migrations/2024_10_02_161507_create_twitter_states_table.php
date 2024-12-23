@@ -12,20 +12,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('twitter_states', function (Blueprint $table) {
-            $table->id();
-            $table->string('state')->unique();
-            $table->string('oauth_token');
-            $table->string('oauth_token_secret');
-            $table->timestamps();
-        });
+        //         Schema::create('twitter_states', function (Blueprint $table) {
+        //             $table->id();
+        //             $table->string('state')->unique();
+        //             $table->string('oauth_token');
+        //             $table->string('oauth_token_secret');
+        //             $table->timestamps();
+        //         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+
     public function down(): void
     {
-        Schema::dropIfExists('twitter_states');
+        // Schema::dropIfExists('twitter_states');
     }
 };

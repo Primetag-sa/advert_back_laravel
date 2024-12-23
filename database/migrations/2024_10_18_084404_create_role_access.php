@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role_access', function (Blueprint $table) {
-            $table->id();
-            $table->string('role')->nullable();
-            $table->json('access')->nullable();
-            $table->timestamps();
-        });
+        // Schema::create('role_access', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('role')->nullable();
+        //     $table->json('access')->nullable();
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('role_access');
+        // Schema::dropIfExists('role_access');
     }
 };

@@ -25,6 +25,11 @@ use App\Http\Controllers\FeatureController;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\Api\DashboardController;
+
+
+Route::get('/dashboard', [DashboardController::class, 'getDashboard'])->middleware(['auth:sanctum', 'token.expiry']);;
+
 
  Route::get('/auth/instagram', [InstagramController::class, 'redirectToInstagram'])->name('instagram.redirect');
  Route::apiResource('plans', PlanController::class);
@@ -182,6 +187,8 @@ Route::get('/isAuthenticated', [AuthController::class, 'userAuth'])->middleware(
 Route::apiResource('users', UserController::class)->middleware(['auth:sanctum', 'token.expiry']);
 
 Route::apiResource('notifications', NotificationController::class);
+Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+
 Route::apiResource('role_access', RoleAccessController::class)->middleware('auth:sanctum');
 Route::apiResource('account', AccountsXController::class)->middleware('auth:sanctum');
 Route::apiResource('active-entities', AdXAnalyticsController::class)->middleware('auth:sanctum');

@@ -35,6 +35,7 @@ class User extends Authenticatable
         'is_active',
         'active_at',
         'token',
+        'created_by_id',
     ];
 
     /**

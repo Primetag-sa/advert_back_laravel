@@ -196,7 +196,7 @@ class AuthController extends Controller
     public function confirmeRegister(Request $request)
     {
         $request->validate([
-            'payment_response' => 'required|integer'
+            ' payment_response' => 'required|integer'
         ]);
         if ($request->payment_response == 1) {
             $user = auth()->user();

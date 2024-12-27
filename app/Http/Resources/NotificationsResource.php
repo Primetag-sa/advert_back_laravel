@@ -14,10 +14,12 @@ class NotificationsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'id' => $this->id,
             'type' => $this->type,
-            'is_read' => $this->readNotificaions->where('user_id', auth()->user()->id)
+            'is_read' => $this->readNotificaions()
+                ->where('user_id', auth()->user()->id)
                 ->where('notification_id', $this->id)
                 ->exists(),
             'title' => $this->title,

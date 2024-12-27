@@ -10,8 +10,8 @@ class ReadNotifications extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'notifications_id',
-      
+        'notification_id',
+
       ];
     public function user()
     {

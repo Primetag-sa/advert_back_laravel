@@ -40,7 +40,7 @@ class Notification extends Model
     //     return $this->belongsTo(User::class, 'received_id');
     // }
 
-    protected $fillable = ['type', 'notifiable_id', 'notifiable_type', 'message'];
+    protected $fillable = ['type', 'notifiable_id', 'notifiable_type', 'message','title'];
 
     protected $casts = [
         'type' => NotificationType::class,

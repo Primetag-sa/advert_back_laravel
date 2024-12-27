@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserDetail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserDetailsController extends Controller
@@ -55,6 +56,7 @@ class UserDetailsController extends Controller
             'role' => 'user', // Default role
             'is_activated' => true, // Mark as active
             'activated_at' => now(),
+            'created_by_id' => Auth::user()->id,
         ]);
 
         $userDetail = UserDetail::create([

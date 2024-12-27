@@ -8,6 +8,7 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Models\UserDetail;
 use App\Models\UserPlan;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            if ($user->is_confirmed ) {
+            if ($user->is_confirmed) {
                 $request->session()->regenerate();
                 $token = $user->createToken('advert', [], now()->addHours(12))->plainTextToken;
                 $user->token = $token;
@@ -32,7 +33,6 @@ class AuthController extends Controller
             } else {
                 return response()->json(['message' => 'الحساب غير مفعل', 'type' => 'not_confirmed'], 401);
             }
-
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
@@ -94,40 +94,40 @@ class AuthController extends Controller
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
-//    public function register(Request $request)
-//    {
-//        $validator = Validator::make($request->all(), [
-//            'name' => 'required|string|max:255',
-//            'email' => 'required|string|email|max:255|unique:users',
-//            'password' => 'required|string|min:8|confirmed',
-//        ]);
-//
-//        if ($validator->fails()) {
-//            return response()->json($validator->errors(), 422);
-//        }
-//
-//        $user = User::create([
-//            'name' => $request->name,
-//            'email' => $request->email,
-//            'password' => Hash::make($request->password),
-//            'is_confirmed' => false,
-//            'role' => 'agency',
-//        ]);
-//
-//        $agency = Agency::create([
-//            'name' => $user->agencyName,
-//            'user_id' => $user->id,
-//            'tiktok_url' => '',
-//            'facebook_url' => '',
-//            'instagram_url' => '',
-//            'snapchat_url' => '',
-//            'x_url' => '',
-//        ]);
-//
-//        $token = $user->createToken('advert')->plainTextToken;
-//
-//        return response()->json(['token' => $token, 'user' => $user], 201);
-//    }
+    //    public function register(Request $request)
+    //    {
+    //        $validator = Validator::make($request->all(), [
+    //            'name' => 'required|string|max:255',
+    //            'email' => 'required|string|email|max:255|unique:users',
+    //            'password' => 'required|string|min:8|confirmed',
+    //        ]);
+    //
+    //        if ($validator->fails()) {
+    //            return response()->json($validator->errors(), 422);
+    //        }
+    //
+    //        $user = User::create([
+    //            'name' => $request->name,
+    //            'email' => $request->email,
+    //            'password' => Hash::make($request->password),
+    //            'is_confirmed' => false,
+    //            'role' => 'agency',
+    //        ]);
+    //
+    //        $agency = Agency::create([
+    //            'name' => $user->agencyName,
+    //            'user_id' => $user->id,
+    //            'tiktok_url' => '',
+    //            'facebook_url' => '',
+    //            'instagram_url' => '',
+    //            'snapchat_url' => '',
+    //            'x_url' => '',
+    //        ]);
+    //
+    //        $token = $user->createToken('advert')->plainTextToken;
+    //
+    //        return response()->json(['token' => $token, 'user' => $user], 201);
+    //    }
 
 
     public function register(Request $request)
@@ -154,10 +154,10 @@ class AuthController extends Controller
                 'role' => $type,
             ]);
 
-            $totalPrice=$plan->total_price+($plan->user_cost*$request->number_of_users);
+            $totalPrice = $plan->total_price + ($plan->user_cost * $request->number_of_users);
 
             $user->assignRole($type);
-            UserPlan::create(['user_id' => $user->id,'plan_id' => $request->plan_id, 'number_of_sites' => $request->number_of_sites,'number_of_users' => $request->number_of_users,'total_price' => $totalPrice]);
+            $userPlan = UserPlan::create(['user_id' => $user->id, 'plan_id' => $request->plan_id, 'number_of_sites' => $request->number_of_sites, 'number_of_users' => $request->number_of_users, 'total_price' => $totalPrice]);
 
             if ($type === 'user') {
                 UserDetail::create(['user_id' => $user->id]);
@@ -170,13 +170,52 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Registered successfully',
                 'user' => $user,
-                'token' => $token
+                'token' => $token,
+
+                'user_plan' => [
+                    'number_of_sites' => $userPlan->number_of_sites,
+                    'number_of_users' => $userPlan->number_of_users,
+                    'total_price' => $userPlan->total_price,
+                    'plan' => [
+                        'id' => $userPlan->plan->id,
+                        'name' => $userPlan->plan->name,
+                        'description' => $userPlan->plan->description,
+                        'period_type' => $userPlan->plan->period_type,
+                        // 'base_price' => $userPlan->plan->base_price,
+                    ],
+                ],
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422);
+        }
+    }
+
+    public function confirmeRegister(Request $request)
+    {
+        $request->validate([
+            'payment_response' => 'required|integer'
+        ]);
+        if ($request->payment_response == 1) {
+            $user = auth()->user();
+
+            $user->is_activated = 1;
+            $user->activated_at = Carbon::now();
+            $user->is_confirmed = 1;
+            $user->confirmed_at = Carbon::now();
+
+            $user->save();
+
+            return response()->json([
+                'message' => 'User activated successfully',
+                'user' => $user
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Payment response is invalid',
+            ], 400);
         }
     }
 

@@ -60,6 +60,9 @@ Route::prefix('agencies')->group(function () {
     Route::delete('/{id}', [AgencyController::class, 'destroy']);
 });
 
+Route::post('/agency/addAdmin', [AgencyController::class, 'addAdmin'])->middleware(['auth:sanctum', 'token.expiry']);
+Route::get('/agency/getAdmins', [AgencyController::class, 'getAdmins'])->middleware(['auth:sanctum', 'token.expiry']);
+
 
  Route::get('/ads/snapchat/accounts', [SnapchatController::class, 'getAdsAccounts'])->middleware(['auth:sanctum', 'token.expiry']);
  Route::get('/ads/snapchat/campaigns/{accountId}', [SnapchatController::class, 'getAdsCampaigns']);

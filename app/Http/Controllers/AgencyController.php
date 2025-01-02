@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AgencyAdmin;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Agency;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AgencyController extends Controller
@@ -48,9 +50,8 @@ class AgencyController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-
             'password' => Hash::make($validated['password']),
-            'role' => 'agency', // Default role for agency
+            'role' => 'agency',
             'is_activated' => true, // Mark as active
             'activated_at' => now(),
         ]);
@@ -121,4 +122,82 @@ class AgencyController extends Controller
 
         return response()->json(['message' => 'Agency deleted successfully!'], 200);
     }
+
+
+
+    public function addAdmin(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'agency') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string|min:8',
+            'permissions' => 'required|array',
+            'permissions.*' => 'string',
+            'users' => 'nullable|array',
+            'users.*' => [
+                'exists:users,id',
+                function ($attribute, $value, $fail) use ($user) {
+                    // Check if the user exists and is created by the current authenticated user
+                    $exists = \App\Models\User::where('id', $value)
+                        ->where('role', 'user')
+                        ->where('created_by_id', $user->id)
+                        ->exists();
+
+                    if (!$exists) {
+                        $fail("The selected user ($value) is invalid or does not belong to you.");
+                    }
+                },
+            ],
+        ]);
+
+        $agency = Agency::query()->where('user_id', $user->id)->first();
+
+        $newUser = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => 'admin_agency',
+            'is_activated' => true,
+            'activated_at' => now(),
+        ]);
+
+        $admin = AgencyAdmin::create([
+            'agency_id' => $agency->id,
+            'user_id' => $newUser->id,
+            'name' => $validated['name'],
+            'permissions' => $validated['permissions'],
+        ]);
+
+        if (!empty($validated['users'])) {
+            $admin->users()->sync($validated['users']);
+        }
+
+        return response()->json([
+            'message' => 'Admin added successfully!',
+            'data' => [
+                'admin' => $admin->load('user'),
+                'user' => $newUser,
+            ],
+        ], 201);
+    }
+
+
+    public function getAdmins()
+    {
+        $user = Auth::user();
+        $agency = Agency::query()->where('user_id', $user->id)->first();
+        if (!$agency) {
+            return response()->json(['message' => 'Agency not found'], 404);
+        }
+        $admins = $agency->agencyAdmins()->with('user')->get();
+        return response()->json(['data' => $admins], 200);
+    }
+
+
 }

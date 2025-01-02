@@ -30,4 +30,9 @@ class Agency extends Model
     {
         return $this->morphMany(Notification::class, 'notifiable');
     }
+    public function agencyAdmins()
+    {
+        return $this->hasMany(AgencyAdmin::class);
+    }
+
 }

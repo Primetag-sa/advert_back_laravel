@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Agency;
+use App\Models\AgencyAdmin;
 use App\Models\Plan;
 use App\Models\User;
 use App\Models\UserDetail;
@@ -21,17 +22,37 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-
         $credentials = $request->only('email', 'password');
+
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+
             if ($user->is_confirmed) {
                 $request->session()->regenerate();
                 $token = $user->createToken('advert', [], now()->addHours(12))->plainTextToken;
                 $user->token = $token;
-                return response()->json($user, 200);
+
+                // Fetch the related model based on user role
+                $extraDetails = null;
+                if ($user->role === 'user') {
+                    $extraDetails = UserDetail::where('user_id', $user->id)->first();
+                } elseif ($user->role === 'agency') {
+                    $extraDetails = Agency::where('user_id', $user->id)->first();
+                }
+             elseif ($user->role === 'admin_agency') {
+                $extraDetails = AgencyAdmin::where('user_id', $user->id)->first();
+            }
+
+                return response()->json([
+                    'user' => $user,
+                    'token' => $token,
+                    'extra_details' => $extraDetails, // Return full UserDetail or Agency model
+                ], 200);
             } else {
-                return response()->json(['message' => 'الحساب غير مفعل', 'type' => 'not_confirmed'], 401);
+                return response()->json([
+                    'message' => 'الحساب غير مفعل',
+                    'type' => 'not_confirmed',
+                ], 401);
             }
         }
 
@@ -137,7 +158,7 @@ class AuthController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|unique:users',
                 'password' => 'required|string|min:8|confirmed',
-                'plan_id' => 'required|integer',
+                'plan_id' => 'required|integer|exists:plans,id',
                 'agency_name' => 'nullable|string',
                 'number_of_sites' => 'nullable|string',
                 'number_of_users' => 'nullable|string',
@@ -157,12 +178,23 @@ class AuthController extends Controller
             $totalPrice = $plan->total_price + ($plan->user_cost * $request->number_of_users);
 
             $user->assignRole($type);
-            $userPlan = UserPlan::create(['user_id' => $user->id, 'plan_id' => $request->plan_id, 'number_of_sites' => $request->number_of_sites, 'number_of_users' => $request->number_of_users, 'total_price' => $totalPrice]);
+            $userPlan = UserPlan::create([
+                'user_id' => $user->id,
+                'plan_id' => $request->plan_id,
+                'number_of_sites' => $request->number_of_sites,
+                'number_of_users' => $request->number_of_users,
+                'total_price' => $totalPrice,
+            ]);
 
             if ($type === 'user') {
                 UserDetail::create(['user_id' => $user->id]);
+                $extraDetails = UserDetail::where('user_id', $user->id)->first();
             } else {
-                Agency::create(['user_id' => $user->id, 'name' => $request->agency_name]);
+                Agency::create([
+                    'user_id' => $user->id,
+                    'name' => $request->agency_name
+                ]);
+                $extraDetails = Agency::where('user_id', $user->id)->first();
             }
 
             $token = $user->createToken('advert', [], now()->addHours(12))->plainTextToken;
@@ -171,7 +203,6 @@ class AuthController extends Controller
                 'message' => 'Registered successfully',
                 'user' => $user,
                 'token' => $token,
-
                 'user_plan' => [
                     'number_of_sites' => $userPlan->number_of_sites,
                     'number_of_users' => $userPlan->number_of_users,
@@ -181,22 +212,23 @@ class AuthController extends Controller
                         'name' => $userPlan->plan->name,
                         'description' => $userPlan->plan->description,
                         'period_type' => $userPlan->plan->period_type,
-                        // 'base_price' => $userPlan->plan->base_price,
                     ],
                 ],
+                'extra_details' => $extraDetails,
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         }
     }
 
+
     public function confirmeRegister(Request $request)
     {
         $request->validate([
-            ' payment_response' => 'required|integer'
+            'payment_response' => 'required|integer'
         ]);
         if ($request->payment_response == 1) {
             $user = auth()->user();
